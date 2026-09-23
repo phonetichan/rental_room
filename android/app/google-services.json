@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "614709227604",
+    "project_id": "rental-room-f8799",
+    "storage_bucket": "rental-room-f8799.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614709227604:android:c65156cbf182bd08c7fdc1",
+        "android_client_info": {
+          "package_name": "com.example.rental_room"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4UNPcsHUrUxPvFaqkssa-gyBJMhP2FqU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
