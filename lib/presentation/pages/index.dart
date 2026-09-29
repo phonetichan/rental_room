@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../di/di.dart';
-import '../../domain/domain.dart';
-import '../blocs/authentication_cubit/authentication_cubit.dart';
+import '../blocs/blocs.dart';
 import '../navigation/navigation_key_provider.dart';
 
 import 'booking/booking_view.dart';
@@ -71,8 +70,6 @@ class _IndexPageState extends State<IndexPage> {
           );
         }
 
-        final bool isOwner = user.role == UserRole.owner;
-
         // 1. Single Unified Home Dashboard View
         final Widget homeView = DashboardView(user: user);
 
@@ -83,15 +80,6 @@ class _IndexPageState extends State<IndexPage> {
           BookingView(user: user),
           ProfileView(user: user),
         ];
-
-        // 3. Dynamic AppBar Title per tab
-        final String appBarTitle = switch (_currentIndex) {
-          0 => isOwner ? 'Owner Dashboard' : 'Find Your Room',
-          1 => isOwner ? 'Property Posts' : 'Post Demands',
-          2 => 'My Bookings',
-          3 => 'Account Profile',
-          _ => 'Rental Portal',
-        };
 
         const navItems = [
           NavItemData(
@@ -116,34 +104,36 @@ class _IndexPageState extends State<IndexPage> {
           ),
         ];
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(appBarTitle),
-            centerTitle: false,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none_rounded),
-                onPressed: () {},
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => inject<RoomCubit>()),
+            BlocProvider(
+              create: (context) => inject<FavoriteCubit>()..loadFavorites(user.id),
+            ),
+          ],
+          child: Scaffold(
+            // ✅ Change top: false to top: true (or remove top parameter)
+            body: SafeArea(
+              top: true,
+              child: IndexedStack(
+                index: _currentIndex,
+                children: pages,
               ),
-            ],
-          ),
-          body: IndexedStack(
-            index: _currentIndex,
-            children: pages,
-          ),
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: _currentIndex,
-            elevation: 3,
-            onDestinationSelected: _changeTab,
-            destinations: navItems
-                .map(
-                  (item) => NavigationDestination(
-                label: item.label,
-                icon: Icon(item.icon),
-                selectedIcon: Icon(item.selectedIcon),
-              ),
-            )
-                .toList(),
+            ),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: _currentIndex,
+              elevation: 3,
+              onDestinationSelected: _changeTab,
+              destinations: navItems
+                  .map(
+                    (item) => NavigationDestination(
+                  label: item.label,
+                  icon: Icon(item.icon),
+                  selectedIcon: Icon(item.selectedIcon),
+                ),
+              )
+                  .toList(),
+            ),
           ),
         );
       },

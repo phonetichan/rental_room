@@ -1,97 +1,54 @@
 import 'package:flutter/material.dart';
-import '../../../../domain/domain.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OwnerDashboardContent extends StatelessWidget {
+import '../../../../domain/domain.dart';
+import '../../../presentation.dart';
+import 'owner_metric_cards.dart';
+import 'owner_monthly_revenue_card.dart';
+
+class OwnerDashboardContent extends StatefulWidget {
   final UserEntity user;
 
   const OwnerDashboardContent({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Overview',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: const [
-            Expanded(
-              child: _MetricCard(
-                title: 'Active Properties',
-                value: '4',
-                icon: Icons.apartment,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: _MetricCard(
-                title: 'Pending Requests',
-                value: '2',
-                icon: Icons.pending_actions,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Quick Actions',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 12),
-        ListTile(
-          leading: const Icon(Icons.add_business_rounded),
-          title: const Text('Add New Property'),
-          subtitle: const Text('List a new rental unit or room'),
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () {},
-        ),
-        const Divider(),
-        ListTile(
-          leading: const Icon(Icons.people_alt_rounded),
-          title: const Text('Manage Tenants'),
-          subtitle: const Text('View current active contracts'),
-          trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () {},
-        ),
-      ],
-    );
-  }
+  State<OwnerDashboardContent> createState() => _OwnerDashboardContentState();
 }
 
-class _MetricCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-
-  const _MetricCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-  });
+class _OwnerDashboardContentState extends State<OwnerDashboardContent> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RoomCubit>().fetchRooms();
+      context.read<FavoriteCubit>().loadFavorites(widget.user.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.headlineMedium,
+    final theme = Theme.of(context);
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. OVERVIEW & METRIC CARDS
+          Text(
+            'Overview',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.clrBlack,
             ),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 12),
+          OwnerMetricsOverview(user: widget.user),
+
+          const SizedBox(height: 28),
+
+          // 2. MONTHLY REVENUE BAR CHART CARD
+          const OwnerMonthlyRevenueCard(),
+        ],
       ),
     );
   }

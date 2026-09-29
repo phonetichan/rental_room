@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-
+import 'package:rental_room/domain/domain.dart';
 import '../../data/data.dart';
 import '../../di/di.dart';
 import '../pages/index.dart';
@@ -152,6 +152,31 @@ class NavigationRouter {
           return BlocProvider(
             create: (context) => inject<EditPasswordCubit>(),
             child: const EditPasswordScreen(),
+          );
+        },
+      ),
+
+      // Room routes
+      GoRoute(
+        path: AddEditRoomScreen.routePath,
+        builder: (context, state) {
+          final room = state.extra as RoomEntity?;
+          return BlocProvider(
+            create: (context) => inject<RoomCubit>(),
+            child: AddEditRoomScreen(room: room),
+          );
+        },
+      ),
+      GoRoute(
+        path: RoomDetailScreen.routePath,
+        builder: (context, state) {
+          final room = state.extra as RoomEntity;
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => inject<RoomCubit>()),
+              BlocProvider(create: (context) => inject<FavoriteCubit>()),
+            ],
+            child: RoomDetailScreen(room: room),
           );
         },
       ),

@@ -1,7 +1,13 @@
 export 'model/user_model.dart';
+export 'model/room_model.dart';
+export 'model/favorite_model.dart';
 export 'datasource/remote/auth_data_source.dart';
 export 'datasource/remote/user_data_source.dart';
+export 'datasource/remote/room_data_source.dart';
+export 'datasource/remote/favorite_data_source.dart';
 export 'datasource/local/app_storage.dart';
 export 'repository/auth_repository_impl.dart';
 export 'repository/user_repository_impl.dart';
+export 'repository/room_repository_impl.dart';
+export 'repository/favorite_repository_impl.dart';
 export 'services/snack_shower.dart';

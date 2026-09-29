@@ -9,3 +9,5 @@ export 'profile/edit_profile/edit_profile.dart';
 export 'profile/edit_profile/cubit/edit_profile_cubit.dart';
 export 'profile/edit_password/edit_password.dart';
 export 'profile/edit_password/cubit/edit_password_cubit.dart';
+export 'room/add_edit_room_page.dart';
+export 'room/room_detail_page.dart';
