@@ -18,9 +18,16 @@ import 'package:rental_room/data/data.dart' as _i582;
 import 'package:rental_room/data/datasource/local/app_storage.dart' as _i45;
 import 'package:rental_room/data/datasource/remote/auth_data_source.dart'
     as _i952;
+import 'package:rental_room/data/datasource/remote/favorite_data_source.dart'
+    as _i420;
+import 'package:rental_room/data/datasource/remote/room_data_source.dart'
+    as _i753;
 import 'package:rental_room/data/datasource/remote/user_data_source.dart'
     as _i62;
 import 'package:rental_room/data/repository/auth_repository_impl.dart' as _i348;
+import 'package:rental_room/data/repository/favorite_repository_impl.dart'
+    as _i553;
+import 'package:rental_room/data/repository/room_repository_impl.dart' as _i847;
 import 'package:rental_room/data/repository/user_repository_impl.dart' as _i849;
 import 'package:rental_room/data/services/snack_shower.dart' as _i615;
 import 'package:rental_room/di/modules/firebase.dart' as _i388;
@@ -29,17 +36,34 @@ import 'package:rental_room/di/modules/shared_preferences_provider.dart'
     as _i1011;
 import 'package:rental_room/domain/domain.dart' as _i156;
 import 'package:rental_room/domain/repository/auth_repository.dart' as _i267;
+import 'package:rental_room/domain/repository/favorite_repository.dart'
+    as _i549;
+import 'package:rental_room/domain/repository/room_repository.dart' as _i899;
 import 'package:rental_room/domain/repository/user_repository.dart' as _i993;
+import 'package:rental_room/domain/usecase/create_room_usecase.dart' as _i92;
+import 'package:rental_room/domain/usecase/delete_room_usecase.dart' as _i1026;
+import 'package:rental_room/domain/usecase/get_favorite_counts_usecase.dart'
+    as _i14;
+import 'package:rental_room/domain/usecase/get_rooms_usecase.dart' as _i529;
+import 'package:rental_room/domain/usecase/get_user_favorites_usecase.dart'
+    as _i64;
 import 'package:rental_room/domain/usecase/get_user_usecase.dart' as _i411;
 import 'package:rental_room/domain/usecase/sign_in_usecase.dart' as _i472;
 import 'package:rental_room/domain/usecase/sign_out_usecase.dart' as _i165;
 import 'package:rental_room/domain/usecase/sign_up_usecase.dart' as _i619;
+import 'package:rental_room/domain/usecase/toggle_favorite_usecase.dart'
+    as _i968;
 import 'package:rental_room/domain/usecase/update_password_usecase.dart'
     as _i464;
+import 'package:rental_room/domain/usecase/update_room_usecase.dart' as _i450;
 import 'package:rental_room/domain/usecase/update_user_profile_param.dart'
     as _i255;
 import 'package:rental_room/presentation/blocs/authentication_cubit/authentication_cubit.dart'
     as _i912;
+import 'package:rental_room/presentation/blocs/favorite_cubit/favorite_cubit.dart'
+    as _i1044;
+import 'package:rental_room/presentation/blocs/room_cubit/room_cubit.dart'
+    as _i83;
 import 'package:rental_room/presentation/navigation/navigation_key_provider.dart'
     as _i383;
 import 'package:rental_room/presentation/navigation/router.dart' as _i828;
@@ -80,6 +104,22 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i45.AppStorage(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i383.INavigationKeyProvider>(
         () => _i383.NavigationKeyProviderImpl());
+    gh.lazySingleton<_i753.RoomRemoteDataSource>(
+        () => _i753.RoomRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+    gh.lazySingleton<_i420.FavoriteRemoteDataSource>(
+        () => _i420.FavoriteRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+    gh.lazySingleton<_i899.RoomRepository>(
+        () => _i847.RoomRepositoryImpl(gh<_i753.RoomRemoteDataSource>()));
+    gh.lazySingleton<_i1026.DeleteRoomUseCase>(
+        () => _i1026.DeleteRoomUseCase(gh<_i899.RoomRepository>()));
+    gh.lazySingleton<_i92.CreateRoomUseCase>(
+        () => _i92.CreateRoomUseCase(gh<_i899.RoomRepository>()));
+    gh.lazySingleton<_i450.UpdateRoomUseCase>(
+        () => _i450.UpdateRoomUseCase(gh<_i899.RoomRepository>()));
+    gh.lazySingleton<_i529.GetRoomsUseCase>(
+        () => _i529.GetRoomsUseCase(gh<_i899.RoomRepository>()));
+    gh.lazySingleton<_i549.FavoriteRepository>(() =>
+        _i553.FavoriteRepositoryImpl(gh<_i420.FavoriteRemoteDataSource>()));
     gh.lazySingleton<_i952.AuthDataSource>(() => _i952.AuthDataSource(
           gh<_i59.FirebaseAuth>(),
           gh<_i974.FirebaseFirestore>(),
@@ -88,12 +128,29 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i59.FirebaseAuth>(),
           gh<_i974.FirebaseFirestore>(),
         ));
+    gh.lazySingleton<_i64.GetUserFavoritesUseCase>(
+        () => _i64.GetUserFavoritesUseCase(gh<_i549.FavoriteRepository>()));
+    gh.lazySingleton<_i968.ToggleFavoriteUseCase>(
+        () => _i968.ToggleFavoriteUseCase(gh<_i549.FavoriteRepository>()));
+    gh.lazySingleton<_i14.GetFavoriteCountsUseCase>(
+        () => _i14.GetFavoriteCountsUseCase(gh<_i549.FavoriteRepository>()));
     gh.lazySingleton<_i993.UserRepository>(
         () => _i849.UserRepositoryImpl(gh<_i62.UserRemoteDataSource>()));
     gh.lazySingleton<_i615.ISnackShower>(
         () => _i615.SnackShowerImpl(gh<_i383.INavigationKeyProvider>()));
+    gh.factory<_i83.RoomCubit>(() => _i83.RoomCubit(
+          gh<_i156.GetRoomsUseCase>(),
+          gh<_i156.CreateRoomUseCase>(),
+          gh<_i156.UpdateRoomUseCase>(),
+          gh<_i156.DeleteRoomUseCase>(),
+        ));
     gh.lazySingleton<_i267.AuthRepository>(
         () => _i348.AuthRepositoryImpl(gh<_i952.AuthDataSource>()));
+    gh.factory<_i1044.FavoriteCubit>(() => _i1044.FavoriteCubit(
+          gh<_i968.ToggleFavoriteUseCase>(),
+          gh<_i64.GetUserFavoritesUseCase>(),
+          gh<_i14.GetFavoriteCountsUseCase>(),
+        ));
     gh.lazySingleton<_i165.SignOutUseCase>(
         () => _i165.SignOutUseCase(gh<_i156.AuthRepository>()));
     gh.lazySingleton<_i255.UpdateUserProfileUseCase>(

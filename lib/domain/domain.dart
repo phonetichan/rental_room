@@ -2,9 +2,21 @@
 
 export 'enum/role.dart';
 export 'entity/user_entity.dart';
+export 'entity/room_entity.dart';
+export 'entity/room_image_entity.dart';
+export 'entity/favorite_entity.dart';
 export 'repository/auth_repository.dart';
 export 'repository/user_repository.dart';
+export 'repository/room_repository.dart';
+export 'repository/favorite_repository.dart';
 export 'usecase/sign_in_usecase.dart';
 export 'usecase/sign_up_usecase.dart';
 export 'usecase/sign_out_usecase.dart';
 export 'usecase/get_user_usecase.dart';
+export 'usecase/get_rooms_usecase.dart';
+export 'usecase/create_room_usecase.dart';
+export 'usecase/update_room_usecase.dart';
+export 'usecase/delete_room_usecase.dart';
+export 'usecase/toggle_favorite_usecase.dart';
+export 'usecase/get_user_favorites_usecase.dart';
+export 'usecase/get_favorite_counts_usecase.dart';

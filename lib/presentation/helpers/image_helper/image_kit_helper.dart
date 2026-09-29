@@ -16,8 +16,8 @@ class ImageKitHelper {
     required String roomId,
   }) async {
     final List<String> uploadedUrls = [];
-    // Define target folder (e.g., RentalApp/rooms/<roomId>)
-    String rawFolder = "/RentalApp/rooms/$roomId";
+    // Define target folder (e.g., RentalApp/rooms/<roomId>/images)
+    String rawFolder = "/RentalApp/rooms/$roomId/images";
 
     // Sanitize: Ensure leading slash and replace spaces with underscores
     String sanitizedFolder = rawFolder.replaceAll(' ', '_');

@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
+import 'extensions/text_style.dart';
 import 'grid.dart';
 import 'shadow.dart';
 import 'sizes.dart';
 import 'typography.dart';
-import 'extensions/text_style.dart';
 
 enum ScreenType { sm, md, lg }
 
@@ -38,19 +38,19 @@ class AppStyles {
     this.useMaterial3 = true,
     this.locale,
   })  : screenType = screenSize == null
-            ? ScreenType.sm
-            : screenSize.shortestSide > tabletXl
-                ? ScreenType.lg
-                : screenSize.shortestSide > tabletLg
-                    ? ScreenType.md
-                    : ScreenType.sm,
+      ? ScreenType.sm
+      : screenSize.shortestSide > tabletXl
+      ? ScreenType.lg
+      : screenSize.shortestSide > tabletLg
+      ? ScreenType.md
+      : ScreenType.sm,
         scale = screenSize == null //screen sized is undetermined
             ? 1
             : screenSize.shortestSide > tabletXl //screen size is xl
-                ? 1.2
-                : screenSize.shortestSide > tabletLg //screen size is lg
-                    ? 1.1
-                    : 1; // screen size is small
+            ? 1.2
+            : screenSize.shortestSide > tabletLg //screen size is lg
+            ? 1.1
+            : 1; // screen size is small
 
   late final typography = _Typography(locale);
   late final color = _Colors(useMaterial3, typography);
@@ -113,7 +113,7 @@ class AppStyles {
           backgroundColor: color.light.primaryColor,
           foregroundColor: color.dark.colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(insets.xs), // Rounded corners
+            borderRadius: BorderRadius.circular(insets.xs),
           ),
         ),
       ),
@@ -128,6 +128,39 @@ class AppStyles {
           _lightTextTheme.bodyMedium
               ?.copyWith(height: _lightTextTheme.bodySmall?.height)
               .semiBold,
+        ),
+      ),
+      // --- ADDED: Light Mode Input Field Theme ---
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.clrWhite,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: insets.sm,
+          vertical: insets.sm,
+        ),
+        labelStyle: TextStyle(color: AppColors.clrDarkGrey),
+        hintStyle: TextStyle(color: AppColors.clrGrey),
+        prefixIconColor: AppColors.clrDarkGrey,
+        suffixIconColor: AppColors.clrDarkGrey,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.clrSoftGrey),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.clrSoftGrey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.clrPrimary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.clrRed),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.clrRed, width: 2),
         ),
       ));
 
@@ -219,31 +252,18 @@ class _Colors {
 
   _Colors(this._useMaterial3, this._typography);
 
-  /// Access color constants via AppStyles: e.g., context.styles.color.clrPrimary
   Color get clrSuccess => AppColors.clrSuccess;
-
   Color get clrPrimary => AppColors.clrPrimary;
-
   Color get clrSecondary => AppColors.clrSecondary;
-
   Color get clrWhite => AppColors.clrWhite;
-
   Color get clrBlack => AppColors.clrBlack;
-
   Color get clrBlue => AppColors.clrBlue;
-
   Color get clrRed => AppColors.clrRed;
-
   Color get clrSofterGrey => AppColors.clrSofterGrey;
-
   Color get clrSoftGrey => AppColors.clrSoftGrey;
-
   Color get clrGrey => AppColors.clrGrey;
-
   Color get clrDarkGrey => AppColors.clrDarkGrey;
-
   Color get clrDarkerGrey => AppColors.clrDarkerGrey;
-
   Color get background => AppColors.background;
 
   static const _lightColorScheme = ColorScheme(
@@ -299,28 +319,13 @@ class _Insets {
 
   final double _scale;
 
-  /// equalivalent to 4px if scale is 1.0
   late final double xxs = AppSizes.size50 * _scale;
-
-  /// equalivalent to 8px if scale is 1.0
   late final double xs = AppSizes.size100 * _scale;
-
-  /// equalivalent to 16px if scale is 1.0
   late final double sm = AppSizes.size200 * _scale;
-
-  /// equalivalent to 24px if scale is 1.0
   late final double md = AppSizes.size300 * _scale;
-
-  /// equalivalent to 32px if scale is 1.0
   late final double lg = AppSizes.size400 * _scale;
-
-  /// equalivalent to 48px if scale is 1.0
   late final double xl = AppSizes.size600 * _scale;
-
-  /// equalivalent to 56px if scale is 1.0
   late final double xxl = AppSizes.size700 * _scale;
-
-  /// equalivalent to 72px if scale is 1.0
   late final double offset = AppSizes.size900 * _scale;
 }
 
@@ -357,15 +362,10 @@ class _GridSystem {
   static const double _maxTabletWidth = 1280;
 
   int get columns => _grid.columns;
-
   double get columnsGutter => _grid.columnsGutter;
-
   double get columnsMargin => _grid.columnsMargin;
-
   double get rowPx => _grid.rowPx;
-
   double get rowsGutter => _grid.rowsGutter;
-
   double get maxWidth => _grid.maxWidth;
 
   DesignGridSystem get _grid {
