@@ -1,6 +1,7 @@
 export 'model/user_model.dart';
 export 'model/room_model.dart';
 export 'model/favorite_model.dart';
+export 'model/contract_model.dart';
 export 'datasource/remote/auth_data_source.dart';
 export 'datasource/remote/user_data_source.dart';
 export 'datasource/remote/room_data_source.dart';
@@ -10,4 +11,8 @@ export 'repository/auth_repository_impl.dart';
 export 'repository/user_repository_impl.dart';
 export 'repository/room_repository_impl.dart';
 export 'repository/favorite_repository_impl.dart';
+export 'repository/contract_repository_impl.dart';
+export 'model/room_view_model.dart';
+export 'datasource/remote/room_view_data_source.dart';
+export 'repository/room_view_impl.dart';
 export 'services/snack_shower.dart';

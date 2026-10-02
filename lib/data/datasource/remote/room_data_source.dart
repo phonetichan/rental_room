@@ -18,15 +18,18 @@ class RoomRemoteDataSource {
     if (ownerId != null && ownerId.isNotEmpty) {
       query = query.where('ownerId', isEqualTo: ownerId);
     }
-    if (roomTypeId != null && roomTypeId.isNotEmpty) {
-      query = query.where('roomTypeId', isEqualTo: roomTypeId);
-    }
     if (status != null && status.isNotEmpty) {
       query = query.where('status', isEqualTo: status);
     }
 
     final querySnapshot = await query.get();
-    return querySnapshot.docs.map((doc) => RoomModel.fromFirestore(doc)).toList();
+    var rooms = querySnapshot.docs.map((doc) => RoomModel.fromFirestore(doc)).toList();
+
+    if (roomTypeId != null && roomTypeId.isNotEmpty) {
+      rooms = rooms.where((r) => r.roomTypeId == roomTypeId).toList();
+    }
+
+    return rooms;
   }
 
   Future<RoomModel?> getRoomById(String roomId) async {

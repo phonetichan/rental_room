@@ -26,7 +26,11 @@ class RoomCubit extends Cubit<RoomState> {
     String? roomTypeId,
     String? status,
   }) async {
-    emit(const RoomState.loading());
+    // Only emit loading if we don't already have rooms loaded (prevents UI data from disappearing on refresh)
+    if (state is! RoomLoaded) {
+      emit(const RoomState.loading());
+    }
+
     final res = await _getRoomsUseCase(
       GetRoomsParams(ownerId: ownerId, roomTypeId: roomTypeId, status: status),
     );
@@ -36,7 +40,9 @@ class RoomCubit extends Cubit<RoomState> {
         emit(RoomState.loaded(rooms));
       })
       ..onError((failure) {
-        emit(RoomState.failure(failure.reason));
+        if (state is! RoomLoaded) {
+          emit(RoomState.failure(failure.reason));
+        }
       });
   }
 

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../di/di.dart';
+import '../../domain/domain.dart';
 import '../blocs/blocs.dart';
 import '../navigation/navigation_key_provider.dart';
 
-import 'booking/booking_view.dart';
+import 'booking/booking_list_view.dart';
 import 'home/dashboard.dart';
 import 'post/post_view.dart';
 import 'profile/profile_view.dart';
@@ -77,7 +78,10 @@ class _IndexPageState extends State<IndexPage> {
         final List<Widget> pages = [
           homeView,
           PostView(user: user),
-          BookingView(user: user),
+          BookingView(
+            user: user,
+            isCurrentTab: _currentIndex == 2,
+          ),
           ProfileView(user: user),
         ];
 
@@ -110,9 +114,19 @@ class _IndexPageState extends State<IndexPage> {
             BlocProvider(
               create: (context) => inject<FavoriteCubit>()..loadFavorites(user.id),
             ),
+            BlocProvider(
+              create: (context) {
+                final isOwner = user.role == UserRole.owner;
+                return inject<BookingCubit>()
+                  ..fetchBookings(
+                    user.id,
+                    userId: isOwner ? null : user.id,
+                    ownerId: isOwner ? user.id : null,
+                  );
+              },
+            ),
           ],
           child: Scaffold(
-            // ✅ Change top: false to top: true (or remove top parameter)
             body: SafeArea(
               top: true,
               child: IndexedStack(
@@ -127,11 +141,11 @@ class _IndexPageState extends State<IndexPage> {
               destinations: navItems
                   .map(
                     (item) => NavigationDestination(
-                  label: item.label,
-                  icon: Icon(item.icon),
-                  selectedIcon: Icon(item.selectedIcon),
-                ),
-              )
+                      label: item.label,
+                      icon: Icon(item.icon),
+                      selectedIcon: Icon(item.selectedIcon),
+                    ),
+                  )
                   .toList(),
             ),
           ),

@@ -22,8 +22,8 @@ class ProfileHeaderCard extends StatelessWidget {
     final isOwner = currentUser.role == UserRole.owner;
 
     return Container(
+      padding: const EdgeInsets.all(16.0),
       width: double.infinity,
-      padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: isDarkMode ? Colors.grey.shade900 : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(24),

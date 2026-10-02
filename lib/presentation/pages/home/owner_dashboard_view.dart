@@ -12,7 +12,6 @@ class OwnerDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -52,17 +51,14 @@ class OwnerDashboardView extends StatelessWidget {
     required IconData icon,
   }) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 12),
-            Text(value, style: Theme.of(context).textTheme.headlineMedium),
-            Text(title, style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(height: 12),
+          Text(value, style: Theme.of(context).textTheme.headlineMedium),
+          Text(title, style: Theme.of(context).textTheme.bodyMedium),
+        ],
       ),
     );
   }

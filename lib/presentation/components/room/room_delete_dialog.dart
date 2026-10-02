@@ -15,8 +15,8 @@ void showRoomDeleteDialog({
     builder: (dialogContext) => AlertDialog(
       title: const Text('Delete Room'),
       content: const Text(
-        'Are you sure you want to delete this room?\nThis action is permanent and cannot be undone.',
-        maxLines: 2,
+        'Are you sure you want to delete this room?This action is permanent and cannot be undone.',
+        maxLines: 4,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(fontSize: 14),
       ),

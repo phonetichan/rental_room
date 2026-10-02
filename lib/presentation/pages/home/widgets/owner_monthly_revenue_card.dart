@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../domain/domain.dart';
 import '../../../presentation.dart';
 
 class OwnerMonthlyRevenueCard extends StatefulWidget {
-  const OwnerMonthlyRevenueCard({super.key});
+  final UserEntity user;
+  const OwnerMonthlyRevenueCard({super.key, required this.user});
 
   @override
   State<OwnerMonthlyRevenueCard> createState() =>
@@ -52,146 +55,169 @@ class _OwnerMonthlyRevenueCardState extends State<OwnerMonthlyRevenueCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final incomeValues = _monthlyIncomeData[_selectedMonth] ?? [0, 0, 0, 0];
-    final double totalIncome = incomeValues.reduce((a, b) => a + b);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF2A2A2A) : AppColors.clrWhite;
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.clrSoftGrey;
+    final dropdownBgColor = isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.clrSofterGrey;
+    final textColor = isDark ? Colors.white : AppColors.clrBlack;
+    final subtitleColor = isDark ? Colors.white70 : AppColors.clrDarkGrey;
 
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      color: AppColors.clrWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.clrSoftGrey),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<BookingCubit, BookingState>(
+      builder: (context, bookingState) {
+        final List<BookingEntity> confirmedBookings = bookingState.maybeWhen(
+          loaded: (bookings) => bookings
+              .where((b) => b.ownerId == widget.user.id && b.status.toLowerCase() == 'confirmed')
+              .toList(),
+          orElse: () => [],
+        );
+
+        final double realTotal = confirmedBookings.fold(0.0, (sum, b) => sum + (b.roomPrice ?? 0.0));
+        final incomeValues = _monthlyIncomeData[_selectedMonth] ?? [0, 0, 0, 0];
+        final double totalIncome = realTotal > 0 ? realTotal : incomeValues.reduce((a, b) => a + b);
+        final displayValues = realTotal > 0
+            ? [totalIncome * 0.25, totalIncome * 0.25, totalIncome * 0.25, totalIncome * 0.25]
+            : incomeValues;
+
+        return Card(
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          color: cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: borderColor),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Monthly Revenue',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.clrBlack,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Monthly Revenue',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: textColor,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Total: \$${totalIncome.toStringAsFixed(0)}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.clrPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Total: \$${totalIncome.toStringAsFixed(0)}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.clrPrimary,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: dropdownBgColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: borderColor),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: _selectedMonth,
+                          dropdownColor: cardColor,
+                          icon: Icon(
+                            Icons.arrow_drop_down_rounded,
+                            color: subtitleColor,
+                          ),
+                          isDense: true,
+                          items: _months.map((String month) {
+                            return DropdownMenuItem<String>(
+                              value: month,
+                              child: Text(
+                                month,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: textColor,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                _selectedMonth = newValue;
+                              });
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.clrSofterGrey,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.clrSoftGrey),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedMonth,
-                      icon: const Icon(
-                        Icons.arrow_drop_down_rounded,
-                        color: AppColors.clrDarkGrey,
-                      ),
-                      isDense: true,
-                      items: _months.map((String month) {
-                        return DropdownMenuItem<String>(
-                          value: month,
-                          child: Text(
-                            month,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.clrDarkerGrey,
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 180,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: List.generate(displayValues.length, (index) {
+                      final value = displayValues[index];
+                      final maxVal = displayValues.reduce(
+                        (a, b) => a > b ? a : b,
+                      );
+                      final double heightPercentage =
+                          maxVal > 0 ? (value / maxVal) : 0;
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            '\$${value.toInt()}',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: subtitleColor,
                             ),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            _selectedMonth = newValue;
-                          });
-                        }
-                      },
-                    ),
+                          const SizedBox(height: 6),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                            height: 120 * heightPercentage,
+                            width: 28,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.clrPrimary,
+                                  AppColors.clrSecondary,
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'week ${index + 1}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: textColor,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 180,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(incomeValues.length, (index) {
-                  final value = incomeValues[index];
-                  final maxVal = incomeValues.reduce(
-                    (a, b) => a > b ? a : b,
-                  );
-                  final double heightPercentage =
-                      maxVal > 0 ? (value / maxVal) : 0;
-
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        '\$${value.toInt()}',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.clrDarkGrey,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        height: 120 * heightPercentage,
-                        width: 28,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppColors.clrPrimary,
-                              AppColors.clrSecondary,
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'week ${index + 1}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.clrDarkerGrey,
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

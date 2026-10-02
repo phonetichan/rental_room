@@ -47,63 +47,76 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
       builder: (context, state) {
         return BlocBuilder<FavoriteCubit, FavoriteState>(
           builder: (context, favoriteState) {
-            final List<RoomEntity> ownerRooms = state.maybeWhen(
-              loaded: (rooms) =>
-                  rooms.where((r) => r.ownerId == widget.user.id).toList(),
-              orElse: () => [],
-            );
+            return BlocBuilder<BookingCubit, BookingState>(
+              builder: (context, bookingState) {
+                final List<RoomEntity> ownerRooms = state.maybeWhen(
+                  loaded: (rooms) =>
+                      rooms.where((r) => r.ownerId == widget.user.id).toList(),
+                  orElse: () => [],
+                );
 
-            final int totalFavorites = ownerRooms.fold(
-              0,
-              (sum, room) => sum + favoriteState.getFavoriteCount(room.id),
-            );
+                final List<BookingEntity> ownerBookings = bookingState.maybeWhen(
+                  loaded: (bookings) => bookings
+                      .where((b) => b.ownerId == widget.user.id || ownerRooms.any((r) => r.id == b.roomId))
+                      .toList(),
+                  orElse: () => [],
+                );
 
-            final int activePropertiesCount = ownerRooms.length;
-            final int availableRoomsCount = ownerRooms
-                .where((r) => r.status.toLowerCase() == 'available')
-                .toList()
-                .length;
+                final int pendingRequestsCount = ownerBookings
+                    .where((b) => b.status.toLowerCase() == 'pending')
+                    .length;
 
-            final String occupancyRate = activePropertiesCount > 0
-                ? '${(((activePropertiesCount - availableRoomsCount) / activePropertiesCount) * 100).toStringAsFixed(0)}%'
-                : '0%';
+                final int totalFavorites = ownerRooms.fold(
+                  0,
+                  (sum, room) => sum + favoriteState.getFavoriteCount(room.id),
+                );
 
-            final List<MetricItemData> allMetrics = [
-              MetricItemData(
-                type: MetricType.activeProperties,
-                title: 'Favourite Count',
-                value: '$totalFavorites',
-                subtitle:
-                    '$totalFavorites ${totalFavorites == 1 ? 'user favorited your listings' : 'users favorited your listings'}',
-                icon: Icons.favorite_rounded,
-                color: AppColors.clrPrimary,
-              ),
-              MetricItemData(
-                type: MetricType.availableRooms,
-                title: 'Available Rooms',
-                value: '$availableRoomsCount',
-                subtitle:
-                    '${activePropertiesCount - availableRoomsCount} rooms currently occupied',
-                icon: Icons.meeting_room_outlined,
-                color: AppColors.clrSuccess,
-              ),
-              MetricItemData(
-                type: MetricType.pendingRequests,
-                title: 'Pending Requests',
-                value: '2',
-                subtitle: '2 tenant booking inquiries pending',
-                icon: Icons.pending_actions_rounded,
-                color: AppColors.clrSecondary,
-              ),
-              MetricItemData(
-                type: MetricType.occupancy,
-                title: 'Total Occupancy',
-                value: occupancyRate,
-                subtitle: 'Overall occupancy rate across units',
-                icon: Icons.pie_chart_outline_rounded,
-                color: AppColors.clrBlue,
-              ),
-            ];
+                final int activePropertiesCount = ownerRooms.length;
+                final int availableRoomsCount = ownerRooms
+                    .where((r) => r.status.toLowerCase() == 'available')
+                    .toList()
+                    .length;
+
+                final String occupancyRate = activePropertiesCount > 0
+                    ? '${(((activePropertiesCount - availableRoomsCount) / activePropertiesCount) * 100).toStringAsFixed(0)}%'
+                    : '0%';
+
+                final List<MetricItemData> allMetrics = [
+                  MetricItemData(
+                    type: MetricType.activeProperties,
+                    title: 'Saved Count',
+                    value: '$totalFavorites',
+                    subtitle:
+                        '$totalFavorites ${totalFavorites == 1 ? 'user saved your listings' : 'users saved your listings'}',
+                    icon: Icons.bookmark_rounded,
+                    color: AppColors.clrPrimary,
+                  ),
+                  MetricItemData(
+                    type: MetricType.availableRooms,
+                    title: 'Available Rooms',
+                    value: '$availableRoomsCount',
+                    subtitle:
+                        '${activePropertiesCount - availableRoomsCount} rooms currently occupied',
+                    icon: Icons.meeting_room_outlined,
+                    color: AppColors.clrSuccess,
+                  ),
+                  MetricItemData(
+                    type: MetricType.pendingRequests,
+                    title: 'Pending Requests',
+                    value: '$pendingRequestsCount',
+                    subtitle: '$pendingRequestsCount tenant booking inquiries pending',
+                    icon: Icons.pending_actions_rounded,
+                    color: AppColors.clrSecondary,
+                  ),
+                  MetricItemData(
+                    type: MetricType.occupancy,
+                    title: 'Total Occupancy',
+                    value: occupancyRate,
+                    subtitle: 'Overall occupancy rate across units',
+                    icon: Icons.pie_chart_outline_rounded,
+                    color: AppColors.clrBlue,
+                  ),
+                ];
 
             final heroMetric = allMetrics.firstWhere(
               (m) => m.type == _selectedHeroType,
@@ -152,6 +165,8 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
                   }),
                 ),
               ],
+            );
+              },
             );
           },
         );
@@ -264,6 +279,13 @@ class MiniMetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF2A2A2A) : AppColors.clrWhite;
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.clrSoftGrey;
+    final textColor = isDark ? Colors.white : AppColors.clrBlack;
+    final subtitleColor = isDark ? Colors.white70 : AppColors.clrDarkGrey;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -272,9 +294,9 @@ class MiniMetricCard extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.clrWhite,
+            color: cardColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.clrSoftGrey),
+            border: Border.all(color: borderColor),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,10 +307,10 @@ class MiniMetricCard extends StatelessWidget {
                   Icon(icon, size: 16, color: color),
                   Text(
                     value,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
-                      color: AppColors.clrBlack,
+                      color: textColor,
                     ),
                   ),
                 ],
@@ -296,9 +318,9 @@ class MiniMetricCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
-                  color: AppColors.clrDarkGrey,
+                  color: subtitleColor,
                   fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,

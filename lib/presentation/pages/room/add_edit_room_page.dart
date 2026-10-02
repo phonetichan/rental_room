@@ -333,7 +333,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                   ? 'Please enter room name'
                                   : null,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             Row(
                               children: [
                                 Expanded(
@@ -371,7 +371,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                 ),
                                                               ],
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             DropdownButtonFormField<String>(
                               value: _selectedRoomType,
                               decoration: _buildInputDecoration(
@@ -394,7 +394,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                   ? 'Please select room type'
                                   : null,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             TextFormField(
                               controller: _sqftController,
                               enabled: !isSubmitting && !_isEditing,
@@ -444,7 +444,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                               onChanged: (val) =>
                                   setState(() => _maxGuests = val),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             CounterSelectorWidget(
                               label: 'Number of Bedrooms',
                               icon: Icons.king_bed_outlined,
@@ -477,7 +477,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                   : null,
                               keyboardType: TextInputType.streetAddress,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             TextFormField(
                               controller: _latController,
                               enabled: !isSubmitting,
@@ -492,7 +492,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                 prefixIcon: Icons.map_outlined,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             TextFormField(
                               controller: _lngController,
                               enabled: !isSubmitting,
@@ -540,7 +540,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             TextFormField(
                               controller: _descriptionController,
                               enabled: !isSubmitting,

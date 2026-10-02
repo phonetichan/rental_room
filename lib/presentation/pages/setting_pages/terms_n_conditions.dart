@@ -44,7 +44,7 @@ class _TenantTermsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+      padding: const EdgeInsets.all(16.0),
       children: const [
         _TermCard(
           number: '1',
@@ -53,7 +53,7 @@ class _TenantTermsTab extends StatelessWidget {
           'By creating an account and using the Rental Room application, Tenants agree to provide accurate, truthful identification information. Tenants are responsible for keeping their login credentials confidential and must not share their account with unauthorized third parties.',
           badgeColor: Colors.blue,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '2',
           title: 'Rental Agreements & Lease Obligations',
@@ -61,7 +61,7 @@ class _TenantTermsTab extends StatelessWidget {
           'Any rental, lease, or sublease agreement entered into is strictly a legal contract between the Tenant and the Property Owner. The Rental Room platform acts solely as an informational directory and is not liable for monetary disputes, lease breaches, or property damages.',
           badgeColor: Colors.teal,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '3',
           title: 'House Rules, Respect & Quiet Hours',
@@ -69,7 +69,7 @@ class _TenantTermsTab extends StatelessWidget {
           'Tenants agree to strictly follow all house rules specified in the property listing, including noise guidelines, visitor policies, parking regulations, and timely rent payment schedules.',
           badgeColor: Colors.indigo,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '4',
           title: 'Cancellation & Refund Policy',
@@ -89,7 +89,7 @@ class _OwnerTermsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+      padding: const EdgeInsets.all(16.0),
       children: const [
         _TermCard(
           number: '1',
@@ -98,7 +98,7 @@ class _OwnerTermsTab extends StatelessWidget {
           'Property Owners must provide truthful details regarding room pricing, amenities, and property condition. Deliberately misleading information may lead to account suspension.',
           badgeColor: Colors.deepOrange,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '2',
           title: 'Location & Map Coordinates',
@@ -106,7 +106,7 @@ class _OwnerTermsTab extends StatelessWidget {
           'Providing exact latitude and longitude map coordinates is optional. While exact coordinates help tenants locate rooms easily, owners may choose to leave map location fields empty without restriction.',
           badgeColor: Colors.purple,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '3',
           title: 'Property Right & Safety Compliance',
@@ -114,7 +114,7 @@ class _OwnerTermsTab extends StatelessWidget {
           'Property Owners represent that they hold legal rights to sublet or rent out the listed property and comply with all local housing safety codes and regulations.',
           badgeColor: Colors.green,
         ),
-        SizedBox(height: 14),
+        SizedBox(height: 12),
         _TermCard(
           number: '4',
           title: 'Fair Treatment & Non-Discrimination',
@@ -142,72 +142,86 @@ class _TermCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-          width: 1,
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: isDark
+              ? colorScheme.outlineVariant.withValues(alpha: 0.15)
+              : colorScheme.outlineVariant.withValues(alpha: 0.2),
         ),
       ),
-      color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: badgeColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      number,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: badgeColor.shade700,
-                        fontSize: 14,
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: badgeColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        number,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: badgeColor.shade700,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    maxLines: 2,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      height: 1.2,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              content,
-              maxLines: 10,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 13.5,
-                height: 1.5,
-                color: Theme.of(context).textTheme.bodySmall?.color,
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text(
+                content,
+                maxLines: 10,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 13.5,
+                  height: 1.5,
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

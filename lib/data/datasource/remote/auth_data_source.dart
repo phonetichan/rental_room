@@ -274,6 +274,33 @@ class AuthDataSource {
     await _firebaseAuth.signOut();
   }
 
+
+  Future<UserModel?> getUserById(String userId) async {
+    debugPrint('🔍 Fetching owner user data for ownerId: $userId');
+
+    if (userId.trim().isEmpty) {
+      debugPrint('⚠️ Provided userId is empty.');
+      return null;
+    }
+
+    try {
+      final doc = await _usersCollection.doc(userId.trim()).get();
+
+      debugPrint('📄 Doc exists for [$userId]: ${doc.exists}');
+
+      if (!doc.exists || doc.data() == null) {
+        debugPrint('❌ No document or empty data found for userId: $userId');
+        return null;
+      }
+
+      return UserModel.fromFirestore(doc);
+    } catch (e, stackTrace) {
+      debugPrint('🚨 Error fetching owner user data for [$userId]: $e');
+      debugPrint('📜 StackTrace: $stackTrace');
+      return null;
+    }
+  }
+
   IconData getAmenityIcon(String iconName) {
     switch (iconName) {
       case 'wifi':

@@ -36,308 +36,258 @@ class RoomCard extends StatelessWidget {
         final favCount = favoriteState.getFavoriteCount(room.id);
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 20),
+          margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: isDark
                     ? Colors.black.withValues(alpha: 0.2)
-                    : colorScheme.shadow.withValues(alpha: 0.06),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
+                    : colorScheme.shadow.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(
               color: isDark
                   ? colorScheme.outlineVariant.withValues(alpha: 0.15)
-                  : colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  : colorScheme.outlineVariant.withValues(alpha: 0.2),
             ),
           ),
           clipBehavior: Clip.antiAlias,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               onTap: () async {
-                await context.push(RoomDetailScreen.routePath, extra: room);
+                await context.push(
+                  TenantRoomDetailScreen.routePath,
+                  extra: room,
+                );
                 onRoomUpdated?.call();
               },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. IMAGE & OVERLAYS
-                  Stack(
-                    children: [
-                      // Room Image
-                      AspectRatio(
-                        aspectRatio: 16 / 10,
-                        child: room.images.isNotEmpty
-                            ? Image.network(
-                          room.images.first.imageUrl,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              _buildPlaceholderImage(isDark),
-                        )
-                            : _buildPlaceholderImage(isDark),
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Left Thumbnail Image Stack
+                        Stack(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: room.images.isNotEmpty
+                                    ? Image.network(
+                                        room.images.first.imageUrl,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return Container(
+                                            color: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFF1F5F9),
+                                            child: Center(
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator.adaptive(
+                                                  strokeWidth: 2,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) => _buildPlaceholderImage(isDark),
+                                      )
+                                    : _buildPlaceholderImage(isDark),
+                              ),
+                            ),
+                            // Bookmark / Save Action Button on top of Image
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    if (isOwnerOfRoom) {
+                                      inject<ISnackShower>().error(
+                                        context: context,
+                                        message:
+                                            'You cannot save your own room.',
+                                      );
+                                      return;
+                                    }
+                                    context
+                                        .read<FavoriteCubit>()
+                                        .toggleFavorite(
+                                          roomId: room.id,
+                                          userId: currentUser.id,
+                                          ownerId: room.ownerId,
+                                        );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.4,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      isFav
+                                          ? Icons.bookmark_rounded
+                                          : Icons.bookmark_border_rounded,
+                                      color: isFav
+                                          ? const Color(0xFFEF4444)
+                                          : Colors.white,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 12),
 
-                      // Status Badge (Top-Left Pill)
-                      Positioned(
-                        top: 12,
-                        left: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: (room.status == 'available'
-                                ? AppColors.clrPrimary // Emerald green (#12B76A)
-                                : AppColors.clrGrey)
-                                .withValues(alpha: 0.95),
-                            borderRadius: BorderRadius.circular(100),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
+                        // Right Content Column
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Room Title
+                              Text(
+                                room.name.capitalizeWords,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+
+                              // Location Row
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    size: 14,
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.7),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Expanded(
+                                    child: Text(
+                                      room.location.capitalizeWords,
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant
+                                                .withValues(alpha: 0.8),
+                                            fontSize: 12,
+                                          ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+
+                              // Bottom Row: Price & Rating/Badge
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Price
+                                  Text(
+                                    '${room.pricePerMonth.toKsFormat}',
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          color: colorScheme.onSurface,
+                                          fontSize: 14,
+                                        ),
+                                  ),
+
+                                  // Saved Count Pill Badge (Owner only) or Status Badge (Tenant)
+                                  if (isOwnerOfRoom)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isDark
+                                            ? AppColors.clrWhite.withValues(alpha: 0.08)
+                                            : AppColors.clrSoftGrey.withValues(alpha: 0.5),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.bookmark_rounded,
+                                            size: 14,
+                                            color: AppColors.clrDanger,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '$favCount Saved',
+                                            style: TextStyle(
+                                              color: isDark ? AppColors.clrWhite : AppColors.clrBlack,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: (room.status == 'available'
+                                            ? AppColors.clrSuccess
+                                            : AppColors.clrGrey)
+                                            .withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        room.status.toUpperCase(),
+                                        style: TextStyle(
+                                          color: room.status == 'available'
+                                              ? AppColors.clrSuccess
+                                              : AppColors.clrDarkGrey,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),
-                          child: Text(
-                            room.status.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.6,
-                            ),
-                          ),
                         ),
-                      ),
-
-                      // Favorite Glassmorphic Button (Top-Right)
-                      Positioned(
-                        top: 12,
-                        right: 12,
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(30),
-                            onTap: () {
-                              if (isOwnerOfRoom) {
-                                inject<ISnackShower>().error(
-                                  context: context,
-                                  message: 'You cannot favorite your own room.',
-                                );
-                                return;
-                              }
-                              context.read<FavoriteCubit>().toggleFavorite(
-                                roomId: room.id,
-                                userId: currentUser.id,
-                                ownerId: room.ownerId,
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.35),
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    isFav
-                                        ? Icons.favorite_rounded
-                                        : Icons.favorite_border_rounded,
-                                    color: isFav
-                                        ? const Color(0xFFEF4444)
-                                        : Colors.white,
-                                    size: 18,
-                                  ),
-                                  if (favCount > 0) ...[
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '$favCount',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // 2. CARD CONTENT
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Price & Title Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                room.name,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: room.pricePerMonth.toKsFormat,
-                                    style:
-                                    theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: colorScheme.primary,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 6),
-
-                        // Location Row
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              size: 15,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                room.location,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                  fontSize: 13,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 12),
-                        Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Metric Icons Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildSpecItem(
-                              context,
-                              icon: Icons.bed_outlined,
-                              label: '${room.numberBedrooms} Beds',
-                            ),
-                            _buildDotDivider(colorScheme),
-                            _buildSpecItem(
-                              context,
-                              icon: Icons.person_outline,
-                              label: '${room.maxGuests} Guests',
-                            ),
-                            _buildDotDivider(colorScheme),
-                            _buildSpecItem(
-                              context,
-                              icon: Icons.square_foot_outlined,
-                              label:
-                              '${room.roomSqft.toStringAsFixed(0)} sqft',
-                            ),
-                            _buildDotDivider(colorScheme),
-                            _buildSpecItem(
-                              context,
-                              icon: Icons.layers_outlined,
-                              label: 'Fl. ${room.floor}',
-                            ),
-                          ],
-                        ),
-
-                        // --- Added Description Section ---
-                        if (room.description != null &&
-                            room.description!.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            room.description!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                              height: 1.4, // Improved readability
-                            ),
-                            maxLines: 2, // Limit text to keep card compact
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                        // ---------------------------------
-
-                        // 3. OWNER ACTIONS SECTION
-                        if (isOwnerOfRoom && showOwnerActions) ...[
-                          const SizedBox(height: 14),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.favorite_rounded,
-                                  size: 16,
-                                  color: Color(0xFFEF4444),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '$favCount ${favCount == 1 ? 'User Favorited' : 'Users Favorited'}',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -346,49 +296,17 @@ class RoomCard extends StatelessWidget {
     );
   }
 
-  // --- Helper Widgets ---
-
   Widget _buildPlaceholderImage(bool isDark) {
     return Container(
       width: double.infinity,
+      height: double.infinity,
       color: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFF1F5F9),
       child: Center(
         child: Icon(
           Icons.apartment_rounded,
-          size: 48,
+          size: 28,
           color: isDark ? Colors.grey[700] : Colors.grey[400],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSpecItem(BuildContext context,
-      {required IconData icon, required String label}) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 15, color: colorScheme.onSurfaceVariant),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDotDivider(ColorScheme colorScheme) {
-    return Container(
-      width: 3,
-      height: 3,
-      decoration: BoxDecoration(
-        color: colorScheme.outlineVariant,
-        shape: BoxShape.circle,
       ),
     );
   }

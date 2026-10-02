@@ -17,7 +17,9 @@ class UserGuidancePage extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
+          elevation: 0,
           bottom: const TabBar(
+            indicatorWeight: 3,
             tabs: [
               Tab(icon: Icon(Icons.explore_outlined), text: 'Getting Started'),
               Tab(icon: Icon(Icons.map_outlined), text: 'Location Guide'),
@@ -42,7 +44,7 @@ class _GettingStartedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16.0),
       children: const [
         _GuideCard(
           icon: Icons.search_rounded,
@@ -51,7 +53,7 @@ class _GettingStartedTab extends StatelessWidget {
           description:
           'Browse available rooms by location, price, and amenities. Tap on any room listing to view photos, owner contact info, and detailed terms.',
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         _GuideCard(
           icon: Icons.add_home_work_rounded,
           iconColor: Colors.blue,
@@ -59,7 +61,7 @@ class _GettingStartedTab extends StatelessWidget {
           description:
           'Property Owners can publish new listings by filling in room details, monthly rent, location, and uploading room photos from the "Post" tab.',
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         _GuideCard(
           icon: Icons.bookmark_added_rounded,
           iconColor: Colors.indigo,
@@ -67,7 +69,7 @@ class _GettingStartedTab extends StatelessWidget {
           description:
           'Track your active room rentals, pending applications, and past stays easily from the "Booking" tab on your main dashboard.',
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 12),
         _GuideCard(
           icon: Icons.security_rounded,
           iconColor: Colors.purple,
@@ -85,27 +87,36 @@ class _LocationGuideTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16.0),
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.amber.withValues(alpha: 0.15),
+            color: Colors.amber.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.amber.withValues(alpha: 0.3),
+            ),
           ),
           child: const Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.amber, size: 22),
-              SizedBox(width: 10),
+              Icon(Icons.info_outline_rounded, color: Colors.amber, size: 24),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Adding location coordinates is optional. You can leave Lat/Lng blank.',
                   maxLines: 3,
                   softWrap: true,
                   overflow: TextOverflow.visible,
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -116,40 +127,48 @@ class _LocationGuideTab extends StatelessWidget {
           'Using Mobile (Google Maps app):',
           maxLines: 2,
           softWrap: true,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         const _GuideStep(
           number: '1',
-          text: 'Open Google Maps and press & hold on your room location to drop a Red Pin.',
+          text:
+          'Open Google Maps and press & hold on your room location to drop a Red Pin.',
         ),
         const _GuideStep(
           number: '2',
-          text: 'Look at the top search bar for two numbers (e.g., 16.8409, 96.1735).',
+          text:
+          'Look at the top search bar for two numbers (e.g., 16.8409, 96.1735).',
         ),
         const _GuideStep(
           number: '3',
           text: 'First number is Latitude, second is Longitude.',
         ),
-        const Divider(height: 32),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Divider(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+          ),
+        ),
         Text(
           'Using Web Browser:',
           maxLines: 2,
           softWrap: true,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         const _GuideStep(
           number: '1',
           text: 'Right-click your building location on maps.google.com.',
         ),
         const _GuideStep(
           number: '2',
-          text: 'Click the coordinates at the top of the menu to copy them into the app.',
+          text:
+          'Click the coordinates at the top of the menu to copy them into the app.',
         ),
       ],
     );
@@ -158,7 +177,7 @@ class _LocationGuideTab extends StatelessWidget {
 
 class _GuideCard extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
+  final MaterialColor iconColor;
   final String title;
   final String description;
 
@@ -171,53 +190,79 @@ class _GuideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: isDark
+              ? colorScheme.outlineVariant.withValues(alpha: 0.15)
+              : colorScheme.outlineVariant.withValues(alpha: 0.2),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: iconColor.shade700, size: 24),
               ),
-              child: Icon(icon, color: iconColor, size: 26),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 2,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    description,
-                    maxLines: 4,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.4,
-                      color: Theme.of(context).textTheme.bodySmall?.color,
+                    const SizedBox(height: 6),
+                    Text(
+                      description,
+                      maxLines: 6,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.5,
+                        height: 1.45,
+                        color:
+                        colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -232,31 +277,44 @@ class _GuideStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 11,
-            backgroundColor: Theme.of(context).primaryColor,
-            child: Text(
-              number,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: theme.primaryColor,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                number,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
               maxLines: 4,
               softWrap: true,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 14, height: 1.4),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: 14,
+                height: 1.4,
+                color: colorScheme.onSurface,
+              ),
             ),
           ),
         ],
@@ -279,10 +337,14 @@ class LocationGuideDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
-      content: SizedBox(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      content: const SizedBox(
         width: double.maxFinite,
-        child: const SingleChildScrollView(
-          child: _LocationGuideTab(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: _LocationGuideTab(),
+          ),
         ),
       ),
       actions: [

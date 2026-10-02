@@ -7,7 +7,7 @@ class DashboardHeader extends StatelessWidget {
   final VoidCallback? onAddPressed;
   final VoidCallback? onNotificationPressed;
   final VoidCallback? onProfilePressed;
-  final int notificationCount;
+  // final int notificationCount;
 
   const DashboardHeader({
     super.key,
@@ -16,139 +16,208 @@ class DashboardHeader extends StatelessWidget {
     this.onAddPressed,
     this.onNotificationPressed,
     this.onProfilePressed,
-    this.notificationCount = 3,
+    // this.notificationCount = 3,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final primaryColor = theme.primaryColor;
-    final textTheme = theme.textTheme;
-
-    // Theme-adaptive color palette
-    final textColor = isDark ? Colors.white : theme.colorScheme.onSurface;
-    final subtitleColor = isDark
-        ? Colors.white60
-        : textTheme.bodySmall?.color ?? Colors.grey.shade600;
-    final iconBgColor = isDark
-        ? Colors.white.withOpacity(0.08)
-        : primaryColor.withOpacity(0.08);
-    final iconBorderColor = isDark
-        ? Colors.white.withOpacity(0.12)
-        : primaryColor.withOpacity(0.15);
-    final iconColor = isDark ? Colors.white : primaryColor;
 
     final hasImage = user.image != null && user.image!.trim().isNotEmpty;
     final displayName = user.name.isNotEmpty ? user.name : 'User';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          // USER PROFILE AVATAR
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: primaryColor.withOpacity(0.15),
-            backgroundImage: hasImage ? NetworkImage(user.image!) : null,
-            child: !hasImage
-                ? Text(
-              displayName[0].toUpperCase(),
-              style: TextStyle(
-                color: primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            )
-                : null,
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark
+              ? colorScheme.outlineVariant.withValues(alpha: 0.15)
+              : colorScheme.outlineVariant.withValues(alpha: 0.3),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.25)
+                : colorScheme.shadow.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
-          const SizedBox(width: 12),
-
-          // NAME & DROPDOWN / EMAIL
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        displayName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.titleMedium?.copyWith(
-                          color: textColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  user.email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: subtitleColor,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // ACTION BUTTONS
-          Row(
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
             children: [
-              // NOTIFICATION BELL WITH BADGE
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _HeaderIconButton(
-                    icon: Icons.notifications_rounded,
-                    backgroundColor: iconBgColor,
-                    borderColor: iconBorderColor,
-                    iconColor: iconColor,
-                    onPressed: onNotificationPressed,
-                  ),
-                  if (notificationCount > 0)
-                    Positioned(
-                      right: 2,
-                      top: 2,
-                      child: Container(
-                        padding: const EdgeInsets.all(3),
+              // USER PROFILE AVATAR & INFO (TAPABLE AREA)
+              Expanded(
+                child: InkWell(
+                  onTap: onProfilePressed,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Row(
+                    children: [
+                      // AVATAR WITH OUTER BORDER
+                      Container(
+                        width: 48,
+                        height: 48,
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.error,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: theme.scaffoldBackgroundColor,
-                            width: 1.5,
+                            color: colorScheme.primary.withValues(alpha: 0.2),
+                            width: 2,
                           ),
                         ),
-                        constraints: const BoxConstraints(
-                          minWidth: 16,
-                          minHeight: 16,
-                        ),
-                        child: Text(
-                          '$notificationCount',
-                          style: TextStyle(
-                            color: theme.colorScheme.onError,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
+                        child: CircleAvatar(
+                          radius: 22,
+                          backgroundColor:
+                          colorScheme.primary.withValues(alpha: 0.1),
+                          backgroundImage:
+                          hasImage ? NetworkImage(user.image!) : null,
+                          child: !hasImage
+                              ? Text(
+                            displayName[0].toUpperCase(),
+                            style: TextStyle(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          )
+                              : null,
                         ),
                       ),
+                      const SizedBox(width: 12),
+
+                      // NAME, ROLE BADGE & EMAIL
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    displayName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+
+                                // ROLE BADGE (OWNER / TENANT)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isOwner
+                                        ? colorScheme.primary.withValues(alpha: 0.12)
+                                        : colorScheme.secondary.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    isOwner ? 'Owner' : 'Tenant',
+                                    style: TextStyle(
+                                      color: isOwner
+                                          ? colorScheme.primary
+                                          : colorScheme.secondary,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              user.email,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant
+                                    .withValues(alpha: 0.8),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // ACTION BUTTONS (ADD PROPERTY + NOTIFICATIONS)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isOwner && onAddPressed != null) ...[
+                    _HeaderIconButton(
+                      icon: Icons.add_rounded,
+                      onPressed: onAddPressed,
                     ),
+                    const SizedBox(width: 8),
+                  ],
+
+                  // // NOTIFICATION BELL WITH BADGE
+                  // Stack(
+                  //   clipBehavior: Clip.none,
+                  //   children: [
+                  //     _HeaderIconButton(
+                  //       icon: Icons.notifications_none_rounded,
+                  //       onPressed: onNotificationPressed,
+                  //     ),
+                  //     if (notificationCount > 0)
+                  //       Positioned(
+                  //         right: -2,
+                  //         top: -2,
+                  //         child: Container(
+                  //           padding: const EdgeInsets.all(4),
+                  //           decoration: BoxDecoration(
+                  //             color: colorScheme.error,
+                  //             shape: BoxShape.circle,
+                  //             border: Border.all(
+                  //               color: colorScheme.surface,
+                  //               width: 2,
+                  //             ),
+                  //           ),
+                  //           constraints: const BoxConstraints(
+                  //             minWidth: 18,
+                  //             minHeight: 18,
+                  //           ),
+                  //           child: Center(
+                  //             child: Text(
+                  //               notificationCount > 99
+                  //                   ? '99+'
+                  //                   : '$notificationCount',
+                  //               style: TextStyle(
+                  //                 color: colorScheme.onError,
+                  //                 fontSize: 9,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 height: 1,
+                  //               ),
+                  //               textAlign: TextAlign.center,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //   ],
+                  // ),
                 ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -156,39 +225,43 @@ class DashboardHeader extends StatelessWidget {
 
 class _HeaderIconButton extends StatelessWidget {
   final IconData icon;
-  final Color backgroundColor;
-  final Color borderColor;
-  final Color iconColor;
   final VoidCallback? onPressed;
 
   const _HeaderIconButton({
     required this.icon,
-    required this.backgroundColor,
-    required this.borderColor,
-    required this.iconColor,
     this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
-      width: 40,
-      height: 40,
+      width: 42,
+      height: 42,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: isDark
+            ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         shape: BoxShape.circle,
         border: Border.all(
-          color: borderColor,
-          width: 1,
+          color: colorScheme.outlineVariant.withValues(alpha: 0.2),
         ),
       ),
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        icon: Icon(
-          icon,
-          color: iconColor,
-          size: 20,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(21),
+          onTap: onPressed,
+          child: Center(
+            child: Icon(
+              icon,
+              color: colorScheme.onSurfaceVariant,
+              size: 20,
+            ),
+          ),
         ),
       ),
     );

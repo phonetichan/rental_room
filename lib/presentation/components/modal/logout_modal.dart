@@ -32,6 +32,9 @@ class LogoutModal extends StatelessWidget {
       ),
       content: const Text(
         'Are you sure you want to log out of your account?',
+        maxLines: 4,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: 14),
       ),
       actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       actions: [

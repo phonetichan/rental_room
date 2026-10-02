@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../domain/domain.dart';
 import 'widgets/dashboard_header.dart';
 import 'widgets/owner_dashboard_content.dart';
-import 'widgets/tenant_dashboard_content.dart';
 
 class DashboardView extends StatelessWidget {
   final UserEntity user;
@@ -19,11 +18,10 @@ class DashboardView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DashboardHeader(user: user, isOwner: isOwner),
-          const SizedBox(height: 20),
-          if (isOwner)
-            OwnerDashboardContent(user: user)
-          else
-            TenantDashboardContent(user: user),
+          if (isOwner) ...[
+            const SizedBox(height: 20),
+            OwnerDashboardContent(user: user),
+          ],
         ],
       ),
     );

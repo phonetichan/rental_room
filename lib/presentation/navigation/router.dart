@@ -1,11 +1,14 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rental_room/domain/domain.dart';
+
 import '../../data/data.dart';
 import '../../di/di.dart';
+import '../pages/booking/booking_list_view.dart';
 import '../pages/index.dart';
 import '../presentation.dart';
 
@@ -13,7 +16,10 @@ class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<AuthenticationState> _subscription;
   Type? _lastStateRuntimeType;
 
-  GoRouterRefreshStream(Stream<AuthenticationState> stream, {VoidCallback? onUnauthenticated}) {
+  GoRouterRefreshStream(
+    Stream<AuthenticationState> stream, {
+    VoidCallback? onUnauthenticated,
+  }) {
     _subscription = stream.asBroadcastStream().listen((state) {
       final isAuth = state is AuthenticationAuthenticated;
       final isUnauth = state is AuthenticationUnauthenticated;
@@ -58,13 +64,15 @@ class NavigationRouter {
       _authCubit.stream,
       onUnauthenticated: () {
         final context = _navigationKeyProvider.globalKey.currentContext;
-        if (context != null && GoRouter.of(context).routerDelegate.currentConfiguration.uri.path != LoginPage.routePath) {
+        if (context != null &&
+            GoRouter.of(context).routerDelegate.currentConfiguration.uri.path !=
+                LoginPage.routePath) {
           context.go(LoginPage.routePath);
         }
       },
     ),
     redirect: (context, state) {
-      // Use matchedLocation to get the exact active route path (robust for shell routes and tabs like owner/tenant profiles)
+      // Use matchedLocation to get the exact active route path
       final currentRoute = state.matchedLocation;
 
       // 1. Check onboarding status for new installs
@@ -90,7 +98,7 @@ class NavigationRouter {
           return IndexPage.routePath;
         }
       } else {
-        // 4. Redirect unauthenticated users (e.g. after sign out or password update) to LoginPage if on protected routes
+        // 4. Redirect unauthenticated users to LoginPage if on protected routes
         if (currentRoute != LandingPage.routePath &&
             currentRoute != TermsAndConditionsPage.routePath &&
             currentRoute != UserGuidancePage.routePath &&
@@ -168,19 +176,96 @@ class NavigationRouter {
         },
       ),
       GoRoute(
-        path: RoomDetailScreen.routePath,
+        path: TenantRoomDetailScreen.routePath,
         builder: (context, state) {
           final room = state.extra as RoomEntity;
+          final currentUser = context.read<AuthenticationCubit>().user;
+          final isOwner = currentUser != null && currentUser.id == room.ownerId;
+
           return MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => inject<RoomCubit>()),
               BlocProvider(create: (context) => inject<FavoriteCubit>()),
+              BlocProvider(
+                create: (context) {
+                  final cubit = inject<BookingCubit>();
+                  if (currentUser != null) {
+                    cubit.fetchBookings(currentUser.id);
+                  }
+                  return cubit;
+                },
+              ),
             ],
-            child: RoomDetailScreen(room: room),
+            child: isOwner
+                ? OwnerRoomDetailScreen(room: room)
+                : TenantRoomDetailScreen(room: room),
+          );
+        },
+      ),
+      // Booking routes
+      GoRoute(
+        path: BookingView.routePath,
+        builder: (context, state) {
+          final currentUser = context.read<AuthenticationCubit>().user!;
+
+          final isOwner = currentUser.role == UserRole.owner;
+
+          return BlocProvider(
+            create: (context) => inject<BookingCubit>()
+              ..fetchBookings(
+                currentUser.id,
+                userId: isOwner ? null : currentUser.id,
+                ownerId: isOwner ? currentUser.id : null,
+              ),
+            child: BookingView(user: currentUser),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/owner-booking-detail',
+        name: 'owner-booking-detail',
+        builder: (context, state) {
+          // 1. Extract the booking entity passed via extra
+          final booking = state.extra as BookingEntity;
+
+          // 2. Obtain current authenticated user from AuthenticationCubit
+          final currentUser = context.read<AuthenticationCubit>().user!;
+
+          // 3. Provide BookingCubit to the detail view
+          return BlocProvider(
+            create: (context) => inject<BookingCubit>(),
+            child: OwnerBookingDetailView(
+              booking: booking,
+              currentUser: currentUser,
+            ),
           );
         },
       ),
 
+      GoRoute(
+        path: NewBookingView.routePath,
+        name: 'new-booking',
+        builder: (context, state) {
+          final booking = state.extra as BookingEntity;
+          final currentUser = context.read<AuthenticationCubit>().user!;
+
+          return BlocProvider(
+            create: (context) => inject<BookingCubit>(),
+            child: NewBookingView(
+              booking: booking,
+              currentUser: currentUser,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: ContractDetailPage.routePath,
+        name: ContractDetailPage.routeName,
+        builder: (context, state) {
+          final bookingId = state.extra as String;
+          return ContractDetailPage(bookingId: bookingId);
+        },
+      ),
       // Main Entry Point
       GoRoute(
         onExit: _handleDoubleTapToExit,

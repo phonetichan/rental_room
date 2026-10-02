@@ -48,7 +48,7 @@ class PostRoomsListWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: rooms.length,
         itemBuilder: (context, index) {
           final room = rooms[index];

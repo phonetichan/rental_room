@@ -24,7 +24,6 @@ class PostMyRoomsTabWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView(
-        padding: const EdgeInsets.all(16),
         children: [
           // BANNER & ADD ROOM ACTION
           Card(

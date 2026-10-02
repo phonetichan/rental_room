@@ -12,7 +12,7 @@ class ProfileSignOutButton extends StatelessWidget {
       height: 52,
       child: FilledButton.icon(
         style: FilledButton.styleFrom(
-          backgroundColor: Colors.red.shade600,
+          backgroundColor: Colors.deepOrange,
           foregroundColor: Colors.white,
           overlayColor: Colors.red.shade800,
           elevation: 0,
