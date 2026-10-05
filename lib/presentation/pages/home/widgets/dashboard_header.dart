@@ -4,19 +4,15 @@ import '../../../../domain/domain.dart';
 class DashboardHeader extends StatelessWidget {
   final UserEntity user;
   final bool isOwner;
-  final VoidCallback? onAddPressed;
-  final VoidCallback? onNotificationPressed;
   final VoidCallback? onProfilePressed;
-  // final int notificationCount;
+  final int notificationCount;
 
   const DashboardHeader({
     super.key,
     required this.user,
     required this.isOwner,
-    this.onAddPressed,
-    this.onNotificationPressed,
     this.onProfilePressed,
-    // this.notificationCount = 3,
+    this.notificationCount = 0,
   });
 
   @override
@@ -157,62 +153,47 @@ class DashboardHeader extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // ACTION BUTTONS (ADD PROPERTY + NOTIFICATIONS)
-              Row(
-                mainAxisSize: MainAxisSize.min,
+              // NOTIFICATION INDICATOR WITH BADGE
+              Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  if (isOwner && onAddPressed != null) ...[
-                    _HeaderIconButton(
-                      icon: Icons.add_rounded,
-                      onPressed: onAddPressed,
+                  const HeaderIconButton(
+                    icon: Icons.notifications_none_rounded,
+                  ),
+                  if (isOwner && notificationCount > 0)
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: colorScheme.surface,
+                            width: 2,
+                          ),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Center(
+                          child: Text(
+                            notificationCount > 99
+                                ? '99+'
+                                : '$notificationCount',
+                            style: TextStyle(
+                              color: colorScheme.onError,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              height: 1,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                  ],
-
-                  // // NOTIFICATION BELL WITH BADGE
-                  // Stack(
-                  //   clipBehavior: Clip.none,
-                  //   children: [
-                  //     _HeaderIconButton(
-                  //       icon: Icons.notifications_none_rounded,
-                  //       onPressed: onNotificationPressed,
-                  //     ),
-                  //     if (notificationCount > 0)
-                  //       Positioned(
-                  //         right: -2,
-                  //         top: -2,
-                  //         child: Container(
-                  //           padding: const EdgeInsets.all(4),
-                  //           decoration: BoxDecoration(
-                  //             color: colorScheme.error,
-                  //             shape: BoxShape.circle,
-                  //             border: Border.all(
-                  //               color: colorScheme.surface,
-                  //               width: 2,
-                  //             ),
-                  //           ),
-                  //           constraints: const BoxConstraints(
-                  //             minWidth: 18,
-                  //             minHeight: 18,
-                  //           ),
-                  //           child: Center(
-                  //             child: Text(
-                  //               notificationCount > 99
-                  //                   ? '99+'
-                  //                   : '$notificationCount',
-                  //               style: TextStyle(
-                  //                 color: colorScheme.onError,
-                  //                 fontSize: 9,
-                  //                 fontWeight: FontWeight.bold,
-                  //                 height: 1,
-                  //               ),
-                  //               textAlign: TextAlign.center,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //   ],
-                  // ),
                 ],
               ),
             ],
@@ -223,11 +204,12 @@ class DashboardHeader extends StatelessWidget {
   }
 }
 
-class _HeaderIconButton extends StatelessWidget {
+class HeaderIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
 
-  const _HeaderIconButton({
+  const HeaderIconButton({
+    super.key,
     required this.icon,
     this.onPressed,
   });

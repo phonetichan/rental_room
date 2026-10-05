@@ -16,6 +16,12 @@ class BookingEntity {
   final String? tenantName;
   final String? tenantPhone;
 
+  /// Helper getters for the refined workflow states
+  bool get isPending => status.toLowerCase() == 'pending' || status.toLowerCase() == 'draft';
+  bool get isConfirmed => status.toLowerCase() == 'confirmed';
+  bool get isContracted => status.toLowerCase() == 'contracted' || status.toLowerCase() == 'voucher_ready';
+  bool get isCancelled => status.toLowerCase() == 'cancelled';
+
   const BookingEntity({
     required this.id,
     required this.userId,

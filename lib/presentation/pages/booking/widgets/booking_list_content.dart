@@ -40,8 +40,14 @@ class BookingListContent extends StatelessWidget {
         displayedBookings = validOwnerBookings
             .where((b) => b.status.toLowerCase() == 'confirmed')
             .toList();
+      } else if (selectedFilter == 'contracted') {
+        displayedBookings = validOwnerBookings
+            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .toList();
       } else {
-        displayedBookings = validOwnerBookings;
+        displayedBookings = validOwnerBookings
+            .where((b) => b.status.toLowerCase() == 'pending')
+            .toList();
       }
     } else {
       if (selectedFilter == 'pending') {
@@ -52,8 +58,14 @@ class BookingListContent extends StatelessWidget {
         displayedBookings = rawBookings
             .where((b) => b.status.toLowerCase() == 'confirmed')
             .toList();
+      } else if (selectedFilter == 'contracted') {
+        displayedBookings = rawBookings
+            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .toList();
       } else {
-        displayedBookings = rawBookings;
+        displayedBookings = rawBookings
+            .where((b) => b.status.toLowerCase() == 'pending')
+            .toList();
       }
     }
 
@@ -80,12 +92,16 @@ class BookingListContent extends StatelessWidget {
                         ? 'No pending booking requests.'
                         : selectedFilter == 'confirmed'
                             ? 'No confirmed booking requests.'
-                            : 'No booking requests found.')
+                            : selectedFilter == 'contracted'
+                                ? 'No contracted booking requests.'
+                                : 'No booking requests found.')
                     : (selectedFilter == 'pending'
                         ? 'No pending bookings.'
                         : selectedFilter == 'confirmed'
                             ? 'No confirmed bookings.'
-                            : 'No bookings found at the moment.'),
+                            : selectedFilter == 'contracted'
+                                ? 'No contracted bookings.'
+                                : 'No bookings found at the moment.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

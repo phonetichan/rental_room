@@ -267,22 +267,20 @@ class BookingView extends StatefulWidget {
 class _BookingViewState extends State<BookingView>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  List<BookingEntity>? _cachedAllBookings;
   List<BookingEntity>? _cachedPendingBookings;
   List<BookingEntity>? _cachedConfirmedBookings;
+  List<BookingEntity>? _cachedContractedBookings;
 
   bool get _isOwner => widget.user.role == UserRole.owner;
 
-  List<String> get _ownerFilters => const ['all', 'pending', 'confirmed'];
+  List<String> get _filters => const ['pending', 'confirmed', 'contracted'];
 
-  List<String> get _tenantFilters => const ['pending', 'confirmed'];
-
-  String _selectedFilter = 'all';
+  String _selectedFilter = 'pending';
 
   @override
   void initState() {
     super.initState();
-    final filters = _isOwner ? _ownerFilters : _tenantFilters;
+    final filters = _filters;
     _selectedFilter = filters.first;
 
     _tabController = TabController(length: filters.length, vsync: this);
@@ -365,72 +363,47 @@ class _BookingViewState extends State<BookingView>
                   borderRadius: BorderRadius.circular(8),
                   color: theme.colorScheme.primary.withValues(alpha: 0.12),
                 ),
-                tabs: _isOwner
-                    ? const [
-                        Tab(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.calendar_month_outlined, size: 18),
-                              SizedBox(width: 6),
-                              Text('All'),
-                            ],
-                          ),
-                        ),
-                        Tab(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.hourglass_top_rounded, size: 18),
-                              SizedBox(width: 6),
-                              Text('Pending'),
-                            ],
-                          ),
-                        ),
-                        Tab(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.check_circle_outline_rounded,
-                                size: 18,
-                              ),
-                              SizedBox(width: 6),
-                              Text('Confirmed'),
-                            ],
-                          ),
-                        ),
-                      ]
-                    : const [
-                        Tab(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.hourglass_top_rounded, size: 18),
-                              SizedBox(width: 8),
-                              Text('Pending'),
-                            ],
-                          ),
-                        ),
-                        Tab(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.check_circle_outline_rounded,
-                                size: 18,
-                              ),
-                              SizedBox(width: 8),
-                              Text('Confirmed'),
-                            ],
-                          ),
-                        ),
+                tabs: const [
+                  Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.hourglass_top_rounded, size: 18),
+                        SizedBox(width: 8),
+                        Text('Pending'),
                       ],
+                    ),
+                  ),
+                  Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 18,
+                        ),
+                        SizedBox(width: 8),
+                        Text('Confirmed'),
+                      ],
+                    ),
+                  ),
+                  Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.handshake_outlined,
+                          size: 18,
+                        ),
+                        SizedBox(width: 8),
+                        Text('Contracted'),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -442,18 +415,18 @@ class _BookingViewState extends State<BookingView>
                 userId: _isOwner ? null : widget.user.id,
                 ownerId: _isOwner ? widget.user.id : null,
               ),
-              cachedBookings: _selectedFilter == 'all'
-                  ? _cachedAllBookings
-                  : _selectedFilter == 'pending'
+              cachedBookings: _selectedFilter == 'pending'
                   ? _cachedPendingBookings
-                  : _cachedConfirmedBookings,
+                  : _selectedFilter == 'confirmed'
+                  ? _cachedConfirmedBookings
+                  : _cachedContractedBookings,
               onCacheUpdate: (list) {
-                if (_selectedFilter == 'all') {
-                  _cachedAllBookings = list;
-                } else if (_selectedFilter == 'pending') {
+                if (_selectedFilter == 'pending') {
                   _cachedPendingBookings = list;
                 } else if (_selectedFilter == 'confirmed') {
                   _cachedConfirmedBookings = list;
+                } else if (_selectedFilter == 'contracted') {
+                  _cachedContractedBookings = list;
                 }
               },
               currentUser: widget.user,

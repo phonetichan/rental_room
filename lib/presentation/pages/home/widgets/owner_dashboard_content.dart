@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../presentation.dart';
+import 'dashboard_header.dart';
 import 'owner_metric_cards.dart';
 import 'owner_monthly_revenue_card.dart';
 
@@ -68,15 +69,14 @@ class _OwnerDashboardContentState extends State<OwnerDashboardContent> {
                   color: isDark ? Colors.white : AppColors.clrBlack,
                 ),
               ),
-              TextButton.icon(
+              HeaderIconButton(
+                icon: Icons.add_rounded,
                 onPressed: () async {
                   await context.push(AddEditRoomScreen.routePath);
                   if (context.mounted) {
                     context.read<RoomCubit>().fetchRooms();
                   }
                 },
-                icon: const Icon(Icons.add_rounded, size: 18),
-                label: const Text('Add Room'),
               ),
             ],
           ),

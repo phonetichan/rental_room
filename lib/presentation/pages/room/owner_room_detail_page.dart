@@ -109,6 +109,7 @@ class _OwnerRoomDetailScreenState extends State<OwnerRoomDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _OwnerRoomFavoriteStatsCard(roomId: _room.id),
+                  RoomVisitorStatsCard(roomId: _room.id),
                   RoomCollapsibleDescriptionSection(description: _room.description),
                   RoomAmenitiesSection(
                     amenityIds: _room.amenityIds,

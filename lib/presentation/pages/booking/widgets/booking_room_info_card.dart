@@ -72,7 +72,7 @@ class BookingRoomInfoCard extends StatelessWidget {
                             : roomName,
                         style: TextStyle(
                           color: textPrimary,
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -107,7 +107,7 @@ class BookingRoomInfoCard extends StatelessWidget {
                           location,
                           style: TextStyle(
                             color: textSecondary,
-                            fontSize: 13,
+                            fontSize: 12,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

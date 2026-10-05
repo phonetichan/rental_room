@@ -1084,41 +1084,48 @@ class _RoomHeroHeaderState extends State<RoomHeroHeader> {
           width: double.infinity,
           child: images.isNotEmpty
               ? PageView.builder(
-            controller: _pageController,
-            itemCount: images.length,
-            onPageChanged: (index) {
-              setState(() => _currentPage = index);
-            },
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => _openFullScreenViewer(index),
-                child: Image.network(
-                  images[index].imageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 320,
-                  cacheWidth: 1080,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: isDark
-                        ? Colors.grey.shade900
-                        : Colors.grey.shade200,
-                    child: const Icon(Icons.broken_image_rounded, size: 50),
+                  controller: _pageController,
+                  itemCount: images.length,
+                  onPageChanged: (index) {
+                    setState(() => _currentPage = index);
+                  },
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _openFullScreenViewer(index),
+                      child: Image.network(
+                        images[index].imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 320,
+                        cacheWidth: 1080,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: isDark
+                              ? Colors.grey.shade900
+                              : Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.broken_image_rounded,
+                            size: 50,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Container(
+                  color: isDark
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.grey.shade300,
+                  child: Center(
+                    child: Icon(
+                      Icons.hotel_rounded,
+                      size: 80,
+                      color: isDark
+                          ? Colors.grey.shade700
+                          : Colors.grey.shade400,
+                    ),
                   ),
                 ),
-              );
-            },
-          )
-              : Container(
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade300,
-            child: Center(
-              child: Icon(
-                Icons.hotel_rounded,
-                size: 80,
-                color: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
-              ),
-            ),
-          ),
         ),
 
         // 2. Bottom Gradient Overlay
@@ -1174,8 +1181,9 @@ class _RoomHeroHeaderState extends State<RoomHeroHeader> {
             children: [
               FloatingCircleButton(
                 icon: Icons.arrow_back_rounded,
-                onPressed: widget.onBackPressed ??
-                        () => Navigator.of(context).maybePop(),
+                onPressed:
+                    widget.onBackPressed ??
+                    () => Navigator.of(context).maybePop(),
               ),
               if (widget.favoriteButton != null) widget.favoriteButton!,
             ],
@@ -1240,15 +1248,14 @@ class _RoomHeroHeaderState extends State<RoomHeroHeader> {
                       const SizedBox(width: 8),
                       HeroMetricBadge(
                         icon: Icons.straighten_outlined,
-                        label: '${widget.room.roomSqft.toStringAsFixed(0)} sqft',
+                        label:
+                            '${widget.room.roomSqft.toStringAsFixed(0)} sqft',
                       ),
                       const SizedBox(width: 8),
                       HeroMetricBadge(
                         icon: Icons.layers_outlined,
                         label: 'Fl. ${widget.room.floor}',
                       ),
-                      const SizedBox(width: 8),
-                      RoomVisitorBadge(roomId: widget.room.id),
                     ],
                   ),
                 ),
@@ -1265,16 +1272,16 @@ class _RoomHeroHeaderState extends State<RoomHeroHeader> {
 // Sub-Components for Hero Header
 // ==========================================
 
-class RoomVisitorBadge extends StatefulWidget {
+class RoomVisitorStatsCard extends StatefulWidget {
   final String roomId;
 
-  const RoomVisitorBadge({super.key, required this.roomId});
+  const RoomVisitorStatsCard({super.key, required this.roomId});
 
   @override
-  State<RoomVisitorBadge> createState() => _RoomVisitorBadgeState();
+  State<RoomVisitorStatsCard> createState() => _RoomVisitorStatsCardState();
 }
 
-class _RoomVisitorBadgeState extends State<RoomVisitorBadge> {
+class _RoomVisitorStatsCardState extends State<RoomVisitorStatsCard> {
   int _visitorCount = 0;
   bool _isLoading = true;
 
@@ -1282,6 +1289,14 @@ class _RoomVisitorBadgeState extends State<RoomVisitorBadge> {
   void initState() {
     super.initState();
     _loadVisitorCount();
+  }
+
+  @override
+  void didUpdateWidget(covariant RoomVisitorStatsCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.roomId != widget.roomId) {
+      _loadVisitorCount();
+    }
   }
 
   Future<void> _loadVisitorCount() async {
@@ -1305,16 +1320,84 @@ class _RoomVisitorBadgeState extends State<RoomVisitorBadge> {
 
   @override
   Widget build(BuildContext context) {
-    final label = _isLoading
-        ? '...'
-        : '$_visitorCount ${_visitorCount == 1 ? "Visitor" : "Visitors"}';
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return HeroMetricBadge(
-      icon: Icons.visibility_outlined,
-      label: label,
+    final bgColor = isDark
+        ? const Color(0xFF1E293B)
+        : Colors.blue.shade50;
+    final borderColor = isDark
+        ? const Color(0xFF334155)
+        : Colors.blue.shade200;
+    final iconColor = isDark
+        ? const Color(0xFF60A5FA)
+        : Colors.blue.shade700;
+    final titleColor = isDark
+        ? Colors.white
+        : Colors.blue.shade900;
+    final subtitleColor = isDark
+        ? Colors.grey.shade400
+        : Colors.blue.shade700;
+
+    final countText = _isLoading ? '...' : '$_visitorCount';
+    final visitorText = _visitorCount == 1 ? 'Visitor' : 'Visitors';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.visibility_rounded,
+              color: iconColor,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isLoading
+                      ? 'Loading visitor stats...'
+                      : '$countText $visitorText Viewed This Room',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Track view engagement and interest for this property listing.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: subtitleColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+
+/// Legacy alias for backward compatibility
+typedef RoomVisitorBadge = RoomVisitorStatsCard;
 
 class HeroMetricBadge extends StatelessWidget {
   final IconData icon;
@@ -1700,8 +1783,9 @@ class _RoomOwnerInfoTileState extends State<RoomOwnerInfoTile> {
       });
     }
 
-    final oldCleanId =
-    _isValidId(oldWidget.ownerId) ? oldWidget.ownerId!.trim() : null;
+    final oldCleanId = _isValidId(oldWidget.ownerId)
+        ? oldWidget.ownerId!.trim()
+        : null;
     final newCleanId = _cleanOwnerId;
 
     if (_cachedOwner == null && oldCleanId != newCleanId) {
@@ -1730,9 +1814,8 @@ class _RoomOwnerInfoTileState extends State<RoomOwnerInfoTile> {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error making call: $e')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error making call: $e')));
       }
     }
   }
@@ -1766,7 +1849,11 @@ class _RoomOwnerInfoTileState extends State<RoomOwnerInfoTile> {
   }
 
   Widget _buildOwnerCard(
-      BuildContext context, UserModel user, Color primaryColor, ThemeData theme) {
+    BuildContext context,
+    UserModel user,
+    Color primaryColor,
+    ThemeData theme,
+  ) {
     final displayName = user.name.isNotEmpty ? user.name : 'Property Host';
     final phone = user.phoneNumber;
 
@@ -1806,8 +1893,8 @@ class _RoomOwnerInfoTileState extends State<RoomOwnerInfoTile> {
                   Text(
                     (phone != null && phone.isNotEmpty) ? phone : 'Owner',
                     style: TextStyle(
-                      color: theme.textTheme.bodySmall?.color ??
-                          Colors.grey[600],
+                      color:
+                          theme.textTheme.bodySmall?.color ?? Colors.grey[600],
                       fontSize: 13,
                     ),
                   ),
@@ -1879,6 +1966,49 @@ class _RoomOwnerInfoTileState extends State<RoomOwnerInfoTile> {
 // 6. RoomAmenitiesSection
 // ==========================================
 
+// class RoomAmenitiesSection extends StatelessWidget {
+//   final List<String> amenityIds;
+//   final List<Map<String, dynamic>> amenitiesList;
+//
+//   const RoomAmenitiesSection({
+//     super.key,
+//     required this.amenityIds,
+//     required this.amenitiesList,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     if (amenityIds.isEmpty) return const SizedBox.shrink();
+//
+//     return RoomSectionCard(
+//       title: 'Amenities',
+//       icon: Icons.star_outline,
+//       children: [
+//         Wrap(
+//           spacing: 6,
+//           runSpacing: 4,
+//           children: amenityIds.toSet().toList().map((amenityId) {
+//             final matching = amenitiesList
+//                 .where((a) => a['id'] == amenityId)
+//                 .firstOrNull;
+//             final name = matching != null
+//                 ? (matching['name'] as String)
+//                 : amenityId
+//                 .replaceAll('amenity_', '')
+//                 .replaceAll('_', ' ')
+//                 .toUpperCase();
+//             final iconName = matching != null
+//                 ? ((matching['icon'] as String?) ?? 'help_outline')
+//                 : amenityId.replaceFirst('amenity_', '');
+//             final icon = inject<AuthDataSource>().getAmenityIcon(iconName);
+//
+//             return Chip(avatar: Icon(icon, size: 18), label: Text(name));
+//           }).toList(),
+//         ),
+//       ],
+//     );
+//   }
+// }
 class RoomAmenitiesSection extends StatelessWidget {
   final List<String> amenityIds;
   final List<Map<String, dynamic>> amenitiesList;
@@ -1892,6 +2022,8 @@ class RoomAmenitiesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (amenityIds.isEmpty) return const SizedBox.shrink();
+
+    final primaryColor = Theme.of(context).primaryColor;
 
     return RoomSectionCard(
       title: 'Amenities',
@@ -1907,22 +2039,55 @@ class RoomAmenitiesSection extends StatelessWidget {
             final name = matching != null
                 ? (matching['name'] as String)
                 : amenityId
-                .replaceAll('amenity_', '')
-                .replaceAll('_', ' ')
-                .toUpperCase();
+                      .replaceAll('amenity_', '')
+                      .replaceAll('_', ' ')
+                      .toUpperCase();
             final iconName = matching != null
                 ? ((matching['icon'] as String?) ?? 'help_outline')
                 : amenityId.replaceFirst('amenity_', '');
             final icon = inject<AuthDataSource>().getAmenityIcon(iconName);
 
-            return Chip(avatar: Icon(icon, size: 18), label: Text(name));
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: primaryColor.withValues(alpha: 0.3)),
+                color: primaryColor.withValues(alpha: 0.05),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Prevents font bounding-box clipping and centers glyph
+                  SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: Center(
+                      child: Transform.translate(
+                        offset: const Offset(0, 1),
+                        // Adjust vertical offset if font glyph is top-heavy
+                        child: Icon(icon, size: 16, color: primaryColor),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }).toList(),
         ),
       ],
     );
   }
 }
-
 // ==========================================
 // 7. RoomLocationMapSection
 // ==========================================
@@ -1942,8 +2107,8 @@ class RoomLocationMapSection extends StatelessWidget {
     );
     final geoUrl = (room.latitude != null && room.longitude != null)
         ? Uri.parse(
-      'geo:${room.latitude},${room.longitude}?q=${room.latitude},${room.longitude}(${Uri.encodeComponent(room.name)})',
-    )
+            'geo:${room.latitude},${room.longitude}?q=${room.latitude},${room.longitude}(${Uri.encodeComponent(room.name)})',
+          )
         : googleMapsUrl;
 
     try {
@@ -1954,9 +2119,8 @@ class RoomLocationMapSection extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error opening map: $e')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error opening map: $e')));
       }
     }
   }

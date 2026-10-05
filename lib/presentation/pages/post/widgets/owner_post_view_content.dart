@@ -46,6 +46,7 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
           orElse: () => <RoomEntity>[],
         );
 
+        final availableRooms = allRooms.where((r) => r.status.toLowerCase() == 'available').toList();
         final myRooms = allRooms.where((r) => r.ownerId == widget.user.id).toList();
 
         return Column(
@@ -118,12 +119,12 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  // Tab 1: All Rooms
+                  // Tab 1: Available Rooms
                   RefreshIndicator(
                     onRefresh: () async {
                       context.read<RoomCubit>().fetchRooms();
                     },
-                    child: allRooms.isEmpty
+                    child: availableRooms.isEmpty
                         ? ListView(
                             children: const [
                               SizedBox(height: 200),
@@ -131,9 +132,9 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
                             ],
                           )
                         : ListView.builder(
-                            itemCount: allRooms.length,
+                            itemCount: availableRooms.length,
                             itemBuilder: (context, index) {
-                              final room = allRooms[index];
+                              final room = availableRooms[index];
                               return RoomCard(
                                 room: room,
                                 currentUser: widget.user,
