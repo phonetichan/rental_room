@@ -198,12 +198,22 @@ class _OwnerRoomFavoriteStatsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '$favCount ${favCount == 1 ? 'User Favorited' : 'Users Favorited'} This Room',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red.shade900,
-                        fontSize: 15,
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: Text(
+                        '$favCount ${favCount == 1 ? 'User Favorited' : 'Users Favorited'} This Room',
+                        key: ValueKey<int>(favCount),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red.shade900,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 2),

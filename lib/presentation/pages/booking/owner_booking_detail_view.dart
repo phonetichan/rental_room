@@ -79,8 +79,12 @@ class _OwnerBookingDetailViewState extends State<OwnerBookingDetailView> {
 
   Future<void> _handleAcceptBooking() async {
     // 1. Update status to 'confirmed' (waiting for tenant to contract)
-    final updated = _currentBooking.copyWith(status: 'confirmed');
-    context.read<BookingCubit>().updateBooking(updated);
+    final updated = _currentBooking.copyWith(
+      status: 'confirmed',
+      isReadByTenant: false,
+      isReadByOwner: true,
+    );
+    await context.read<BookingCubit>().updateBooking(updated);
 
     try {
       // 2. Update room status to 'rented'

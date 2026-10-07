@@ -742,7 +742,11 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
           final bookingRepo = inject<BookingRepository>();
           final booking = await bookingRepo.getBookingById(widget.bookingId);
           if (booking != null) {
-            final updatedBooking = booking.copyWith(status: 'contracted');
+            final updatedBooking = booking.copyWith(
+              status: 'contracted',
+              isReadByOwner: false,
+              isReadByTenant: true,
+            );
             await bookingRepo.updateBooking(updatedBooking);
           }
         } catch (_) {}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
+import '../../contract/contract_detail_page.dart';
 import 'booking_card.dart';
 
 class BookingListContent extends StatelessWidget {
@@ -69,6 +70,8 @@ class BookingListContent extends StatelessWidget {
       }
     }
 
+
+
     Widget listOrEmpty;
     if (displayedBookings.isEmpty) {
       listOrEmpty = SingleChildScrollView(
@@ -123,6 +126,20 @@ class BookingListContent extends StatelessWidget {
             currentUser: currentUser,
             onBookingUpdated: onRefresh,
             onTap: () async {
+              if (!isOwner &&
+                  (selectedFilter == 'contracted' ||
+                      booking.status.toLowerCase() == 'contracted' ||
+                      booking.status.toLowerCase() == 'voucher_ready')) {
+                final result = await context.pushNamed<bool>(
+                  ContractDetailPage.routeName,
+                  extra: booking.id,
+                );
+                if (result == true && context.mounted) {
+                  onRefresh();
+                }
+                return;
+              }
+
               final routeName =
                   isOwner ? 'owner-booking-detail' : 'new-booking';
 
@@ -140,11 +157,9 @@ class BookingListContent extends StatelessWidget {
       );
     }
 
-    return Expanded(
-      child: RefreshIndicator(
-        onRefresh: onRefresh,
-        child: listOrEmpty,
-      ),
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: listOrEmpty,
     );
   }
 }
@@ -193,6 +208,9 @@ class BookingTabStreamView extends StatelessWidget {
 
         final bookings = snapshot.data ?? cachedBookings ?? [];
         onCacheUpdate(bookings);
+
+
+
         return BookingListContent(
           rawBookings: bookings,
           currentUser: currentUser,

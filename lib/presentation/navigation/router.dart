@@ -270,7 +270,11 @@ class NavigationRouter {
       GoRoute(
         onExit: _handleDoubleTapToExit,
         path: IndexPage.routePath,
-        builder: (context, state) => const IndexPage(),
+        builder: (context, state) {
+          final tabStr = state.uri.queryParameters['tab'];
+          final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+          return IndexPage(initialTab: initialTab);
+        },
       ),
     ],
   );

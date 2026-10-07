@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'data/datasource/remote/auth_data_source.dart';
+import 'data/data.dart';
 import 'di/di.dart';
 import 'presentation/presentation.dart';
 
@@ -17,7 +17,6 @@ void main() async {
   } catch (e) {
     debugPrint('Error seeding master data on startup: $e');
   }
-
   runApp(const MyApp());
 }
 

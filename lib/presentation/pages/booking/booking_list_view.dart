@@ -271,6 +271,7 @@ class _BookingViewState extends State<BookingView>
   List<BookingEntity>? _cachedConfirmedBookings;
   List<BookingEntity>? _cachedContractedBookings;
 
+
   bool get _isOwner => widget.user.role == UserRole.owner;
 
   List<String> get _filters => const ['pending', 'confirmed', 'contracted'];
@@ -293,6 +294,8 @@ class _BookingViewState extends State<BookingView>
       }
     });
   }
+
+
 
   @override
   void dispose() {
@@ -444,11 +447,13 @@ class _BookingViewState extends State<BookingView>
       ),
     );
 
+    final isStandalone = ModalRoute.of(context)?.canPop ?? false;
+
+    Widget bodyWidget = contentWidget;
     try {
       context.read<BookingCubit>();
-      return contentWidget;
     } catch (_) {
-      return BlocProvider<BookingCubit>(
+      bodyWidget = BlocProvider<BookingCubit>(
         create: (context) => inject<BookingCubit>()
           ..fetchBookings(
             widget.user.id,
@@ -458,5 +463,16 @@ class _BookingViewState extends State<BookingView>
         child: Builder(builder: (nestedContext) => contentWidget),
       );
     }
+
+    if (isStandalone) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Bookings'),
+        ),
+        body: bodyWidget,
+      );
+    }
+
+    return bodyWidget;
   }
 }

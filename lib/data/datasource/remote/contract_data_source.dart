@@ -99,6 +99,16 @@ class ContractRemoteDataSource {
     return ContractModel.fromFirestore(snap.docs.first);
   }
 
+  /// Gets all contracts for a specific owner ID
+  Future<List<ContractModel>> getContractsByOwnerId(String ownerId) async {
+    if (ownerId.isEmpty) return [];
+    final snap = await _contractsCollection
+        .where('ownerId', isEqualTo: ownerId)
+        .get();
+
+    return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
+  }
+
   /// Updates an existing contract document in Firestore
   Future<ContractModel> updateContract(ContractModel model) async {
     final docRef = _contractsCollection.doc(model.id);

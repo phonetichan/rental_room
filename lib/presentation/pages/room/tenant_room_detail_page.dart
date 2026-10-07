@@ -239,7 +239,6 @@ class _TenantRoomContentBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RoomVisitorStatsCard(roomId: room.id),
           RoomCollapsibleDescriptionSection(description: room.description),
           RoomOwnerInfoTile(ownerId: room.ownerId, owner: ownerUser),
           RoomAmenitiesSection(

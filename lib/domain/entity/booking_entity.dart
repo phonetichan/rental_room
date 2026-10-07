@@ -5,7 +5,9 @@ class BookingEntity {
   final String? ownerId; // Owner ID
   final bool isPhoneContacted;
   final bool isVisited;
-  final String status; // "draft", "pending", "confirmed", "cancelled"
+  final bool isReadByTenant;
+  final bool isReadByOwner;
+  final String status; // "draft", "pending", "confirmed", "cancelled", "contracted"
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -29,6 +31,8 @@ class BookingEntity {
     this.ownerId,
     this.isPhoneContacted = false,
     this.isVisited = false,
+    this.isReadByTenant = false,
+    this.isReadByOwner = false,
     this.status = 'draft',
     this.createdAt,
     this.updatedAt,
@@ -46,6 +50,8 @@ class BookingEntity {
     String? ownerId,
     bool? isPhoneContacted,
     bool? isVisited,
+    bool? isReadByTenant,
+    bool? isReadByOwner,
     String? status,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -62,6 +68,8 @@ class BookingEntity {
       ownerId: ownerId ?? this.ownerId,
       isPhoneContacted: isPhoneContacted ?? this.isPhoneContacted,
       isVisited: isVisited ?? this.isVisited,
+      isReadByTenant: isReadByTenant ?? this.isReadByTenant,
+      isReadByOwner: isReadByOwner ?? this.isReadByOwner,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

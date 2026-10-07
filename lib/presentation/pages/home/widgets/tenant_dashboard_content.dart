@@ -14,10 +14,6 @@ class TenantDashboardContent extends StatefulWidget {
 }
 
 class _TenantDashboardContentState extends State<TenantDashboardContent> {
-  String? _selectedRoomTypeId;
-  String _searchQuery = '';
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -26,154 +22,36 @@ class _TenantDashboardContentState extends State<TenantDashboardContent> {
     });
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void _refreshData() {
+    context.read<RoomCubit>().fetchRooms(status: 'available');
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Greeting & Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back,',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    widget.user.name,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: colorScheme.primaryContainer,
-                backgroundImage: widget.user.image != null &&
-                        widget.user.image!.isNotEmpty
-                    ? NetworkImage(widget.user.image!)
-                    : null,
-                child: widget.user.image == null || widget.user.image!.isEmpty
-                    ? Text(
-                        widget.user.name.isNotEmpty
-                            ? widget.user.name[0].toUpperCase()
-                            : 'T',
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : null,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Search Bar
-          TextField(
-            controller: _searchController,
-            onChanged: (val) {
-              setState(() {
-                _searchQuery = val.trim().toLowerCase();
-              });
-            },
-            decoration: InputDecoration(
-              hintText: 'Search rooms by name, location...',
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear_rounded),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchQuery = '';
-                        });
-                      },
-                    )
-                  : null,
-              filled: true,
-              fillColor: colorScheme.surfaceContainerHighest.withAlpha(100),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            ),
+          // 1. Static Promo Hero Card
+          const StaticPromoCard(
+            title: 'GET YOUR 20%\nCASHBACK',
+            expirationText: '*Expired 25 Aug 2026',
+            imageAssetPath: 'assets/images/unsplash_RFDP7_80v5A.png',
           ),
           const SizedBox(height: 24),
 
-          // Categories / Room Types
-          Text(
-            'Categories',
-            style: theme.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 12),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _buildCategoryChip(
-                  context,
-                  label: 'All',
-                  isSelected: _selectedRoomTypeId == null,
-                  onSelected: (_) {
-                    setState(() {
-                      _selectedRoomTypeId = null;
-                    });
-                    context.read<RoomCubit>().fetchRooms(status: 'available');
-                  },
-                ),
-                ...LookupConstants.roomTypes.entries.map((entry) {
-                  final isSelected = _selectedRoomTypeId == entry.key;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: _buildCategoryChip(
-                      context,
-                      label: entry.value,
-                      isSelected: isSelected,
-                      onSelected: (_) {
-                        setState(() {
-                          _selectedRoomTypeId = entry.key;
-                        });
-                        context.read<RoomCubit>().fetchRooms(
-                              roomTypeId: entry.key,
-                              status: 'available',
-                            );
-                      },
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Listings Header
+          // 2. Section Header
           Text(
             'Available Listings',
-            style: theme.textTheme.titleLarge,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 12),
 
-          // Room List BlocBuilder
+          // 3. Available Rooms List (No Filters/Search)
           BlocBuilder<RoomCubit, RoomState>(
             builder: (context, state) {
               return state.maybeWhen(
@@ -184,24 +62,26 @@ class _TenantDashboardContentState extends State<TenantDashboardContent> {
                   ),
                 ),
                 loaded: (rooms) {
-                  final filteredRooms = rooms.where((room) {
-                    final matchesSearch = room.name.toLowerCase().contains(_searchQuery) ||
-                        room.location.toLowerCase().contains(_searchQuery) ||
-                        (room.description?.toLowerCase().contains(_searchQuery) ?? false);
-                    return matchesSearch;
-                  }).toList();
+                  final availableRooms = rooms.where((r) => r.status == 'available').toList();
 
-                  if (filteredRooms.isEmpty) {
+                  if (availableRooms.isEmpty) {
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
                         child: Column(
                           children: [
-                            Icon(Icons.hotel_outlined, size: 48, color: Colors.grey.shade400),
+                            Icon(
+                              Icons.hotel_outlined,
+                              size: 48,
+                              color: Colors.grey.shade400,
+                            ),
                             const SizedBox(height: 12),
                             Text(
-                              'No rooms found',
-                              style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                              'No available rooms at the moment',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -212,16 +92,14 @@ class _TenantDashboardContentState extends State<TenantDashboardContent> {
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredRooms.length,
+                    itemCount: availableRooms.length,
                     itemBuilder: (context, index) {
-                      final room = filteredRooms[index];
+                      final room = availableRooms[index];
                       return RoomCard(
                         room: room,
                         currentUser: widget.user,
                         showOwnerActions: false,
-                        onRoomUpdated: () {
-                          context.read<RoomCubit>().fetchRooms(status: 'available');
-                        },
+                        onRoomUpdated: _refreshData,
                       );
                     },
                   );
@@ -243,24 +121,117 @@ class _TenantDashboardContentState extends State<TenantDashboardContent> {
       ),
     );
   }
+}
 
-  Widget _buildCategoryChip(
-      BuildContext context, {
-        required String label,
-        required bool isSelected,
-        required ValueChanged<bool> onSelected,
-      }) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: onSelected,
-      selectedColor: colorScheme.primary,
-      backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(80),
-      labelStyle: TextStyle(
-        color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+/// Static Promo Banner Widget
+class StaticPromoCard extends StatelessWidget {
+  final String title;
+  final String expirationText;
+  final String imageAssetPath;
+
+  const StaticPromoCard({
+    super.key,
+    required this.title,
+    required this.expirationText,
+    required this.imageAssetPath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 130,
+      decoration: BoxDecoration(
+        color: const Color(0xFF432C81), // Deep purple background
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            // Static yellow background accent curve
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 170,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFCB021),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(100),
+                    bottomLeft: Radius.circular(100),
+                  ),
+                ),
+              ),
+            ),
+
+            // Content Layout
+            Row(
+              children: [
+                // Left text section
+                Expanded(
+                  flex: 6,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 16.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            height: 1.25,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          expirationText,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Right PNG building graphic section
+                Expanded(
+                  flex: 4,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                      ),
+                      child: Image.asset(
+                        imageAssetPath,
+                        height: 110,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.apartment_rounded,
+                            size: 68,
+                            color: Colors.white,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

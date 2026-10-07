@@ -127,6 +127,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         isPhoneContacted: _isPhoneContacted,
         isVisited: _isVisited,
         status: newStatus,
+        isReadByOwner: false,
+        isReadByTenant: true,
       );
       context.read<BookingCubit>().updateBooking(updated, silent: silent);
     } else if (_isPhoneContacted || _isVisited) {
@@ -138,6 +140,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         status: newStatus,
         isPhoneContacted: _isPhoneContacted,
         isVisited: _isVisited,
+        isReadByOwner: false,
+        isReadByTenant: true,
         createdAt: DateTime.now(),
         roomName: room.name,
         roomPrice: room.pricePerMonth,
@@ -161,6 +165,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         isPhoneContacted: _isPhoneContacted,
         isVisited: _isVisited,
         status: newStatus,
+        isReadByOwner: false,
+        isReadByTenant: true,
       );
       context.read<BookingCubit>().updateBooking(updated, silent: false);
     } else {
@@ -172,6 +178,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         status: newStatus,
         isPhoneContacted: _isPhoneContacted,
         isVisited: _isVisited,
+        isReadByOwner: false,
+        isReadByTenant: true,
         createdAt: DateTime.now(),
         roomName: room.name,
         roomPrice: room.pricePerMonth,

@@ -27,4 +27,9 @@ class ContractRepositoryImpl implements ContractRepository {
     final model = ContractModel.fromEntity(contract);
     return _remoteDataSource.updateContract(model);
   }
+
+  @override
+  Future<List<ContractEntity>> getContractsByOwnerId(String ownerId) {
+    return _remoteDataSource.getContractsByOwnerId(ownerId);
+  }
 }

@@ -72,7 +72,9 @@ class _IndexPageState extends State<IndexPage> {
         }
 
         // 1. Single Unified Home Dashboard View
-        final Widget homeView = DashboardView(user: user);
+        final Widget homeView = DashboardView(
+          user: user,
+        );
 
         // 2. Navigation Views
         final List<Widget> pages = [
