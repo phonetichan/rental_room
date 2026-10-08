@@ -1,56 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
+import '../../../blocs/contract_cubit/contract_cubit.dart';
+import '../../../extensions/extensions.dart';
 import '../../../presentation.dart';
 
-class OwnerMonthlyRevenueCard extends StatefulWidget {
+class OwnerMonthlyRevenueCard extends StatelessWidget {
   final UserEntity user;
   const OwnerMonthlyRevenueCard({super.key, required this.user});
 
   @override
-  State<OwnerMonthlyRevenueCard> createState() =>
-      _OwnerMonthlyRevenueCardState();
+  Widget build(BuildContext context) {
+    return BlocProvider<ContractCubit>(
+      create: (_) => inject<ContractCubit>()..calculateOwnerMonthlyRevenue(user.id),
+      child: const _OwnerMonthlyRevenueCardView(),
+    );
+  }
 }
 
-class _OwnerMonthlyRevenueCardState extends State<OwnerMonthlyRevenueCard> {
-  final List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  late String _selectedMonth;
-
-  final Map<String, List<double>> _monthlyIncomeData = {
-    'January': [1200, 1500, 1100, 1800],
-    'February': [1400, 1600, 1300, 1900],
-    'March': [1500, 1800, 1700, 2100],
-    'April': [1600, 1400, 1800, 2200],
-    'May': [1700, 1900, 2000, 2400],
-    'June': [1800, 2100, 1900, 2500],
-    'July': [2000, 2200, 2100, 2600],
-    'August': [1900, 2000, 2300, 2700],
-    'September': [2100, 2300, 2200, 2800],
-    'October': [2200, 2400, 2500, 2900],
-    'November': [2300, 2500, 2400, 3000],
-    'December': [2500, 2800, 2700, 3200],
-  };
+class _OwnerMonthlyRevenueCardView extends StatefulWidget {
+  const _OwnerMonthlyRevenueCardView();
 
   @override
-  void initState() {
-    super.initState();
-    _selectedMonth = _months[DateTime.now().month - 1];
-  }
+  State<_OwnerMonthlyRevenueCardView> createState() =>
+      _OwnerMonthlyRevenueCardViewState();
+}
+
+class _OwnerMonthlyRevenueCardViewState extends State<_OwnerMonthlyRevenueCardView> {
+  final List<String> _septToDecLabels = ['Sep', 'Oct', 'Nov', 'Dec'];
 
   @override
   Widget build(BuildContext context) {
@@ -58,25 +37,29 @@ class _OwnerMonthlyRevenueCardState extends State<OwnerMonthlyRevenueCard> {
     final isDark = theme.brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF2A2A2A) : AppColors.clrWhite;
     final borderColor = isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.clrSoftGrey;
-    final dropdownBgColor = isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.clrSofterGrey;
     final textColor = isDark ? Colors.white : AppColors.clrBlack;
     final subtitleColor = isDark ? Colors.white70 : AppColors.clrDarkGrey;
 
-    return BlocBuilder<BookingCubit, BookingState>(
-      builder: (context, bookingState) {
-        final List<BookingEntity> confirmedBookings = bookingState.maybeWhen(
-          loaded: (bookings) => bookings
-              .where((b) => b.ownerId == widget.user.id && b.status.toLowerCase() == 'confirmed')
-              .toList(),
-          orElse: () => [],
-        );
+    return BlocBuilder<ContractCubit, ContractState>(
+      builder: (context, state) {
+        double totalMonthlyRevenue = 0.0;
+        int activeContractsCount = 0;
 
-        final double realTotal = confirmedBookings.fold(0.0, (sum, b) => sum + (b.roomPrice ?? 0.0));
-        final incomeValues = _monthlyIncomeData[_selectedMonth] ?? [0, 0, 0, 0];
-        final double totalIncome = realTotal > 0 ? realTotal : incomeValues.reduce((a, b) => a + b);
-        final displayValues = realTotal > 0
-            ? [totalIncome * 0.25, totalIncome * 0.25, totalIncome * 0.25, totalIncome * 0.25]
-            : incomeValues;
+        if (state is ContractRevenueCalculated) {
+          totalMonthlyRevenue = state.totalMonthlyRevenue;
+          activeContractsCount = state.contracts
+              .where((c) => c.status == ContractStatus.active ||
+                  c.status.value.toLowerCase() == 'active')
+              .length;
+        } else if (state is ContractSuccess && state.contract != null) {
+          totalMonthlyRevenue = state.contract!.monthlyRent;
+          activeContractsCount = 1;
+        }
+
+        // Revenue distribution across September to December using actual contract monthly price
+        final monthlyAmount = totalMonthlyRevenue > 0 ? totalMonthlyRevenue : 0.0;
+        final displayValues = [monthlyAmount, monthlyAmount, monthlyAmount, monthlyAmount];
+        final isLoading = state is ContractLoading;
 
         return Card(
           elevation: 0,
@@ -98,120 +81,86 @@ class _OwnerMonthlyRevenueCardState extends State<OwnerMonthlyRevenueCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Monthly Revenue',
+                          'Sept - Dec Contract Revenue',
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: textColor,
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          'Total: \$${totalIncome.toStringAsFixed(0)}',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.clrPrimary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: dropdownBgColor,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: _selectedMonth,
-                          dropdownColor: cardColor,
-                          icon: Icon(
-                            Icons.arrow_drop_down_rounded,
-                            color: subtitleColor,
-                          ),
-                          isDense: true,
-                          items: _months.map((String month) {
-                            return DropdownMenuItem<String>(
-                              value: month,
-                              child: Text(
-                                month,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: textColor,
+                        isLoading
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(
+                                'Total: ${totalMonthlyRevenue.toKsShortFormat} / mo ($activeContractsCount active leases)',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.clrPrimary,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                _selectedMonth = newValue;
-                              });
-                            }
-                          },
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
                   height: 180,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: List.generate(displayValues.length, (index) {
-                      final value = displayValues[index];
-                      final maxVal = displayValues.reduce(
-                        (a, b) => a > b ? a : b,
-                      );
-                      final double heightPercentage =
-                          maxVal > 0 ? (value / maxVal) : 0;
+                  child: isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(displayValues.length, (index) {
+                            final value = displayValues[index];
+                            final maxVal = displayValues.reduce(
+                              (a, b) => a > b ? a : b,
+                            );
+                            final double heightPercentage =
+                                maxVal > 0 ? (value / maxVal) : 0;
 
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            '\$${value.toInt()}',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: subtitleColor,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
-                            height: 120 * heightPercentage,
-                            width: 28,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.clrPrimary,
-                                  AppColors.clrSecondary,
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'week ${index + 1}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: textColor,
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  value.toInt().toKsLabelFormat,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: subtitleColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.easeInOut,
+                                  height: maxVal > 0 ? (120 * heightPercentage).clamp(10.0, 120.0) : 10.0,
+                                  width: 28,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        AppColors.clrPrimary,
+                                        AppColors.clrSecondary,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  _septToDecLabels[index],
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: textColor,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
                 ),
               ],
             ),

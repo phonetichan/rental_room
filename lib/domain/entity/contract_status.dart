@@ -1,16 +1,16 @@
 enum ContractStatus {
-  pending('PENDING'),
-  active('ACTIVE'),
-  expired('EXPIRED'),
-  terminated('TERMINATED');
+  pending('pending'),
+  active('active'),
+  expired('expired'),
+  terminated('terminated');
 
   final String value;
   const ContractStatus(this.value);
 
-  /// Helper method to safely convert String from Firestore into ContractStatus enum
+  /// Converts String from Firestore into ContractStatus enum strictly matching active status
   static ContractStatus fromString(String val) {
     return ContractStatus.values.firstWhere(
-          (e) => e.value.toUpperCase() == val.toUpperCase(),
+      (e) => e.value.toLowerCase() == val.toLowerCase().trim(),
       orElse: () => ContractStatus.pending,
     );
   }

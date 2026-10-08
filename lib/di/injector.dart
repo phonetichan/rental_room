@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rental_room/presentation/blocs/contract_cubit/contract_cubit.dart';
 
 import 'injector.config.dart';
 
@@ -25,4 +26,15 @@ T register<T extends Object>(
     );
 
 @InjectableInit()
-Future<GetIt> configureDependencies() async => await _getIt.init(); // Use _getIt here
+Future<GetIt> configureDependencies() async {
+  await _getIt.init();
+  if (!_getIt.isRegistered<ContractCubit>()) {
+    _getIt.registerFactory(() => ContractCubit(
+          _getIt(),
+          _getIt(),
+          _getIt(),
+          _getIt(),
+        ));
+  }
+  return _getIt;
+}

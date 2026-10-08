@@ -19,7 +19,7 @@ class LookupConstants {
     'amenity_bed': 'Bed',
     'amenity_study_desk': 'Study Desk',
     'amenity_elevator': 'Elevator',
-    'amenity_powerbank': 'Powerbank / Battery Backup',
+    'amenity_powerbank': 'Powerbank',
     'amenity_balcony': 'Balcony',
     'amenity_fridge': 'Refrigerator',
     'amenity_kitchen': 'Kitchen',

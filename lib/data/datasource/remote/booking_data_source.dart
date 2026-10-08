@@ -145,6 +145,8 @@ class BookingRemoteDataSource {
         final updateData = {
           'isPhoneContacted': bookingModel.isPhoneContacted,
           'isVisited': bookingModel.isVisited,
+          'isReadByTenant': bookingModel.isReadByTenant,
+          'isReadByOwner': bookingModel.isReadByOwner,
           'status': status,
           if (resolvedOwnerId != null) 'ownerId': resolvedOwnerId,
           'updatedAt': FieldValue.serverTimestamp(),
@@ -174,6 +176,8 @@ class BookingRemoteDataSource {
       ownerId: resolvedOwnerId,
       isPhoneContacted: bookingModel.isPhoneContacted,
       isVisited: bookingModel.isVisited,
+      isReadByTenant: bookingModel.isReadByTenant,
+      isReadByOwner: bookingModel.isReadByOwner,
       status: status,
       createdAt: bookingModel.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
@@ -198,6 +202,8 @@ class BookingRemoteDataSource {
     final updateData = {
       'isPhoneContacted': bookingModel.isPhoneContacted,
       'isVisited': bookingModel.isVisited,
+      'isReadByTenant': bookingModel.isReadByTenant,
+      'isReadByOwner': bookingModel.isReadByOwner,
       'status': status,
       if (resolvedOwnerId != null) 'ownerId': resolvedOwnerId,
       'updatedAt': FieldValue.serverTimestamp(),

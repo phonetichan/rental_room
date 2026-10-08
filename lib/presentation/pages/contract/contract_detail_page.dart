@@ -734,8 +734,23 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
       final updateContractUseCase = inject<UpdateContractUseCase>();
       final result = await updateContractUseCase(updatedContract);
 
-      result.onSuccess((saved) {
+      result.onSuccess((saved) async {
         if (!mounted) return;
+
+        // Update booking status to 'contracted' so owner sees the final voucher
+        try {
+          final bookingRepo = inject<BookingRepository>();
+          final booking = await bookingRepo.getBookingById(widget.bookingId);
+          if (booking != null) {
+            final updatedBooking = booking.copyWith(
+              status: 'contracted',
+              isReadByOwner: false,
+              isReadByTenant: true,
+            );
+            await bookingRepo.updateBooking(updatedBooking);
+          }
+        } catch (_) {}
+
         setState(() {
           _contract = saved;
           _isCompleted = true;

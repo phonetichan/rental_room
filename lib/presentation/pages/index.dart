@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
 import '../../domain/domain.dart';
@@ -25,10 +26,12 @@ class NavItemData {
 
 class IndexPage extends StatefulWidget {
   final int initialTab;
+  final String? initialRoomTypeId;
 
   const IndexPage({
     super.key,
     this.initialTab = 0,
+    this.initialRoomTypeId,
   });
 
   static const String routeName = "index";
@@ -47,11 +50,29 @@ class _IndexPageState extends State<IndexPage> {
     _currentIndex = widget.initialTab;
   }
 
+  @override
+  void didUpdateWidget(covariant IndexPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTab != widget.initialTab ||
+        _currentIndex != widget.initialTab) {
+      setState(() {
+        _currentIndex = widget.initialTab;
+      });
+    }
+  }
+
   void _changeTab(int index) {
     if (_currentIndex != index) {
       setState(() {
         _currentIndex = index;
       });
+      final uri = Uri(
+        path: IndexPage.routePath,
+        queryParameters: {
+          if (index != 0) 'tab': '$index',
+        },
+      );
+      context.go(uri.toString());
     }
   }
 
@@ -72,12 +93,17 @@ class _IndexPageState extends State<IndexPage> {
         }
 
         // 1. Single Unified Home Dashboard View
-        final Widget homeView = DashboardView(user: user);
+        final Widget homeView = DashboardView(
+          user: user,
+        );
 
         // 2. Navigation Views
         final List<Widget> pages = [
           homeView,
-          PostView(user: user),
+          PostView(
+            user: user,
+            initialRoomTypeId: widget.initialRoomTypeId,
+          ),
           BookingView(
             user: user,
             isCurrentTab: _currentIndex == 2,

@@ -1,29 +1,220 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:go_router/go_router.dart';
+// import '../../../../domain/domain.dart';
+// import '../../../presentation.dart';
+//
+// class DashboardHeader extends StatelessWidget {
+//   final UserEntity user;
+//   final bool isOwner;
+//   final VoidCallback? onProfilePressed;
+//   final VoidCallback? onCreatePressed;
+//
+//   const DashboardHeader({
+//     super.key,
+//     required this.user,
+//     required this.isOwner,
+//     this.onProfilePressed,
+//     this.onCreatePressed,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     final colorScheme = theme.colorScheme;
+//
+//     final hasImage = user.image != null && user.image!.trim().isNotEmpty;
+//     final displayName = user.name.isNotEmpty ? user.name : 'User';
+//
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: colorScheme.surface,
+//         borderRadius: BorderRadius.circular(20),
+//       ),
+//       child: Material(
+//         color: Colors.transparent,
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Row(
+//             children: [
+//               if (isOwner) ...[
+//                 HeaderIconButton(
+//                   icon: Icons.add_rounded,
+//                   onPressed: onCreatePressed ?? () async {
+//                     await context.push(AddEditRoomScreen.routePath);
+//                     if (context.mounted) {
+//                       context.read<RoomCubit>().fetchRooms();
+//                     }
+//                   },
+//                 ),
+//                 const SizedBox(width: 12),
+//               ],
+//               // USER PROFILE AVATAR & INFO (TAPABLE AREA)
+//               Expanded(
+//                 child: InkWell(
+//                   onTap: onProfilePressed,
+//                   borderRadius: BorderRadius.circular(12),
+//                   child: Row(
+//                     children: [
+//                       // AVATAR WITH OUTER BORDER
+//                       Container(
+//                         width: 48,
+//                         height: 48,
+//                         decoration: BoxDecoration(
+//                           shape: BoxShape.circle,
+//                           border: Border.all(
+//                             color: colorScheme.primary.withValues(alpha: 0.2),
+//                             width: 2,
+//                           ),
+//                         ),
+//                         child: CircleAvatar(
+//                           radius: 22,
+//                           backgroundColor:
+//                           colorScheme.primary.withValues(alpha: 0.1),
+//                           backgroundImage:
+//                           hasImage ? NetworkImage(user.image!) : null,
+//                           child: !hasImage
+//                               ? Text(
+//                             displayName[0].toUpperCase(),
+//                             style: TextStyle(
+//                               color: colorScheme.primary,
+//                               fontWeight: FontWeight.bold,
+//                               fontSize: 18,
+//                             ),
+//                           )
+//                               : null,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 12),
+//
+//                       // NAME, ROLE BADGE & EMAIL
+//                       Expanded(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             Row(
+//                               children: [
+//                                 Flexible(
+//                                   child: Text(
+//                                     displayName,
+//                                     maxLines: 1,
+//                                     overflow: TextOverflow.ellipsis,
+//                                     style: theme.textTheme.titleMedium?.copyWith(
+//                                       fontWeight: FontWeight.w700,
+//                                       fontSize: 16,
+//                                     ),
+//                                   ),
+//                                 ),
+//                                 const SizedBox(width: 6),
+//
+//                                 // ROLE BADGE (OWNER / TENANT)
+//                                 Container(
+//                                   padding: const EdgeInsets.symmetric(
+//                                     horizontal: 6,
+//                                     vertical: 2,
+//                                   ),
+//                                   decoration: BoxDecoration(
+//                                     color: isOwner
+//                                         ? colorScheme.primary.withValues(alpha: 0.12)
+//                                         : colorScheme.secondary.withValues(alpha: 0.12),
+//                                     borderRadius: BorderRadius.circular(6),
+//                                   ),
+//                                   child: Text(
+//                                     isOwner ? 'Owner' : 'Tenant',
+//                                     style: TextStyle(
+//                                       color: isOwner
+//                                           ? colorScheme.primary
+//                                           : colorScheme.secondary,
+//                                       fontSize: 10,
+//                                       fontWeight: FontWeight.w700,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             const SizedBox(height: 2),
+//                             Text(
+//                               user.email,
+//                               maxLines: 1,
+//                               overflow: TextOverflow.ellipsis,
+//                               style: theme.textTheme.bodySmall?.copyWith(
+//                                 color: colorScheme.onSurfaceVariant
+//                                     .withValues(alpha: 0.8),
+//                                 fontSize: 12,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class HeaderIconButton extends StatelessWidget {
+//   final IconData icon;
+//   final VoidCallback onPressed;
+//
+//   const HeaderIconButton({
+//     super.key,
+//     required this.icon,
+//     required this.onPressed,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     return Material(
+//       color: theme.colorScheme.primary.withValues(alpha: 0.1),
+//       borderRadius: BorderRadius.circular(12),
+//       child: InkWell(
+//         onTap: onPressed,
+//         borderRadius: BorderRadius.circular(12),
+//         child: Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: Icon(
+//             icon,
+//             size: 20,
+//             color: theme.colorScheme.primary,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../domain/domain.dart';
+import '../../../presentation.dart';
 
 class DashboardHeader extends StatelessWidget {
   final UserEntity user;
   final bool isOwner;
-  final VoidCallback? onAddPressed;
-  final VoidCallback? onNotificationPressed;
   final VoidCallback? onProfilePressed;
-  // final int notificationCount;
+  final VoidCallback? onCreatePressed;
 
   const DashboardHeader({
     super.key,
     required this.user,
     required this.isOwner,
-    this.onAddPressed,
-    this.onNotificationPressed,
     this.onProfilePressed,
-    // this.notificationCount = 3,
+    this.onCreatePressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     final hasImage = user.image != null && user.image!.trim().isNotEmpty;
     final displayName = user.name.isNotEmpty ? user.name : 'User';
@@ -32,20 +223,6 @@ class DashboardHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isDark
-              ? colorScheme.outlineVariant.withValues(alpha: 0.15)
-              : colorScheme.outlineVariant.withValues(alpha: 0.3),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.25)
-                : colorScheme.shadow.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -53,7 +230,7 @@ class DashboardHeader extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              // USER PROFILE AVATAR & INFO (TAPABLE AREA)
+              // 1. USER PROFILE AVATAR & INFO (LEFT SIDE)
               Expanded(
                 child: InkWell(
                   onTap: onProfilePressed,
@@ -155,66 +332,20 @@ class DashboardHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
 
-              // ACTION BUTTONS (ADD PROPERTY + NOTIFICATIONS)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isOwner && onAddPressed != null) ...[
-                    _HeaderIconButton(
-                      icon: Icons.add_rounded,
-                      onPressed: onAddPressed,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-
-                  // // NOTIFICATION BELL WITH BADGE
-                  // Stack(
-                  //   clipBehavior: Clip.none,
-                  //   children: [
-                  //     _HeaderIconButton(
-                  //       icon: Icons.notifications_none_rounded,
-                  //       onPressed: onNotificationPressed,
-                  //     ),
-                  //     if (notificationCount > 0)
-                  //       Positioned(
-                  //         right: -2,
-                  //         top: -2,
-                  //         child: Container(
-                  //           padding: const EdgeInsets.all(4),
-                  //           decoration: BoxDecoration(
-                  //             color: colorScheme.error,
-                  //             shape: BoxShape.circle,
-                  //             border: Border.all(
-                  //               color: colorScheme.surface,
-                  //               width: 2,
-                  //             ),
-                  //           ),
-                  //           constraints: const BoxConstraints(
-                  //             minWidth: 18,
-                  //             minHeight: 18,
-                  //           ),
-                  //           child: Center(
-                  //             child: Text(
-                  //               notificationCount > 99
-                  //                   ? '99+'
-                  //                   : '$notificationCount',
-                  //               style: TextStyle(
-                  //                 color: colorScheme.onError,
-                  //                 fontSize: 9,
-                  //                 fontWeight: FontWeight.bold,
-                  //                 height: 1,
-                  //               ),
-                  //               textAlign: TextAlign.center,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //   ],
-                  // ),
-                ],
-              ),
+              // 2. CREATE BUTTON (RIGHT SIDE - OWNER ONLY)
+              if (isOwner) ...[
+                const SizedBox(width: 12),
+                HeaderIconButton(
+                  icon: Icons.add_rounded,
+                  onPressed: onCreatePressed ?? () async {
+                    await context.push(AddEditRoomScreen.routePath);
+                    if (context.mounted) {
+                      context.read<RoomCubit>().fetchRooms();
+                    }
+                  },
+                ),
+              ],
             ],
           ),
         ),
@@ -223,44 +354,31 @@ class DashboardHeader extends StatelessWidget {
   }
 }
 
-class _HeaderIconButton extends StatelessWidget {
+class HeaderIconButton extends StatelessWidget {
   final IconData icon;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
 
-  const _HeaderIconButton({
+  const HeaderIconButton({
+    super.key,
     required this.icon,
-    this.onPressed,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      width: 42,
-      height: 42,
-      decoration: BoxDecoration(
-        color: isDark
-            ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
-            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(21),
-          onTap: onPressed,
-          child: Center(
-            child: Icon(
-              icon,
-              color: colorScheme.onSurfaceVariant,
-              size: 20,
-            ),
+    return Material(
+      color: theme.colorScheme.primary.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(
+            icon,
+            size: 20,
+            color: theme.colorScheme.primary,
           ),
         ),
       ),

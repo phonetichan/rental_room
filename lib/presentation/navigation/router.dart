@@ -221,6 +221,26 @@ class NavigationRouter {
           );
         },
       ),
+      // GoRoute(
+      //   path: '/owner-booking-detail',
+      //   name: 'owner-booking-detail',
+      //   builder: (context, state) {
+      //     // 1. Extract the booking entity passed via extra
+      //     final booking = state.extra as BookingEntity;
+      //
+      //     // 2. Obtain current authenticated user from AuthenticationCubit
+      //     final currentUser = context.read<AuthenticationCubit>().user!;
+      //
+      //     // 3. Provide BookingCubit to the detail view
+      //     return BlocProvider(
+      //       create: (context) => inject<BookingCubit>(),
+      //       child: OwnerBookingDetailView(
+      //         booking: booking,
+      //         currentUser: currentUser,
+      //       ),
+      //     );
+      //   },
+      // ),
       GoRoute(
         path: '/owner-booking-detail',
         name: 'owner-booking-detail',
@@ -231,9 +251,17 @@ class NavigationRouter {
           // 2. Obtain current authenticated user from AuthenticationCubit
           final currentUser = context.read<AuthenticationCubit>().user!;
 
-          // 3. Provide BookingCubit to the detail view
-          return BlocProvider(
-            create: (context) => inject<BookingCubit>(),
+          // 3. Provide both BookingCubit and FavoriteCubit to the detail view
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<BookingCubit>(
+                create: (context) => inject<BookingCubit>(),
+              ),
+              BlocProvider<FavoriteCubit>(
+                create: (context) =>
+                    inject<FavoriteCubit>()..loadFavorites(currentUser.id),
+              ),
+            ],
             child: OwnerBookingDetailView(
               booking: booking,
               currentUser: currentUser,
@@ -241,7 +269,6 @@ class NavigationRouter {
           );
         },
       ),
-
       GoRoute(
         path: NewBookingView.routePath,
         name: 'new-booking',
@@ -251,10 +278,7 @@ class NavigationRouter {
 
           return BlocProvider(
             create: (context) => inject<BookingCubit>(),
-            child: NewBookingView(
-              booking: booking,
-              currentUser: currentUser,
-            ),
+            child: NewBookingView(booking: booking, currentUser: currentUser),
           );
         },
       ),
@@ -270,7 +294,15 @@ class NavigationRouter {
       GoRoute(
         onExit: _handleDoubleTapToExit,
         path: IndexPage.routePath,
-        builder: (context, state) => const IndexPage(),
+        builder: (context, state) {
+          final tabStr = state.uri.queryParameters['tab'];
+          final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+          final roomTypeId = state.uri.queryParameters['type'];
+          return IndexPage(
+            initialTab: initialTab,
+            initialRoomTypeId: roomTypeId,
+          );
+        },
       ),
     ],
   );

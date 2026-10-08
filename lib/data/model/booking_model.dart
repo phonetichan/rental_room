@@ -150,6 +150,8 @@ class BookingModel {
   final String? ownerId;
   final bool isPhoneContacted;
   final bool isVisited;
+  final bool isReadByTenant;
+  final bool isReadByOwner;
   final String status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -168,6 +170,8 @@ class BookingModel {
     this.ownerId,
     this.isPhoneContacted = false,
     this.isVisited = false,
+    this.isReadByTenant = false,
+    this.isReadByOwner = false,
     this.status = 'draft',
     this.createdAt,
     this.updatedAt,
@@ -188,6 +192,8 @@ class BookingModel {
       ownerId: data['ownerId'] as String?,
       isPhoneContacted: data['isPhoneContacted'] as bool? ?? false,
       isVisited: data['isVisited'] as bool? ?? false,
+      isReadByTenant: data['isReadByTenant'] as bool? ?? false,
+      isReadByOwner: data['isReadByOwner'] as bool? ?? false,
       status: data['status'] as String? ?? 'draft',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
@@ -206,6 +212,8 @@ class BookingModel {
       if (ownerId != null) 'ownerId': ownerId,
       'isPhoneContacted': isPhoneContacted,
       'isVisited': isVisited,
+      'isReadByTenant': isReadByTenant,
+      'isReadByOwner': isReadByOwner,
       'status': status,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
@@ -225,6 +233,8 @@ class BookingModel {
       ownerId: ownerId,
       isPhoneContacted: isPhoneContacted,
       isVisited: isVisited,
+      isReadByTenant: isReadByTenant,
+      isReadByOwner: isReadByOwner,
       status: status,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -244,6 +254,8 @@ class BookingModel {
       ownerId: entity.ownerId,
       isPhoneContacted: entity.isPhoneContacted,
       isVisited: entity.isVisited,
+      isReadByTenant: entity.isReadByTenant,
+      isReadByOwner: entity.isReadByOwner,
       status: entity.status,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,

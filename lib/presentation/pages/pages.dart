@@ -16,3 +16,4 @@ export 'booking/booking_detail_view.dart';
 export 'booking/new_booking_view.dart';
 export 'booking/owner_booking_detail_view.dart';
 export 'contract/contract_detail_page.dart';
+export 'pagination/pagination_list_view.dart';

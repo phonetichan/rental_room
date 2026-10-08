@@ -77,6 +77,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required UserEntity user,
   }) async {
     await _storage.saveUserInfo(user);
+
     emit(AuthenticationState.authenticated(user));
   }
 

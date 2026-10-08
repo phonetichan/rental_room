@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../presentation.dart';
+import '../../contract/contract_detail_page.dart';
 import 'booking_card.dart';
 
 class BookingListContent extends StatelessWidget {
@@ -40,8 +42,14 @@ class BookingListContent extends StatelessWidget {
         displayedBookings = validOwnerBookings
             .where((b) => b.status.toLowerCase() == 'confirmed')
             .toList();
+      } else if (selectedFilter == 'contracted') {
+        displayedBookings = validOwnerBookings
+            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .toList();
       } else {
-        displayedBookings = validOwnerBookings;
+        displayedBookings = validOwnerBookings
+            .where((b) => b.status.toLowerCase() == 'pending')
+            .toList();
       }
     } else {
       if (selectedFilter == 'pending') {
@@ -52,10 +60,18 @@ class BookingListContent extends StatelessWidget {
         displayedBookings = rawBookings
             .where((b) => b.status.toLowerCase() == 'confirmed')
             .toList();
+      } else if (selectedFilter == 'contracted') {
+        displayedBookings = rawBookings
+            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .toList();
       } else {
-        displayedBookings = rawBookings;
+        displayedBookings = rawBookings
+            .where((b) => b.status.toLowerCase() == 'pending')
+            .toList();
       }
     }
+
+
 
     Widget listOrEmpty;
     if (displayedBookings.isEmpty) {
@@ -80,12 +96,16 @@ class BookingListContent extends StatelessWidget {
                         ? 'No pending booking requests.'
                         : selectedFilter == 'confirmed'
                             ? 'No confirmed booking requests.'
-                            : 'No booking requests found.')
+                            : selectedFilter == 'contracted'
+                                ? 'No contracted booking requests.'
+                                : 'No booking requests found.')
                     : (selectedFilter == 'pending'
                         ? 'No pending bookings.'
                         : selectedFilter == 'confirmed'
                             ? 'No confirmed bookings.'
-                            : 'No bookings found at the moment.'),
+                            : selectedFilter == 'contracted'
+                                ? 'No contracted bookings.'
+                                : 'No bookings found at the moment.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -107,12 +127,26 @@ class BookingListContent extends StatelessWidget {
             currentUser: currentUser,
             onBookingUpdated: onRefresh,
             onTap: () async {
-              final routeName =
-                  isOwner ? 'owner-booking-detail' : 'new-booking';
+              final isContracted = selectedFilter == 'contracted' ||
+                  booking.status.toLowerCase() == 'contracted' ||
+                  booking.status.toLowerCase() == 'voucher_ready';
+
+              String routeName;
+              dynamic extraData;
+
+              if (isContracted) {
+                // If contracted exists and is clicked -> Show OwnerBookingDetailView
+                routeName = OwnerBookingDetailView.routeName; // 'owner-booking-detail'
+                extraData = booking;
+              } else {
+                // Pending or Confirmed bookings
+                routeName = isOwner ? OwnerBookingDetailView.routeName : 'new-booking';
+                extraData = booking;
+              }
 
               final result = await context.pushNamed<bool>(
                 routeName,
-                extra: booking,
+                extra: extraData,
               );
 
               if (result == true && context.mounted) {
@@ -123,12 +157,50 @@ class BookingListContent extends StatelessWidget {
         },
       );
     }
+    //   listOrEmpty = ListView.builder(
+    //     padding: const EdgeInsets.symmetric(vertical: 12),
+    //     itemCount: displayedBookings.length,
+    //     itemBuilder: (context, index) {
+    //       final booking = displayedBookings[index];
+    //       return BookingCard(
+    //         booking: booking,
+    //         currentUser: currentUser,
+    //         onBookingUpdated: onRefresh,
+    //         onTap: () async {
+    //           if (!isOwner &&
+    //               (selectedFilter == 'contracted' ||
+    //                   booking.status.toLowerCase() == 'contracted' ||
+    //                   booking.status.toLowerCase() == 'voucher_ready')) {
+    //             final result = await context.pushNamed<bool>(
+    //               ContractDetailPage.routeName,
+    //               extra: booking.id,
+    //             );
+    //             if (result == true && context.mounted) {
+    //               onRefresh();
+    //             }
+    //             return;
+    //           }
+    //
+    //           final routeName =
+    //               isOwner ? 'owner-booking-detail' : 'new-booking';
+    //
+    //           final result = await context.pushNamed<bool>(
+    //             routeName,
+    //             extra: booking,
+    //           );
+    //
+    //           if (result == true && context.mounted) {
+    //             onRefresh();
+    //           }
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
 
-    return Expanded(
-      child: RefreshIndicator(
-        onRefresh: onRefresh,
-        child: listOrEmpty,
-      ),
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: listOrEmpty,
     );
   }
 }
@@ -177,6 +249,9 @@ class BookingTabStreamView extends StatelessWidget {
 
         final bookings = snapshot.data ?? cachedBookings ?? [];
         onCacheUpdate(bookings);
+
+
+
         return BookingListContent(
           rawBookings: bookings,
           currentUser: currentUser,

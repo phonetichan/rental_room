@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/data.dart';
@@ -51,13 +52,29 @@ class BookingRoomInfoCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (imageUrl != null && imageUrl.isNotEmpty)
-            Image.network(
-              imageUrl,
-              height: 160,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-            ),
+            // Image.network(
+            //   imageUrl,
+            //   height: 160,
+            //   width: double.infinity,
+            //   fit: BoxFit.cover,
+            //   errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            // ),
+              if (imageUrl != null && imageUrl.isNotEmpty)
+                CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  height: 160,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    height: 160,
+                    width: double.infinity,
+                    color: Colors.grey.shade300,
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const SizedBox.shrink(),
+                ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -72,7 +89,7 @@ class BookingRoomInfoCard extends StatelessWidget {
                             : roomName,
                         style: TextStyle(
                           color: textPrimary,
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -107,7 +124,7 @@ class BookingRoomInfoCard extends StatelessWidget {
                           location,
                           style: TextStyle(
                             color: textSecondary,
-                            fontSize: 13,
+                            fontSize: 12,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -119,7 +136,7 @@ class BookingRoomInfoCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 if (roomPrice != null)
                   Text(
-                    '${roomPrice.toStringAsFixed(0)} MMK / month',
+                    roomPrice.toKsFormat,
                     style: TextStyle(
                       color: primaryAccent,
                       fontSize: 18,

@@ -76,6 +76,8 @@ import 'package:rental_room/domain/usecase/get_user_favorites_usecase.dart'
 import 'package:rental_room/domain/usecase/get_user_usecase.dart' as _i411;
 import 'package:rental_room/domain/usecase/record_room_view_usecase.dart'
     as _i283;
+import 'package:rental_room/domain/usecase/remove_room_view_usecase.dart'
+    as _i750;
 import 'package:rental_room/domain/usecase/sign_in_usecase.dart' as _i472;
 import 'package:rental_room/domain/usecase/sign_out_usecase.dart' as _i165;
 import 'package:rental_room/domain/usecase/sign_up_usecase.dart' as _i619;
@@ -196,8 +198,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i586.ContractRepositoryImpl(gh<_i5.ContractRemoteDataSource>()));
     gh.lazySingleton<_i165.SignOutUseCase>(
         () => _i165.SignOutUseCase(gh<_i156.AuthRepository>()));
-    gh.lazySingleton<_i486.UpdateContractUseCase>(
-        () => _i486.UpdateContractUseCase(gh<_i643.ContractRepository>()));
     gh.lazySingleton<_i680.RoomViewRepository>(() =>
         _i318.RoomViewRepositoryImpl(gh<_i165.RoomViewRemoteDataSource>()));
     gh.lazySingleton<_i255.UpdateUserProfileUseCase>(
@@ -224,12 +224,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i394.CreateContractUseCase(gh<_i643.ContractRepository>()));
     gh.lazySingleton<_i255.GetContractByBookingUseCase>(() =>
         _i255.GetContractByBookingUseCase(gh<_i643.ContractRepository>()));
+    gh.lazySingleton<_i486.UpdateContractUseCase>(
+        () => _i486.UpdateContractUseCase(gh<_i643.ContractRepository>()));
+    gh.lazySingleton<_i750.RemoveRoomViewUseCase>(
+        () => _i750.RemoveRoomViewUseCase(gh<_i680.RoomViewRepository>()));
     gh.lazySingleton<_i219.GetRoomVisitorCountUseCase>(
         () => _i219.GetRoomVisitorCountUseCase(gh<_i680.RoomViewRepository>()));
     gh.lazySingleton<_i283.RecordRoomViewUseCase>(
         () => _i283.RecordRoomViewUseCase(gh<_i680.RoomViewRepository>()));
-    gh.lazySingleton<_i156.RemoveRoomViewUseCase>(
-        () => _i156.RemoveRoomViewUseCase(gh<_i680.RoomViewRepository>()));
     gh.lazySingleton<_i912.AuthenticationCubit>(() => _i912.AuthenticationCubit(
           gh<_i582.AppStorage>(),
           gh<_i156.SignOutUseCase>(),
