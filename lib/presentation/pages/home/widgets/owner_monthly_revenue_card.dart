@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/contract_cubit/contract_cubit.dart';
+import '../../../extensions/extensions.dart';
 import '../../../presentation.dart';
 
 class OwnerMonthlyRevenueCard extends StatelessWidget {
@@ -94,7 +95,7 @@ class _OwnerMonthlyRevenueCardViewState extends State<_OwnerMonthlyRevenueCardVi
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               )
                             : Text(
-                                'Total: ${totalMonthlyRevenue.toStringAsFixed(0)} Ks / mo ($activeContractsCount active leases)',
+                                'Total: ${totalMonthlyRevenue.toKsShortFormat} / mo ($activeContractsCount active leases)',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: AppColors.clrPrimary,
                                   fontWeight: FontWeight.w600,
@@ -124,7 +125,7 @@ class _OwnerMonthlyRevenueCardViewState extends State<_OwnerMonthlyRevenueCardVi
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  '${value.toInt()} Ks',
+                                  value.toInt().toKsLabelFormat,
                                   style: theme.textTheme.labelSmall?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: subtitleColor,

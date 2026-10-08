@@ -1,127 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../extensions/number.dart';
 import '../../../presentation.dart';
 
-class TenantDashboardContent extends StatefulWidget {
-  final UserEntity user;
-
-  const TenantDashboardContent({super.key, required this.user});
-
-  @override
-  State<TenantDashboardContent> createState() => _TenantDashboardContentState();
-}
-
-class _TenantDashboardContentState extends State<TenantDashboardContent> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<RoomCubit>().fetchRooms(status: 'available');
-    });
-  }
-
-  void _refreshData() {
-    context.read<RoomCubit>().fetchRooms(status: 'available');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Static Promo Hero Card
-          const StaticPromoCard(
-            title: 'GET YOUR 20%\nCASHBACK',
-            expirationText: '*Expired 25 Aug 2026',
-            imageAssetPath: 'assets/images/unsplash_RFDP7_80v5A.png',
-          ),
-          const SizedBox(height: 24),
-
-          // 2. Section Header
-          Text(
-            'Available Listings',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // 3. Available Rooms List (No Filters/Search)
-          BlocBuilder<RoomCubit, RoomState>(
-            builder: (context, state) {
-              return state.maybeWhen(
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(32.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                loaded: (rooms) {
-                  final availableRooms = rooms.where((r) => r.status == 'available').toList();
-
-                  if (availableRooms.isEmpty) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.hotel_outlined,
-                              size: 48,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'No available rooms at the moment',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: availableRooms.length,
-                    itemBuilder: (context, index) {
-                      final room = availableRooms[index];
-                      return RoomCard(
-                        room: room,
-                        currentUser: widget.user,
-                        showOwnerActions: false,
-                        onRoomUpdated: _refreshData,
-                      );
-                    },
-                  );
-                },
-                failure: (message) => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Text(
-                      'Error loading rooms: $message',
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ),
-                orElse: () => const SizedBox.shrink(),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+// UNUSED: Unused view content (replaced by DashboardContent)
+// class TenantDashboardContent extends StatefulWidget {
+//   final UserEntity user;
+//
+//   const TenantDashboardContent({super.key, required this.user});
+//
+//   @override
+//   State<TenantDashboardContent> createState() => _TenantDashboardContentState();
+// }
+//
+// class _TenantDashboardContentState extends State<TenantDashboardContent> {
+//   ...
+// }
 
 /// Static Promo Banner Widget
 class StaticPromoCard extends StatelessWidget {
@@ -142,19 +39,18 @@ class StaticPromoCard extends StatelessWidget {
       width: double.infinity,
       height: 130,
       decoration: BoxDecoration(
-        color: const Color(0xFF432C81), // Deep purple background
+        color: const Color(0xFF432C81),
         borderRadius: BorderRadius.circular(16),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Stack(
           children: [
-            // Static yellow background accent curve
             Positioned(
-              right: 0,
+              right: -20,
               top: 0,
               bottom: 0,
-              width: 170,
+              width: 150,
               child: Container(
                 decoration: const BoxDecoration(
                   color: Color(0xFFFCB021),
@@ -165,35 +61,39 @@ class StaticPromoCard extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Content Layout
             Row(
               children: [
-                // Left text section
                 Expanded(
-                  flex: 6,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 16.0,
+                      horizontal: 16.0,
+                      vertical: 12.0,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            height: 1.25,
-                            letterSpacing: 0.5,
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              title,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
                         Text(
                           expirationText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
                             fontSize: 11,
@@ -203,32 +103,359 @@ class StaticPromoCard extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Right PNG building graphic section
-                Expanded(
-                  flex: 4,
+                SizedBox(
+                  width: 110,
                   child: Align(
                     alignment: Alignment.bottomRight,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(16),
-                      ),
-                      child: Image.asset(
-                        imageAssetPath,
-                        height: 110,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
+                    child: Image.asset(
+                      imageAssetPath,
+                      height: 110,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Icon(
                             Icons.apartment_rounded,
-                            size: 68,
+                            size: 56,
                             color: Colors.white,
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Skeleton Loader placeholder matching both sections
+class DashboardSkeletonLoader extends StatelessWidget {
+  const DashboardSkeletonLoader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final baseColor = isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade300;
+    final highlightColor = isDark ? const Color(0xFF383838) : Colors.grey.shade100;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: 130,
+              height: 24,
+              decoration: BoxDecoration(
+                color: baseColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            Container(
+              width: 60,
+              height: 16,
+              decoration: BoxDecoration(
+                color: baseColor.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 200,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 2,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            itemBuilder: (_, index) => Container(
+              width: 240,
+              decoration: BoxDecoration(
+                color: index == 0 ? baseColor : highlightColor,
+                borderRadius: BorderRadius.circular(24),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: 110,
+              height: 24,
+              decoration: BoxDecoration(
+                color: baseColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            Container(
+              width: 60,
+              height: 16,
+              decoration: BoxDecoration(
+                color: baseColor.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 3,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (_, __) => Container(
+            height: 96,
+            decoration: BoxDecoration(
+              color: baseColor,
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Custom Card Matching Design Mockup with Integrated Favorite/Save Logic
+class RecommendedRoomCard extends StatefulWidget {
+  final RoomEntity room;
+  final UserEntity currentUser;
+  final VoidCallback? onRoomUpdated;
+
+  const RecommendedRoomCard({
+    super.key,
+    required this.room,
+    required this.currentUser,
+    this.onRoomUpdated,
+  });
+
+  @override
+  State<RecommendedRoomCard> createState() => _RecommendedRoomCardState();
+}
+
+class _RecommendedRoomCardState extends State<RecommendedRoomCard> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentUser = context.read<AuthenticationCubit>().user;
+      if (currentUser != null && mounted) {
+        context.read<FavoriteCubit>().loadFavorites(currentUser.id);
+        try {
+          context.read<BookingCubit>().fetchBookings(
+            currentUser.id,
+            userId: currentUser.id,
+          );
+        } catch (_) {}
+      }
+    });
+  }
+
+  String? _getRoomImageUrl(RoomEntity room) {
+    if (room.images.isEmpty) return null;
+    final firstImg = room.images.first;
+    try {
+      dynamic img = firstImg;
+      final String? url = img.imageUrl ?? img.url ?? img.imagePath ?? img.path;
+      if (url != null && url.isNotEmpty) return url;
+    } catch (_) {}
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String title = widget.room.name;
+    final String location = widget.room.location;
+    final formattedPrice = widget.room.pricePerMonth.toKsLabelFormat;
+
+    final String? imageUrl = _getRoomImageUrl(widget.room);
+
+    return Container(
+      width: 240,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: Colors.grey.shade300,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: imageUrl != null && imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Icon(
+                          Icons.apartment,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(
+                        Icons.apartment,
+                        size: 48,
+                        color: Colors.grey,
+                      ),
+                    ),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.1),
+                      Colors.black.withOpacity(0.75),
+                    ],
+                    stops: const [0.4, 0.7, 1.0],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'sans-serif',
+                    ),
+                    children: [
+                      TextSpan(
+                        text: formattedPrice,
+                        style: const TextStyle(
+                          color: Color(0xFF6C5CE7),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: '/month',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 14,
+              right: 14,
+              bottom: 14,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.white70,
+                              size: 13,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                location,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  BlocBuilder<FavoriteCubit, FavoriteState>(
+                    builder: (context, state) {
+                      final isSaved =
+                          state.userFavoriteRoomIds.contains(widget.room.id);
+
+                      return GestureDetector(
+                        onTap: () {
+                          context.read<FavoriteCubit>().toggleFavorite(
+                                userId: widget.currentUser.id,
+                                roomId: widget.room.id,
+                              );
+                          widget.onRoomUpdated?.call();
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isSaved
+                                ? Icons.bookmark
+                                : Icons.bookmark_border_rounded,
+                            color: isSaved
+                                ? const Color(0xFF6C5CE7)
+                                : Colors.black87,
+                            size: 18,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),

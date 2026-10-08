@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:rental_room/domain/entity/page_result.dart';
 
 import '../../domain/entity/room_entity.dart';
 import '../../domain/repository/room_repository.dart';
@@ -54,5 +55,41 @@ class RoomRepositoryImpl implements RoomRepository {
   @override
   Future<List<Map<String, dynamic>>> getAmenities() {
     return _remoteDataSource.getAmenities();
+  }
+
+  @override
+  Future<PageResult<RoomEntity>> fetchRoomsPage({
+    String? ownerId,
+    String? roomTypeId,
+    String? status,
+    Object? cursor,
+    required int limit,
+  }) async {
+    final page = await _remoteDataSource.fetchRoomsPage(
+      ownerId: ownerId,
+      roomTypeId: roomTypeId,
+      status: status,
+      cursor: cursor,
+      limit: limit,
+    );
+    return PageResult<RoomEntity>(
+      items: page.items.map((m) => m.toEntity()).toList(),
+      cursor: page.cursor,
+      hasMore: page.hasMore,
+    );
+  }
+
+  @override
+  Future<PageResult<RoomEntity>> fetchRoomsByIds(
+      List<String> ids,
+      Object? cursor,
+      int limit,
+      ) async {
+    final page = await _remoteDataSource.fetchRoomsByIds(ids, cursor, limit);
+    return PageResult<RoomEntity>(
+      items: page.items.map((m) => m.toEntity()).toList(),
+      cursor: page.cursor,
+      hasMore: page.hasMore,
+    );
   }
 }

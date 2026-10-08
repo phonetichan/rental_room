@@ -6,8 +6,13 @@ import '../../../domain/domain.dart';
 
 class PostView extends StatelessWidget {
   final UserEntity user;
+  final String? initialRoomTypeId;
 
-  const PostView({super.key, required this.user});
+  const PostView({
+    super.key,
+    required this.user,
+    this.initialRoomTypeId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,10 @@ class PostView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: user.role == UserRole.owner
           ? OwnerPostViewContent(user: user)
-          : TenantPostViewContent(user: user),
+          : TenantPostViewContent(
+              user: user,
+              initialRoomTypeId: initialRoomTypeId,
+            ),
     );
   }
 }

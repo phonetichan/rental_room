@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../presentation.dart';
 import '../../contract/contract_detail_page.dart';
 import 'booking_card.dart';
 
@@ -126,26 +127,26 @@ class BookingListContent extends StatelessWidget {
             currentUser: currentUser,
             onBookingUpdated: onRefresh,
             onTap: () async {
-              if (!isOwner &&
-                  (selectedFilter == 'contracted' ||
-                      booking.status.toLowerCase() == 'contracted' ||
-                      booking.status.toLowerCase() == 'voucher_ready')) {
-                final result = await context.pushNamed<bool>(
-                  ContractDetailPage.routeName,
-                  extra: booking.id,
-                );
-                if (result == true && context.mounted) {
-                  onRefresh();
-                }
-                return;
-              }
+              final isContracted = selectedFilter == 'contracted' ||
+                  booking.status.toLowerCase() == 'contracted' ||
+                  booking.status.toLowerCase() == 'voucher_ready';
 
-              final routeName =
-                  isOwner ? 'owner-booking-detail' : 'new-booking';
+              String routeName;
+              dynamic extraData;
+
+              if (isContracted) {
+                // If contracted exists and is clicked -> Show OwnerBookingDetailView
+                routeName = OwnerBookingDetailView.routeName; // 'owner-booking-detail'
+                extraData = booking;
+              } else {
+                // Pending or Confirmed bookings
+                routeName = isOwner ? OwnerBookingDetailView.routeName : 'new-booking';
+                extraData = booking;
+              }
 
               final result = await context.pushNamed<bool>(
                 routeName,
-                extra: booking,
+                extra: extraData,
               );
 
               if (result == true && context.mounted) {
@@ -156,6 +157,46 @@ class BookingListContent extends StatelessWidget {
         },
       );
     }
+    //   listOrEmpty = ListView.builder(
+    //     padding: const EdgeInsets.symmetric(vertical: 12),
+    //     itemCount: displayedBookings.length,
+    //     itemBuilder: (context, index) {
+    //       final booking = displayedBookings[index];
+    //       return BookingCard(
+    //         booking: booking,
+    //         currentUser: currentUser,
+    //         onBookingUpdated: onRefresh,
+    //         onTap: () async {
+    //           if (!isOwner &&
+    //               (selectedFilter == 'contracted' ||
+    //                   booking.status.toLowerCase() == 'contracted' ||
+    //                   booking.status.toLowerCase() == 'voucher_ready')) {
+    //             final result = await context.pushNamed<bool>(
+    //               ContractDetailPage.routeName,
+    //               extra: booking.id,
+    //             );
+    //             if (result == true && context.mounted) {
+    //               onRefresh();
+    //             }
+    //             return;
+    //           }
+    //
+    //           final routeName =
+    //               isOwner ? 'owner-booking-detail' : 'new-booking';
+    //
+    //           final result = await context.pushNamed<bool>(
+    //             routeName,
+    //             extra: booking,
+    //           );
+    //
+    //           if (result == true && context.mounted) {
+    //             onRefresh();
+    //           }
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
 
     return RefreshIndicator(
       onRefresh: onRefresh,

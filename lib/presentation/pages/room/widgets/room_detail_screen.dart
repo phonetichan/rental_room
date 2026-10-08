@@ -996,6 +996,7 @@
 //   }
 // }
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -1093,16 +1094,20 @@ class _RoomHeroHeaderState extends State<RoomHeroHeader> {
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _openFullScreenViewer(index),
-                      child: Image.network(
-                        images[index].imageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: images[index].imageUrl,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: 320,
-                        cacheWidth: 1080,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: isDark
-                              ? Colors.grey.shade900
-                              : Colors.grey.shade200,
+                        memCacheWidth: 1080,
+                        placeholder: (context, url) => Container(
+                          color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
                           child: const Icon(
                             Icons.broken_image_rounded,
                             size: 50,
@@ -1540,12 +1545,18 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                 onInteractionUpdate: (_) => _onScaleChanged(),
                 onInteractionEnd: (_) => _onScaleChanged(),
                 child: Center(
-                  child: Image.network(
-                    widget.images[index].imageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.images[index].imageUrl,
                     fit: BoxFit.contain,
                     width: double.infinity,
                     height: double.infinity,
-                    errorBuilder: (_, __, ___) => const Center(
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator.adaptive(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (_, __, ___) => const Center(
                       child: Icon(
                         Icons.broken_image_rounded,
                         color: Colors.white,

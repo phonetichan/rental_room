@@ -6,6 +6,8 @@
 // import '../../extensions/extensions.dart';
 // import '../../presentation.dart';
 //
+// import 'package:cached_network_image/cached_network_image.dart';
+
 // class RoomCard extends StatelessWidget {
 //   final RoomEntity room;
 //   final UserEntity currentUser;
@@ -325,6 +327,8 @@
 // import '../../extensions/extensions.dart';
 // import '../../presentation.dart';
 //
+// import 'package:cached_network_image/cached_network_image.dart';
+
 // class RoomCard extends StatelessWidget {
 //   final RoomEntity room;
 //   final UserEntity currentUser;
@@ -642,6 +646,8 @@ import '../../../domain/domain.dart';
 import '../../extensions/extensions.dart';
 import '../../presentation.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+
 class RoomCard extends StatelessWidget {
   final RoomEntity room;
   final UserEntity currentUser;
@@ -716,33 +722,25 @@ class RoomCard extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: room.images.isNotEmpty
-                                ? Image.network(
-                              room.images.first.imageUrl,
+                                ? CachedNetworkImage(
+                              imageUrl: room.images.first.imageUrl,
                               fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  color: isDark
-                                      ? const Color(0xFF2A2A2A)
-                                      : const Color(0xFFF1F5F9),
-                                  child: const Center(
-                                    child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child:
-                                      CircularProgressIndicator.adaptive(
-                                        strokeWidth: 2,
-                                      ),
+                              placeholder: (context, url) => Container(
+                                color: isDark
+                                    ? const Color(0xFF2A2A2A)
+                                    : const Color(0xFFF1F5F9),
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child:
+                                    CircularProgressIndicator.adaptive(
+                                      strokeWidth: 2,
                                     ),
                                   ),
-                                );
-                              },
-                              errorBuilder: (
-                                  context,
-                                  error,
-                                  stackTrace,
-                                  ) =>
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
                                   _buildPlaceholderImage(isDark),
                             )
                                 : _buildPlaceholderImage(isDark),

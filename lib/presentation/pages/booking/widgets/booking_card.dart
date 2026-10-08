@@ -494,7 +494,7 @@ class BookingCard extends StatelessWidget {
                           isDark: isDark,
                           icon: Icons.payments_outlined,
                           label: 'Room Price',
-                          value: '${booking.roomPrice!.toStringAsFixed(0)} MMK',
+                          value: booking.roomPrice!.toKsLabelFormat,
                           isHighlight: true,
                         ),
                       ],
