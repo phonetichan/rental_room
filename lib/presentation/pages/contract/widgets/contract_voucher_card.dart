@@ -244,6 +244,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../styles/colors.dart';
+import '../../../extensions/extensions.dart';
 
 class ContractVoucherCard extends StatelessWidget {
   final ContractEntity contract;
@@ -410,13 +411,13 @@ class ContractVoucherCard extends StatelessWidget {
                   _buildSummaryRow(
                     context,
                     'Monthly Rent',
-                    '\$${contract.monthlyRent.toStringAsFixed(2)} / mo',
+                    contract.monthlyRent.toKsFormat,
                   ),
                   const SizedBox(height: 6),
                   _buildSummaryRow(
                     context,
                     'Rent Subtotal (${contract.durationMonth} mos)',
-                    '\$${durationRentTotal.toStringAsFixed(2)}',
+                    durationRentTotal.toKsShortFormat,
                   ),
                   const SizedBox(height: 12),
                   const Divider(height: 1, thickness: 1),
@@ -433,7 +434,7 @@ class ContractVoucherCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '\$${durationRentTotal.toStringAsFixed(2)}',
+                        durationRentTotal.toKsShortFormat,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: primaryColor,

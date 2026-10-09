@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/usecase/get_favorite_counts_usecase.dart';
-import '../../../domain/usecase/get_user_favorites_usecase.dart';
-import '../../../domain/usecase/toggle_favorite_usecase.dart';
+import '../../../domain/usecase/favorite/get_favorite_counts_usecase.dart';
+import '../../../domain/usecase/favorite/get_user_favorites_usecase.dart';
+import '../../../domain/usecase/favorite/toggle_favorite_usecase.dart';
 import 'favorite_state.dart';
 
 export 'favorite_state.dart';

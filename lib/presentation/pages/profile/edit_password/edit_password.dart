@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/services/snack_shower.dart';
 import '../../../../di/di.dart';
-import '../../../../domain/usecase/update_password_usecase.dart';
+import '../../../../domain/usecase/user/update_password_usecase.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
 import 'cubit/edit_password_cubit.dart';
 

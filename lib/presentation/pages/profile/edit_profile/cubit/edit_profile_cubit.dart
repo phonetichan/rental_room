@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:rental_room/data/datasource/local/app_storage.dart';
-import 'package:rental_room/domain/entity/user_entity.dart';
-import 'package:rental_room/domain/usecase/update_user_profile_param.dart';
+import 'package:rental_room/domain/entity/user/user_entity.dart';
+import 'package:rental_room/domain/usecase/user/update_user_profile_param.dart';
 import 'package:rental_room/presentation/blocs/authentication_cubit/authentication_cubit.dart';
 
 part 'edit_profile_state.dart';

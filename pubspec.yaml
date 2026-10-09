@@ -13,6 +13,12 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  #map
+  flutter_map: ^7.0.2      # OpenStreetMap wrapper for Flutter
+  latlong2: ^0.9.1         # Coordinate handling
+  geolocator: ^13.0.2      # For "Use current location"
+  http: ^1.2.2             # For Nominatim reverse geocoding API
+
   # Firebase
   firebase_core: ^3.12.0
   cloud_firestore: ^5.6.5

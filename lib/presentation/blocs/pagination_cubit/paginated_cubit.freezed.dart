@@ -243,12 +243,12 @@ class _$PaginatedStateImpl<T> implements _PaginatedState<T> {
 
 abstract class _PaginatedState<T> implements PaginatedState<T> {
   const factory _PaginatedState(
-      {List<T> items,
-      bool isInitialLoading,
-      bool isLoadingMore,
-      bool isRefreshing,
-      bool hasMore,
-      String? error}) = _$PaginatedStateImpl<T>;
+      { List<T> items,
+       bool isInitialLoading,
+       bool isLoadingMore,
+       bool isRefreshing,
+       bool hasMore,
+       String? error}) = _$PaginatedStateImpl<T>;
 
   @override
   List<T> get items;

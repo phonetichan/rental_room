@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../domain/entity/user_entity.dart';
+import '../../../../domain/entity/user/user_entity.dart';
 import '../../../../domain/enum/role.dart';
 import '../edit_profile/edit_profile.dart';
 

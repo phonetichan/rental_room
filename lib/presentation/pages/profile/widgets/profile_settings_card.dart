@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../domain/entity/user_entity.dart';
+import '../../../../domain/entity/user/user_entity.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
 import '../edit_password/edit_password.dart';
 import '../edit_profile/edit_profile.dart';

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../domain/entity/user_entity.dart';
+import '../../../domain/entity/user/user_entity.dart';
 import '../../../domain/enum/role.dart';
-import '../../model/user_model.dart';
+import 'package:rental_room/data/data.dart';
 
 @lazySingleton
 class AppStorage {
@@ -32,7 +32,7 @@ class AppStorage {
     if (jsonStr == null || jsonStr.isEmpty) return null;
     try {
       final map = jsonDecode(jsonStr) as Map<String, dynamic>;
-      return UserModel.fromMap(map, map['id'] as String? ?? '');
+      return UserModel.fromMap(map, map['id'] as String? ?? '').toEntity();
     } catch (_) {
       return null;
     }

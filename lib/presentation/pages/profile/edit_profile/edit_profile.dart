@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../data/services/image_kit.dart';
 import '../../../../data/services/snack_shower.dart';
 import '../../../../di/di.dart';
-import '../../../../domain/entity/user_entity.dart';
-import '../../../../domain/usecase/update_user_profile_param.dart';
+import '../../../../domain/entity/user/user_entity.dart';
+import '../../../../domain/usecase/user/update_user_profile_param.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
-import '../../../helpers/helper.dart';
 import 'cubit/edit_profile_cubit.dart';
 
 class EditProfileScreen extends StatefulWidget {

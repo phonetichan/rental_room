@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:rental_room/domain/usecase/update_password_usecase.dart';
+import 'package:rental_room/domain/usecase/user/update_password_usecase.dart';
 import 'package:rental_room/presentation/blocs/authentication_cubit/authentication_cubit.dart';
 
 part 'edit_password_state.dart';

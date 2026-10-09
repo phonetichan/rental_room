@@ -1,10 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../presentation.dart';
-import '../../contract/contract_detail_page.dart';
-import 'booking_card.dart';
 
 class BookingListContent extends StatelessWidget {
   final List<BookingEntity> rawBookings;
@@ -128,8 +127,7 @@ class BookingListContent extends StatelessWidget {
             onBookingUpdated: onRefresh,
             onTap: () async {
               final isContracted = selectedFilter == 'contracted' ||
-                  booking.status.toLowerCase() == 'contracted' ||
-                  booking.status.toLowerCase() == 'voucher_ready';
+                  booking.status.toLowerCase() == 'contracted' ;
 
               String routeName;
               dynamic extraData;
@@ -157,47 +155,6 @@ class BookingListContent extends StatelessWidget {
         },
       );
     }
-    //   listOrEmpty = ListView.builder(
-    //     padding: const EdgeInsets.symmetric(vertical: 12),
-    //     itemCount: displayedBookings.length,
-    //     itemBuilder: (context, index) {
-    //       final booking = displayedBookings[index];
-    //       return BookingCard(
-    //         booking: booking,
-    //         currentUser: currentUser,
-    //         onBookingUpdated: onRefresh,
-    //         onTap: () async {
-    //           if (!isOwner &&
-    //               (selectedFilter == 'contracted' ||
-    //                   booking.status.toLowerCase() == 'contracted' ||
-    //                   booking.status.toLowerCase() == 'voucher_ready')) {
-    //             final result = await context.pushNamed<bool>(
-    //               ContractDetailPage.routeName,
-    //               extra: booking.id,
-    //             );
-    //             if (result == true && context.mounted) {
-    //               onRefresh();
-    //             }
-    //             return;
-    //           }
-    //
-    //           final routeName =
-    //               isOwner ? 'owner-booking-detail' : 'new-booking';
-    //
-    //           final result = await context.pushNamed<bool>(
-    //             routeName,
-    //             extra: booking,
-    //           );
-    //
-    //           if (result == true && context.mounted) {
-    //             onRefresh();
-    //           }
-    //         },
-    //       );
-    //     },
-    //   );
-    // }
-
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: listOrEmpty,
@@ -222,35 +179,30 @@ class BookingTabStreamView extends StatelessWidget {
     required this.currentUser,
     required this.selectedFilter,
     required this.onFilterSelected,
-    required this.onRefresh, required bool showFilterChips,
+    required this.onRefresh,
+    required bool showFilterChips,
   });
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<BookingEntity>>(
       stream: stream,
+      initialData: cachedBookings, // reopening the tab shows old data instantly
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            cachedBookings == null) {
-          return const Center(child: CircularProgressIndicator.adaptive());
-        }
-        if (snapshot.hasError) {
-          if (cachedBookings != null) {
-            return BookingListContent(
-              rawBookings: cachedBookings!,
-              currentUser: currentUser,
-              selectedFilter: selectedFilter,
-              onFilterSelected: onFilterSelected,
-              onRefresh: onRefresh,
-            );
+        final bookings = snapshot.data;
+
+        if (bookings == null) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return const Center(child: CircularProgressIndicator.adaptive()); // initial only
         }
 
-        final bookings = snapshot.data ?? cachedBookings ?? [];
-        onCacheUpdate(bookings);
-
-
+        if (!listEquals(bookings, cachedBookings)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            onCacheUpdate(bookings);
+          });
+        }
 
         return BookingListContent(
           rawBookings: bookings,

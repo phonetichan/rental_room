@@ -591,8 +591,8 @@ import 'package:flutter/material.dart';
 
 import '../../../di/di.dart';
 import '../../../domain/domain.dart';
-import '../../../domain/entity/contract_status.dart';
-import '../../../domain/usecase/update_contract_usecase.dart';
+import '../../../domain/entity/contract/contract_status.dart';
+import '../../../domain/usecase/contract/update_contract_usecase.dart';
 import 'widgets/contract_success_screen.dart';
 import 'widgets/contract_voucher_card.dart';
 
