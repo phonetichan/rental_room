@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rental_room/domain/entity/contract/contract_entity.dart';
+import '../../../extensions/l10n.dart';
 
 class ContractSuccessScreen extends StatelessWidget {
   const ContractSuccessScreen({super.key, required ContractEntity contract});
@@ -8,6 +9,7 @@ class ContractSuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF7C53E4);
     const softAccentRing = Color(0xFFF3EDFF);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -64,9 +66,9 @@ class ContractSuccessScreen extends StatelessWidget {
               const SizedBox(height: 36),
 
               // Title
-              const Text(
-                'Contract Saved!',
-                style: TextStyle(
+              Text(
+                l10n.contractSaved,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1E1B2E),
@@ -76,12 +78,12 @@ class ContractSuccessScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Subtitle / Description
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Your rental agreement voucher has been successfully created and saved. You can review the details anytime in your contract list.',
+                  l10n.contractSuccessDesc,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     height: 1.4,
                     color: Color(0xFF9E9DB0),
@@ -108,9 +110,9 @@ class ContractSuccessScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text(
-                    'Done',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.done,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   cupertino_icons: ^1.0.8
 
@@ -52,8 +54,9 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
   # Generators
-  build_runner: ^2.4.0
-  freezed: ^2.5.0
+
+  build_runner: ^2.4.13
+  freezed: ^2.5.2
   analyzer: ^6.0.0 # Or allow the latest resolved version
   json_serializable: ^6.8.0
   injectable_generator: ^2.6.2
@@ -70,6 +73,7 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/brand/Logo.png"
 
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:

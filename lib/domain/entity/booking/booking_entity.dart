@@ -10,7 +10,6 @@ class BookingEntity {
   final String status; // "draft", "pending", "confirmed", "cancelled", "contracted"
   final DateTime? createdAt;
   final DateTime? updatedAt;
-
   // Optional display metadata
   final String? roomName;
   final double? roomPrice;

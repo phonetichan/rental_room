@@ -5,4 +5,6 @@ abstract class ContractRepository {
   Future<ContractEntity?> getContractByBookingId(String bookingId);
   Future<ContractEntity> updateContract(ContractEntity contract);
   Future<List<ContractEntity>> getContractsByOwnerId(String ownerId);
+  Future<List<ContractEntity>> getContractsByTenantId(String tenantId);
+
 }

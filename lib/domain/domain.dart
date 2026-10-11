@@ -37,4 +37,6 @@ export 'usecase/booking/update_booking_usecase.dart';
 export 'usecase/contract/create_contract_usecase.dart';
 export 'usecase/contract/get_contract_by_booking_usecase.dart';
 export 'usecase/contract/update_contract_usecase.dart';
+export 'usecase/contract/expire_contract_usecase.dart';
+export 'usecase/user/update_location_usecase.dart';
 export 'entity/room/page_result.dart';

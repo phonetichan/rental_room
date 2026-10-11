@@ -173,7 +173,7 @@ abstract class _FavoriteModel extends FavoriteModel {
       {required String id,
       required String roomId,
       required String userId,
-       DateTime? createdAt}) = _$FavoriteModelImpl;
+      DateTime? createdAt}) = _$FavoriteModelImpl;
   const _FavoriteModel._() : super._();
 
   @override

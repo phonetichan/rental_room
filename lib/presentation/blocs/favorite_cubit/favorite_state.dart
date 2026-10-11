@@ -1,31 +1,17 @@
-class FavoriteState {
-  final Set<String> userFavoriteRoomIds;
-  final Map<String, int> favoriteCounts;
-  final bool isLoading;
-  final String? errorMessage;
+part of 'favorite_cubit.dart';
 
-  const FavoriteState({
-    this.userFavoriteRoomIds = const {},
-    this.favoriteCounts = const {},
-    this.isLoading = false,
-    this.errorMessage,
-  });
+@freezed
+class FavoriteState with _$FavoriteState {
+  const FavoriteState._();
+
+  const factory FavoriteState({
+    @Default({}) Set<String> userFavoriteRoomIds,
+    @Default({}) Map<String, int> favoriteCounts,
+    @Default(false) bool isLoading,
+    String? errorMessage,
+  }) = _FavoriteState;
 
   bool isFavorite(String roomId) => userFavoriteRoomIds.contains(roomId);
 
   int getFavoriteCount(String roomId) => favoriteCounts[roomId] ?? 0;
-
-  FavoriteState copyWith({
-    Set<String>? userFavoriteRoomIds,
-    Map<String, int>? favoriteCounts,
-    bool? isLoading,
-    String? errorMessage,
-  }) {
-    return FavoriteState(
-      userFavoriteRoomIds: userFavoriteRoomIds ?? this.userFavoriteRoomIds,
-      favoriteCounts: favoriteCounts ?? this.favoriteCounts,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
-    );
-  }
 }

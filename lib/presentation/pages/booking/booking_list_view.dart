@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../di/di.dart';
 import '../../../domain/domain.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../extensions/contract_extensions.dart';
 import '../../presentation.dart';
 
 class BookingView extends StatefulWidget {
@@ -23,13 +25,30 @@ class _BookingViewState extends State<BookingView>
   List<BookingEntity>? _cachedPendingBookings;
   List<BookingEntity>? _cachedConfirmedBookings;
   List<BookingEntity>? _cachedContractedBookings;
-
+  Map<String, ContractEntity> _contractsByBookingId = {};
 
   bool get _isOwner => widget.user.role == UserRole.owner;
 
   List<String> get _filters => const ['pending', 'confirmed', 'contracted'];
 
   String _selectedFilter = 'pending';
+
+  /// Contracts that are active and have 1 month or less left
+  int get _alertCount =>
+      _contractsByBookingId.values.where((c) => c.countsForBadge).length;
+
+  Future<void> _loadContracts() async {
+    try {
+      final repo = inject<ContractRepository>();
+      final list = _isOwner
+          ? await repo.getContractsByOwnerId(widget.user.id)
+          : await repo.getContractsByTenantId(widget.user.id);
+      if (!mounted) return;
+      setState(() {
+        _contractsByBookingId = {for (final c in list) c.bookingId: c};
+      });
+    } catch (_) {}
+  }
 
   @override
   void initState() {
@@ -46,9 +65,8 @@ class _BookingViewState extends State<BookingView>
         });
       }
     });
+    _loadContracts();
   }
-
-
 
   @override
   void dispose() {
@@ -70,18 +88,20 @@ class _BookingViewState extends State<BookingView>
       userId: _isOwner ? null : widget.user.id,
       ownerId: _isOwner ? widget.user.id : null,
     );
+    await _loadContracts();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     final contentWidget = Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // SEGMENTED TAB BAR HEADER (All/Pending/Confirmed for Owner, Pending/Confirmed for Tenant)
+          // SEGMENTED TAB BAR HEADER
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Container(
@@ -91,8 +111,8 @@ class _BookingViewState extends State<BookingView>
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.06)
                     : theme.colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.5,
-                      ),
+                  alpha: 0.5,
+                ),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isDark
@@ -119,15 +139,21 @@ class _BookingViewState extends State<BookingView>
                   borderRadius: BorderRadius.circular(8),
                   color: theme.colorScheme.primary.withValues(alpha: 0.12),
                 ),
-                tabs: const [
+                tabs: [
                   Tab(
                     height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.hourglass_top_rounded, size: 18),
-                        SizedBox(width: 8),
-                        Text('Pending'),
+                        const Icon(Icons.hourglass_top_rounded, size: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.pending,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -136,12 +162,16 @@ class _BookingViewState extends State<BookingView>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 18,
+                        const Icon(Icons.check_circle_outline_rounded,
+                            size: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.confirmed,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        SizedBox(width: 8),
-                        Text('Confirmed'),
                       ],
                     ),
                   ),
@@ -150,12 +180,23 @@ class _BookingViewState extends State<BookingView>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.handshake_outlined,
-                          size: 18,
+                        Badge(
+                          isLabelVisible: _alertCount > 0,
+                          backgroundColor: isDark
+                              ? AppColors.clrPrimaryLight
+                              : AppColors.clrPrimary,
+                          textColor: Colors.white,
+                          label: Text('$_alertCount'),
+                          child: const Icon(Icons.handshake_outlined, size: 18),
                         ),
-                        SizedBox(width: 8),
-                        Text('Contracted'),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.contracted,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -167,6 +208,7 @@ class _BookingViewState extends State<BookingView>
           // SINGLE STREAM VIEW DRIVEN BY THE SEGMENTED TAB BAR
           Expanded(
             child: BookingTabStreamView(
+              contractsByBookingId: _contractsByBookingId,
               stream: context.read<BookingCubit>().watchBookings(
                 userId: _isOwner ? null : widget.user.id,
                 ownerId: _isOwner ? widget.user.id : null,
@@ -219,9 +261,7 @@ class _BookingViewState extends State<BookingView>
 
     if (isStandalone) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Bookings'),
-        ),
+        appBar: AppBar(title: Text(l10n.booking)),
         body: bodyWidget,
       );
     }

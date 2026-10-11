@@ -212,6 +212,9 @@ mixin _$RoomModel {
   double? get latitude => throw _privateConstructorUsedError;
   double? get longitude => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
+  double? get depositeAmount => throw _privateConstructorUsedError;
+  String? get agentName => throw _privateConstructorUsedError;
+  double? get agentFees => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
@@ -243,6 +246,9 @@ abstract class $RoomModelCopyWith<$Res> {
       double? latitude,
       double? longitude,
       String status,
+      double? depositeAmount,
+      String? agentName,
+      double? agentFees,
       DateTime? createdAt,
       DateTime? updatedAt});
 }
@@ -277,6 +283,9 @@ class _$RoomModelCopyWithImpl<$Res, $Val extends RoomModel>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? status = null,
+    Object? depositeAmount = freezed,
+    Object? agentName = freezed,
+    Object? agentFees = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -349,6 +358,18 @@ class _$RoomModelCopyWithImpl<$Res, $Val extends RoomModel>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
+      depositeAmount: freezed == depositeAmount
+          ? _value.depositeAmount
+          : depositeAmount // ignore: cast_nullable_to_non_nullable
+              as double?,
+      agentName: freezed == agentName
+          ? _value.agentName
+          : agentName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      agentFees: freezed == agentFees
+          ? _value.agentFees
+          : agentFees // ignore: cast_nullable_to_non_nullable
+              as double?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -387,6 +408,9 @@ abstract class _$$RoomModelImplCopyWith<$Res>
       double? latitude,
       double? longitude,
       String status,
+      double? depositeAmount,
+      String? agentName,
+      double? agentFees,
       DateTime? createdAt,
       DateTime? updatedAt});
 }
@@ -419,6 +443,9 @@ class __$$RoomModelImplCopyWithImpl<$Res>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? status = null,
+    Object? depositeAmount = freezed,
+    Object? agentName = freezed,
+    Object? agentFees = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -491,6 +518,18 @@ class __$$RoomModelImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
+      depositeAmount: freezed == depositeAmount
+          ? _value.depositeAmount
+          : depositeAmount // ignore: cast_nullable_to_non_nullable
+              as double?,
+      agentName: freezed == agentName
+          ? _value.agentName
+          : agentName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      agentFees: freezed == agentFees
+          ? _value.agentFees
+          : agentFees // ignore: cast_nullable_to_non_nullable
+              as double?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -524,6 +563,9 @@ class _$RoomModelImpl extends _RoomModel {
       this.latitude,
       this.longitude,
       this.status = 'available',
+      this.depositeAmount,
+      this.agentName,
+      this.agentFees,
       this.createdAt,
       this.updatedAt})
       : _amenityIds = amenityIds,
@@ -580,13 +622,19 @@ class _$RoomModelImpl extends _RoomModel {
   @JsonKey()
   final String status;
   @override
+  final double? depositeAmount;
+  @override
+  final String? agentName;
+  @override
+  final double? agentFees;
+  @override
   final DateTime? createdAt;
   @override
   final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, ownerId: $ownerId, roomTypeId: $roomTypeId, roomNumber: $roomNumber, name: $name, floor: $floor, maxGuests: $maxGuests, pricePerMonth: $pricePerMonth, location: $location, numberBedrooms: $numberBedrooms, roomSqft: $roomSqft, description: $description, amenityIds: $amenityIds, images: $images, latitude: $latitude, longitude: $longitude, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'RoomModel(id: $id, ownerId: $ownerId, roomTypeId: $roomTypeId, roomNumber: $roomNumber, name: $name, floor: $floor, maxGuests: $maxGuests, pricePerMonth: $pricePerMonth, location: $location, numberBedrooms: $numberBedrooms, roomSqft: $roomSqft, description: $description, amenityIds: $amenityIds, images: $images, latitude: $latitude, longitude: $longitude, status: $status, depositeAmount: $depositeAmount, agentName: $agentName, agentFees: $agentFees, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -622,6 +670,12 @@ class _$RoomModelImpl extends _RoomModel {
             (identical(other.longitude, longitude) ||
                 other.longitude == longitude) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.depositeAmount, depositeAmount) ||
+                other.depositeAmount == depositeAmount) &&
+            (identical(other.agentName, agentName) ||
+                other.agentName == agentName) &&
+            (identical(other.agentFees, agentFees) ||
+                other.agentFees == agentFees) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -648,6 +702,9 @@ class _$RoomModelImpl extends _RoomModel {
         latitude,
         longitude,
         status,
+        depositeAmount,
+        agentName,
+        agentFees,
         createdAt,
         updatedAt
       ]);
@@ -672,14 +729,17 @@ abstract class _RoomModel extends RoomModel {
       required String location,
       required int numberBedrooms,
       required double roomSqft,
-       String? description,
-       List<String> amenityIds,
-       List<RoomImageModel> images,
-       double? latitude,
-       double? longitude,
-       String status,
-       DateTime? createdAt,
-       DateTime? updatedAt}) = _$RoomModelImpl;
+      String? description,
+      List<String> amenityIds,
+      List<RoomImageModel> images,
+      double? latitude,
+      double? longitude,
+      String status,
+      double? depositeAmount,
+      String? agentName,
+      double? agentFees,
+      DateTime? createdAt,
+      DateTime? updatedAt}) = _$RoomModelImpl;
   const _RoomModel._() : super._();
 
   @override
@@ -716,6 +776,12 @@ abstract class _RoomModel extends RoomModel {
   double? get longitude;
   @override
   String get status;
+  @override
+  double? get depositeAmount;
+  @override
+  String? get agentName;
+  @override
+  double? get agentFees;
   @override
   DateTime? get createdAt;
   @override

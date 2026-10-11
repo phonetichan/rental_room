@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../domain/domain.dart';
 import '../../../../components/modal/room_filter.dart';
-
+import '../../../../extensions/l10n.dart';
+import '../../../../extensions/lookup_l10n.dart';
 class FilterSummary extends StatelessWidget {
   final RoomFilter filter;
 
@@ -14,12 +14,12 @@ class FilterSummary extends StatelessWidget {
     return '$head and ${items.last}';
   }
 
-  String? _build() {
+  String? _build(BuildContext context) {
     final items = <String>[];
 
     final typeId = filter.roomTypeId;
     if (typeId != null && typeId.isNotEmpty) {
-      items.add(LookupConstants.roomTypes[typeId] ?? typeId);
+      items.add(context.l10n.localizedRoomType(typeId));
     }
 
     if (filter.maxGuests != null) {
@@ -54,7 +54,7 @@ class FilterSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = _build();
+    final text = _build(context);
     if (text == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);

@@ -80,4 +80,20 @@ class AuthRepositoryImpl implements AuthRepository {
     final updatedModel = await _remoteDataSource.updateUserProfile(user);
     return updatedModel.toEntity();
   }
+
+  @override
+  Future<UserEntity> updateUserLocation({
+    required String userId,
+    required double latitude,
+    required double longitude,
+    required String address,
+  }) async {
+    final updatedModel = await _remoteDataSource.updateUserLocation(
+      userId: userId,
+      latitude: latitude,
+      longitude: longitude,
+      address: address,
+    );
+    return updatedModel.toEntity();
+  }
 }

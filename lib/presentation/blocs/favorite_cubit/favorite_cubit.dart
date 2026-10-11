@@ -1,12 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/usecase/favorite/get_favorite_counts_usecase.dart';
 import '../../../domain/usecase/favorite/get_user_favorites_usecase.dart';
 import '../../../domain/usecase/favorite/toggle_favorite_usecase.dart';
-import 'favorite_state.dart';
 
-export 'favorite_state.dart';
+part 'favorite_state.dart';
+part 'favorite_cubit.freezed.dart';
 
 @injectable
 class FavoriteCubit extends Cubit<FavoriteState> {

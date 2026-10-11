@@ -75,6 +75,9 @@ class RoomModel with _$RoomModel {
     double? latitude,
     double? longitude,
     @Default('available') String status,
+    double? depositeAmount,
+    String? agentName,
+    double? agentFees,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _RoomModel;
@@ -108,6 +111,11 @@ class RoomModel with _$RoomModel {
       latitude: (data['latitude'] as num?)?.toDouble(),
       longitude: (data['longitude'] as num?)?.toDouble(),
       status: data['status'] as String? ?? 'available',
+      depositeAmount: (data['depositeAmount'] as num?)?.toDouble() ??
+          (data['deposite_amount'] as num?)?.toDouble() ??
+          (data['depositAmount'] as num?)?.toDouble(),
+      agentName: data['agentName'] as String? ?? data['agent_name'] as String?,
+      agentFees: (data['agentFees'] as num?)?.toDouble() ?? (data['agent_fees'] as num?)?.toDouble(),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
     );
@@ -131,6 +139,9 @@ class RoomModel with _$RoomModel {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       'status': status,
+      if (depositeAmount != null) 'depositeAmount': depositeAmount,
+      if (agentName != null) 'agentName': agentName,
+      if (agentFees != null) 'agentFees': agentFees,
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     };
@@ -155,6 +166,9 @@ class RoomModel with _$RoomModel {
       latitude: latitude,
       longitude: longitude,
       status: status,
+      depositeAmount: depositeAmount,
+      agentName: agentName,
+      agentFees: agentFees,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -179,6 +193,9 @@ class RoomModel with _$RoomModel {
       latitude: entity.latitude,
       longitude: entity.longitude,
       status: entity.status,
+      depositeAmount: entity.depositeAmount,
+      agentName: entity.agentName,
+      agentFees: entity.agentFees,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );

@@ -101,6 +101,8 @@ import 'package:rental_room/domain/usecase/user/get_user_usecase.dart' as _i560;
 import 'package:rental_room/domain/usecase/user/sign_in_usecase.dart' as _i986;
 import 'package:rental_room/domain/usecase/user/sign_out_usecase.dart' as _i622;
 import 'package:rental_room/domain/usecase/user/sign_up_usecase.dart' as _i448;
+import 'package:rental_room/domain/usecase/user/update_location_usecase.dart'
+    as _i633;
 import 'package:rental_room/domain/usecase/user/update_password_usecase.dart'
     as _i247;
 import 'package:rental_room/domain/usecase/user/update_user_profile_param.dart'
@@ -120,6 +122,8 @@ import 'package:rental_room/presentation/pages/auth/login/cubit/login_cubit.dart
     as _i141;
 import 'package:rental_room/presentation/pages/auth/sign_up/cubit/sign_up_cubit.dart'
     as _i435;
+import 'package:rental_room/presentation/pages/profile/edit_location/cubit/location_cubit.dart'
+    as _i338;
 import 'package:rental_room/presentation/pages/profile/edit_password/cubit/edit_password_cubit.dart'
     as _i722;
 import 'package:rental_room/presentation/pages/profile/edit_profile/cubit/edit_profile_cubit.dart'
@@ -194,6 +198,8 @@ extension GetItInjectableX on _i174.GetIt {
         _i828.FavoriteRepositoryImpl(gh<_i686.FavoriteRemoteDataSource>()));
     gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
         () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()));
+    gh.lazySingleton<_i633.UpdateUserLocationUseCase>(
+        () => _i633.UpdateUserLocationUseCase(gh<_i795.UserRepository>()));
     gh.lazySingleton<_i312.BookingRepository>(
         () => _i586.BookingRepositoryImpl(gh<_i905.BookingRemoteDataSource>()));
     gh.lazySingleton<_i954.DeleteBookingUseCase>(
@@ -228,6 +234,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i146.UpdateRoomUseCase(gh<_i956.RoomRepository>()));
     gh.lazySingleton<_i304.GetRoomsUseCase>(
         () => _i304.GetRoomsUseCase(gh<_i956.RoomRepository>()));
+    gh.factory<_i338.LocationCubit>(
+        () => _i338.LocationCubit(gh<_i156.UpdateUserLocationUseCase>()));
     gh.factory<_i435.SignUpCubit>(
         () => _i435.SignUpCubit(gh<_i156.SignUpUseCase>()));
     gh.lazySingleton<_i622.SignOutUseCase>(
@@ -273,7 +281,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i828.NavigationRouter>(() => _i828.NavigationRouter(
           gh<_i276.INavigationKeyProvider>(),
           gh<_i582.AppStorage>(),
-          gh<_i582.ISnackShower>(),
           gh<_i276.AuthenticationCubit>(),
         ));
     return this;

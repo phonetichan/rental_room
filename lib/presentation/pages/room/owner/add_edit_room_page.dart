@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rental_room/presentation/pages/room/owner/widgets/counter_selector_widget.dart';
-import 'package:rental_room/presentation/pages/room/owner/widgets/room_amenities_selector_widget.dart';
-import 'package:rental_room/presentation/pages/room/owner/widgets/room_photo_selector_widget.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:rental_room/presentation/pages/room/owner/widgets/add_edit_room_amenities_step.dart';
+import 'package:rental_room/presentation/pages/room/owner/widgets/add_edit_room_form_step.dart';
+import 'package:rental_room/presentation/pages/room/owner/widgets/add_edit_room_photos_step.dart';
 
 import '../../../../data/data.dart';
 import '../../../../data/services/image_kit.dart';
@@ -12,7 +13,9 @@ import '../../../../di/injector.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
 import '../../../components/components.dart';
-import '../../setting_pages/user_guidance.dart';
+import '../../../extensions/l10n.dart';
+import '../../openstreetmap/location_widgets.dart';
+import '../../openstreetmap/picker_location.dart';
 
 class AddEditRoomScreen extends StatefulWidget {
   static const String routeName = 'add-edit-room';
@@ -42,6 +45,11 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
   late final TextEditingController _sqftController;
   late final TextEditingController _latController;
   late final TextEditingController _lngController;
+  late final TextEditingController _depositAmountController;
+  late final TextEditingController _agentNameController;
+  late final TextEditingController _agentFeesController;
+
+  PickedLocation? _pickedLocation;
 
   int _maxGuests = 1;
   int _numberBedrooms = 1;
@@ -76,6 +84,15 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
     _lngController = TextEditingController(
       text: r?.longitude?.toString() ?? '',
     );
+    _depositAmountController = TextEditingController(
+      text: r?.depositeAmount?.toString() ?? '',
+    );
+    _agentNameController = TextEditingController(
+      text: r?.agentName ?? '',
+    );
+    _agentFeesController = TextEditingController(
+      text: r?.agentFees?.toString() ?? '',
+    );
 
     if (r != null) {
       _selectedRoomType = r.roomTypeId;
@@ -83,6 +100,13 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
       _numberBedrooms = r.numberBedrooms;
       _selectedAmenityIds.addAll(r.amenityIds);
       _existingImages.addAll(r.images);
+
+      if (r.latitude != null && r.longitude != null) {
+        _pickedLocation = PickedLocation(
+          LatLng(r.latitude!, r.longitude!),
+          r.location,
+        );
+      }
     }
 
     _loadMasterData();
@@ -122,6 +146,9 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
     _sqftController.dispose();
     _latController.dispose();
     _lngController.dispose();
+    _depositAmountController.dispose();
+    _agentNameController.dispose();
+    _agentFeesController.dispose();
     super.dispose();
   }
 
@@ -136,74 +163,64 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
     }
   }
 
-  void _navigateToUserGuidance() {
-    context.push(UserGuidancePage.routePath);
+  void _onLocationChanged(PickedLocation picked) {
+    setState(() {
+      _pickedLocation = picked;
+      _locationController.text = picked.address;
+      _latController.text = picked.latLng.latitude.toString();
+      _lngController.text = picked.latLng.longitude.toString();
+    });
   }
 
   bool _validateCurrentStep() {
     FocusScope.of(context).unfocus();
+    final l10n = context.l10n;
+
     switch (_activeStep) {
-      case 0: // Basic Details, Pricing & Location
+      case 0: // Details
         if (_nameController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter room name.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseEnterRoomName);
           return false;
         }
         if (_roomNumberController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter room number.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseEnterRoomNumber);
           return false;
         }
         if (_floorController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter floor details.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseEnterFloorDetails);
           return false;
         }
         if (_selectedRoomType == null || _selectedRoomType!.isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please select a room type.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseSelectRoomType);
           return false;
         }
         if (_sqftController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter square footage.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseEnterSquareFootage);
           return false;
         }
         if (_priceController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter rental price.',
-          );
-          return false;
-        }
-        if (_locationController.text.trim().isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please enter location address.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseEnterRentalPrice);
           return false;
         }
         return true;
 
-      case 1: // Amenities
+      case 1: // Map
+        if (_locationController.text.trim().isEmpty || _pickedLocation == null) {
+          _snackShower.error(context: context, message: l10n.pleaseChooseLocationOnMap);
+          return false;
+        }
+        if (_latController.text.trim().isEmpty || _lngController.text.trim().isEmpty) {
+          _snackShower.error(context: context, message: l10n.latitudeAndLongitudeRequired);
+          return false;
+        }
         return true;
 
-      case 2: // Photos
+      case 2: // Amenities
+        return true;
+
+      case 3: // Photos
         if (_existingImages.isEmpty && _selectedImages.isEmpty) {
-          _snackShower.error(
-            context: context,
-            message: 'Please upload at least 1 room photo.',
-          );
+          _snackShower.error(context: context, message: l10n.pleaseUploadPhoto);
           return false;
         }
         return true;
@@ -225,7 +242,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
 
   void _handleNextStep() {
     if (_validateCurrentStep()) {
-      if (_activeStep < 2) {
+      if (_activeStep < 3) {
         setState(() => _activeStep++);
       } else {
         _submitForm();
@@ -269,6 +286,15 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
         }
       }
 
+      final depositText = _depositAmountController.text.trim();
+      final depositeAmount = depositText.isNotEmpty ? double.tryParse(depositText) : null;
+
+      final agentNameText = _agentNameController.text.trim();
+      final agentName = agentNameText.isEmpty ? null : agentNameText;
+
+      final agentFeesText = _agentFeesController.text.trim();
+      final agentFees = agentFeesText.isNotEmpty ? double.tryParse(agentFeesText) : null;
+
       final roomEntity = RoomEntity(
         id: roomId,
         ownerId: authUser.id,
@@ -289,6 +315,9 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
         latitude: double.tryParse(_latController.text.trim()),
         longitude: double.tryParse(_lngController.text.trim()),
         status: widget.room?.status ?? _selectedStatus,
+        depositeAmount: depositeAmount,
+        agentName: agentName,
+        agentFees: agentFees,
         createdAt: widget.room?.createdAt,
       );
 
@@ -341,18 +370,18 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
           : const BoxConstraints(minWidth: 44, minHeight: 44),
       prefixIcon: alignLabelWithHint
           ? Padding(
-              padding: const EdgeInsets.only(top: 10, left: 8, right: 6),
-              child: Icon(
-                prefixIcon,
-                color: theme.primaryColor.withValues(alpha: 0.8),
-                size: 20,
-              ),
-            )
+        padding: const EdgeInsets.only(top: 10, left: 8, right: 6),
+        child: Icon(
+          prefixIcon,
+          color: theme.primaryColor.withValues(alpha: 0.8),
+          size: 20,
+        ),
+      )
           : Icon(
-              prefixIcon,
-              color: theme.primaryColor.withValues(alpha: 0.8),
-              size: 20,
-            ),
+        prefixIcon,
+        color: theme.primaryColor.withValues(alpha: 0.8),
+        size: 20,
+      ),
       filled: true,
       fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
         alpha: 0.3,
@@ -430,6 +459,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
     final primaryColor = theme.primaryColor;
     final cardBackground = theme.cardColor;
     final borderColor = theme.dividerColor;
+    final l10n = context.l10n;
 
     return BlocConsumer<RoomCubit, RoomState>(
       listener: (context, state) {
@@ -450,7 +480,7 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
             backgroundColor: theme.colorScheme.surfaceContainerLowest,
             appBar: AppBar(
               title: Text(
-                _isEditing ? 'Edit Room Listing' : 'Add New Room',
+                _isEditing ? l10n.editRoomListing : l10n.addRoomListing,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -463,104 +493,107 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
             body: _isLoadingMasterData
                 ? const Center(child: CircularProgressIndicator.adaptive())
                 : Column(
-                    children: [
-                      AppStepper(
-                        activeStep: _activeStep,
-                        onStepTapped: _onStepTapped,
-                        steps: const [
-                          StepData('Details', Icons.meeting_room_outlined),
-                          StepData('Amenities', Icons.star_outline),
-                          StepData('Photos', Icons.photo_library_outlined),
-                        ],
+              children: [
+                AppStepper(
+                  activeStep: _activeStep,
+                  onStepTapped: _onStepTapped,
+                  steps: [
+                    StepData(l10n.details, Icons.meeting_room_outlined),
+                    StepData(l10n.locationMap, Icons.map_outlined),
+                    StepData(l10n.amenities, Icons.star_outline),
+                    StepData(l10n.photos, Icons.photo_library_outlined),
+                  ],
+                ),
+                // STEP CONTENT AREA
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Form(
+                      key: _formKey,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: _buildCurrentStepContent(isSubmitting),
                       ),
-                      // STEP CONTENT AREA
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Form(
-                            key: _formKey,
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              child: _buildCurrentStepContent(isSubmitting),
+                    ),
+                  ),
+                ),
+
+                // BOTTOM NAVIGATION BAR
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardBackground,
+                    border: Border(top: BorderSide(color: borderColor)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (_activeStep > 0)
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor:
+                            theme.textTheme.bodyLarge?.color,
+                            side: BorderSide.none,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                        ),
-                      ),
-
-                      // BOTTOM NAVIGATION BAR
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: cardBackground,
-                          border: Border(top: BorderSide(color: borderColor)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (_activeStep > 0)
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  foregroundColor:
-                                      theme.textTheme.bodyLarge?.color,
-                                  side: BorderSide.none,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                onPressed: isSubmitting
-                                    ? null
-                                    : () {
-                                        setState(() {
-                                          _activeStep--;
-                                        });
-                                      },
-                                child: const Text(
-                                  'Back',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )
-                            else
-                              const SizedBox.shrink(),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: primaryColor,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 28,
-                                  vertical: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: isSubmitting ? null : _handleNextStep,
-                              child: isSubmitting
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator.adaptive(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation(
-                                          Colors.white,
-                                        ),
-                                      ),
-                                    )
-                                  : Text(
-                                      _activeStep < 2
-                                          ? 'Next'
-                                          : (_isEditing
-                                                ? 'Update Room'
-                                                : 'Create Room'),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                          onPressed: isSubmitting
+                              ? null
+                              : () {
+                            setState(() {
+                              _activeStep--;
+                            });
+                          },
+                          child: Text(
+                            l10n.cancel,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
+                          ),
+                        )
+                      else
+                        const SizedBox.shrink(),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: isSubmitting ? null : _handleNextStep,
+                        child: isSubmitting
+                            ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator.adaptive(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                            : Text(
+                          _activeStep < 3
+                              ? l10n.next
+                              : (_isEditing
+                              ? l10n.updateRoom
+                              : l10n.createRoom),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
                   ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -568,258 +601,99 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
   }
 
   Widget _buildCurrentStepContent(bool isSubmitting) {
+    final l10n = context.l10n;
+
     switch (_activeStep) {
-      case 0: // CASE 1: ALL DETAILS, PRICING, LOCATION & DESCRIPTION (NO TITLE HEADER)
+      case 0: // Details
         return Column(
           key: const ValueKey(0),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionCard(
               children: [
-                TextFormField(
-                  controller: _nameController,
-                  enabled: !isSubmitting,
-                  style: const TextStyle(fontSize: 14),
-                  decoration: _buildInputDecoration(
-                    labelText: 'Room Name / Title',
-                    hintText: 'e.g. Cozy Deluxe Room 101',
-                    prefixIcon: Icons.meeting_room_outlined,
-                  ),
-                  validator: (v) => v == null || v.trim().isEmpty
-                      ? 'Please enter room name'
-                      : null,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _roomNumberController,
-                        enabled: !isSubmitting && !_isEditing,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: _buildInputDecoration(
-                          labelText: 'Room Number',
-                          hintText: '101',
-                          prefixIcon: Icons.tag,
-                        ),
-                        validator: (v) =>
-                            v == null || v.trim().isEmpty ? 'Required' : null,
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _floorController,
-                        enabled: !isSubmitting,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: _buildInputDecoration(
-                          labelText: 'Floor',
-                          hintText: '1st Floor',
-                          prefixIcon: Icons.layers_outlined,
-                        ),
-                        validator: (v) =>
-                            v == null || v.trim().isEmpty ? 'Required' : null,
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                DropdownButtonFormField<String>(
-                  value: _selectedRoomType,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  decoration: _buildInputDecoration(
-                    labelText: 'Room Type',
-                    prefixIcon: Icons.category_outlined,
-                  ),
-                  items: _roomTypes
-                      .map(
-                        (type) => DropdownMenuItem<String>(
-                          value: type['id'] as String,
-                          child: Text(
-                            type['name'] as String,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: isSubmitting
-                      ? null
-                      : (v) => setState(() => _selectedRoomType = v),
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Please select room type' : null,
-                ),
-                const SizedBox(height: 14),
-                TextFormField(
-                  controller: _sqftController,
-                  enabled: !isSubmitting && !_isEditing,
-                  style: const TextStyle(fontSize: 14),
-                  keyboardType: TextInputType.number,
-                  decoration: _buildInputDecoration(
-                    labelText: 'Room Sqft',
-                    hintText: 'e.g. 450',
-                    prefixIcon: Icons.straighten_outlined,
-                  ),
-                  validator: (v) => v == null || v.trim().isEmpty
-                      ? 'Enter room square footage'
-                      : null,
-                ),
-                const SizedBox(height: 14),
-                TextFormField(
-                  controller: _priceController,
-                  enabled: !isSubmitting,
-                  style: const TextStyle(fontSize: 14),
-                  keyboardType: TextInputType.number,
-                  decoration: _buildInputDecoration(
-                    labelText: 'Price / Month',
-                    hintText: 'e.g. 300000',
-                    prefixIcon: Icons.payments_outlined,
-                    suffixText: 'MMK',
-                  ),
-                  validator: (v) => v == null || v.trim().isEmpty
-                      ? 'Enter price in MMK'
-                      : null,
-                ),
-                const SizedBox(height: 14),
-                CounterSelectorWidget(
-                  label: 'Max Guests Allowed',
-                  icon: Icons.group_outlined,
-                  value: _maxGuests,
-                  enabled: !isSubmitting,
-                  onChanged: (val) => setState(() => _maxGuests = val),
-                ),
-                const SizedBox(height: 14),
-                CounterSelectorWidget(
-                  label: 'Number of Bedrooms',
-                  icon: Icons.king_bed_outlined,
-                  value: _numberBedrooms,
-                  minValue: 0,
-                  enabled: !isSubmitting,
-                  onChanged: (val) => setState(() => _numberBedrooms = val),
-                ),
-                const SizedBox(height: 14),
-                TextFormField(
-                  controller: _locationController,
-                  enabled: !isSubmitting,
-                  style: const TextStyle(fontSize: 14),
-                  minLines: 2,
-                  maxLines: 3,
-                  decoration: _buildInputDecoration(
-                    labelText: 'Location / Address',
-                    hintText: 'Enter location',
-                    prefixIcon: Icons.place_outlined,
-                    alignLabelWithHint: true,
-                  ),
-                  validator: (v) => v == null || v.trim().isEmpty
-                      ? 'Please enter location'
-                      : null,
-                  keyboardType: TextInputType.streetAddress,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _latController,
-                        enabled: !isSubmitting,
-                        style: const TextStyle(fontSize: 14),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                          signed: true,
-                        ),
-                        decoration: _buildInputDecoration(
-                          labelText: 'Latitude',
-                          hintText: '16.8409',
-                          prefixIcon: Icons.map_outlined,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _lngController,
-                        enabled: !isSubmitting,
-                        style: const TextStyle(fontSize: 14),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                          signed: true,
-                        ),
-                        decoration: _buildInputDecoration(
-                          labelText: 'Longitude',
-                          hintText: '96.1735',
-                          prefixIcon: Icons.explore_outlined,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: InkWell(
-                    onTap: _navigateToUserGuidance,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 4.0,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.help_outline_rounded,
-                            size: 15,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'How to find Latitude & Longitude?',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _descriptionController,
-                  enabled: !isSubmitting,
-                  style: const TextStyle(fontSize: 14),
-                  minLines: 4,
-                  maxLines: 6,
-                  decoration: _buildInputDecoration(
-                    labelText: 'Description (Optional)',
-                    hintText:
-                        'Enter room details, rules, amenities description...',
-                    prefixIcon: Icons.description_outlined,
-                    alignLabelWithHint: true,
-                  ),
-                  keyboardType: TextInputType.multiline,
+                AddEditRoomFormStep(
+                  isSubmitting: isSubmitting,
+                  isEditing: _isEditing,
+                  nameController: _nameController,
+                  roomNumberController: _roomNumberController,
+                  floorController: _floorController,
+                  sqftController: _sqftController,
+                  priceController: _priceController,
+                  depositAmountController: _depositAmountController,
+                  agentNameController: _agentNameController,
+                  agentFeesController: _agentFeesController,
+                  descriptionController: _descriptionController,
+                  selectedRoomType: _selectedRoomType,
+                  roomTypes: _roomTypes,
+                  maxGuests: _maxGuests,
+                  numberBedrooms: _numberBedrooms,
+                  onRoomTypeChanged: (v) => setState(() => _selectedRoomType = v),
+                  onMaxGuestsChanged: (val) => setState(() => _maxGuests = val),
+                  onNumberBedroomsChanged: (val) => setState(() => _numberBedrooms = val),
+                  inputDecorationBuilder: _buildInputDecoration,
                 ),
               ],
             ),
           ],
         );
-
-      case 1: // CASE 2: AMENITIES (INCLUDES TITLE HEADER)
+      case 1: // Map
         return Column(
           key: const ValueKey(1),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(title: 'Amenities', icon: Icons.star_outline),
+            _buildSectionHeader(title: l10n.roomLocation, icon: Icons.map_outlined),
             _buildSectionCard(
               children: [
-                RoomAmenitiesSelectorWidget(
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    children: [
+                      LocationField(
+                        value: _pickedLocation,
+                        onChanged: _onLocationChanged,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _latController,
+                              readOnly: true,
+                              decoration: _buildInputDecoration(
+                                labelText: l10n.latitude,
+                                prefixIcon: Icons.gps_fixed,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _lngController,
+                              readOnly: true,
+                              decoration: _buildInputDecoration(
+                                labelText: l10n.longitude,
+                                prefixIcon: Icons.gps_fixed,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      case 2: // Amenities
+        return Column(
+          key: const ValueKey(2),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(title: l10n.amenities, icon: Icons.star_outline),
+            _buildSectionCard(
+              children: [
+                AddEditRoomAmenitiesStep(
                   amenitiesList: _amenitiesList,
                   selectedAmenityIds: _selectedAmenityIds,
                   isSubmitting: isSubmitting,
@@ -837,16 +711,16 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
             ),
           ],
         );
-
-      case 2: // CASE 3: PHOTOS (NO TITLE HEADER)
+      case 3: // Photos
       default:
         return Column(
-          key: const ValueKey(2),
+          key: const ValueKey(3),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildSectionHeader(title: l10n.roomPhotos, icon: Icons.photo_library_outlined),
             _buildSectionCard(
               children: [
-                RoomPhotoSelectorWidget(
+                AddEditRoomPhotosStep(
                   existingImages: _existingImages,
                   selectedImages: _selectedImages,
                   isSubmitting: isSubmitting,

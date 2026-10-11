@@ -5,8 +5,9 @@ import '../../../../data/data.dart';
 import '../../../../di/injector.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
+import '../../../extensions/l10n.dart';
 import '../../../extensions/number.dart';
-import '../../booking/booking_stepper.dart';
+import '../../booking/owner/booking_stepper.dart';
 import '../owner/widgets/room_detail_screen.dart';
 
 class TenantRoomDetailScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
   List<Map<String, dynamic>> _amenitiesList = [];
   UserModel? _ownerUser;
   bool _isBookingLoading = false;
-  final ISnackShower _snackShower = inject<ISnackShower>();
+  // final ISnackShower _snackShower = inject<ISnackShower>();
 
   @override
   void initState() {
@@ -167,50 +168,6 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
     );
   }
 }
-
-// 1. Favorite Button Widget
-class _TenantRoomFavoriteButton extends StatelessWidget {
-  final RoomEntity room;
-  final UserEntity? currentUser;
-
-  const _TenantRoomFavoriteButton({
-    required this.room,
-    required this.currentUser,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (currentUser == null) return const SizedBox.shrink();
-
-    return BlocBuilder<FavoriteCubit, FavoriteState>(
-      builder: (context, favoriteState) {
-        final isFav = favoriteState.isFavorite(room.id);
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.45),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            tooltip: isFav ? 'Remove from Saved' : 'Save Room',
-            icon: Icon(
-              isFav ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-              color: isFav ? const Color(0xFFEF4444) : Colors.white,
-              size: 22,
-            ),
-            onPressed: () {
-              context.read<FavoriteCubit>().toggleFavorite(
-                    roomId: room.id,
-                    userId: currentUser!.id,
-                    ownerId: room.ownerId,
-                  );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
 // 2. Content Body Widget
 class _TenantRoomContentBody extends StatelessWidget {
   final RoomEntity room;
@@ -369,9 +326,9 @@ class _TenantRoomBottomActionBar extends StatelessWidget {
                                   ),
                                 )
                               : const Icon(Icons.bookmark_add_outlined, size: 20),
-                          label: const Text(
-                            'Rent Now',
-                            style: TextStyle(
+                          label: Text(
+                            context.l10n.rentNow,
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),

@@ -417,19 +417,19 @@ abstract class _BookingModel extends BookingModel {
       {required String id,
       required String userId,
       required String roomId,
-       String? ownerId,
-       bool isPhoneContacted,
-       bool isVisited,
-       bool isReadByTenant,
-       bool isReadByOwner,
-       String status,
-       DateTime? createdAt,
-       DateTime? updatedAt,
-       String? roomName,
-       double? roomPrice,
-       String? roomImageUrl,
-       String? tenantName,
-       String? tenantPhone}) = _$BookingModelImpl;
+      String? ownerId,
+      bool isPhoneContacted,
+      bool isVisited,
+      bool isReadByTenant,
+      bool isReadByOwner,
+      String status,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      String? roomName,
+      double? roomPrice,
+      String? roomImageUrl,
+      String? tenantName,
+      String? tenantPhone}) = _$BookingModelImpl;
   const _BookingModel._() : super._();
 
   @override

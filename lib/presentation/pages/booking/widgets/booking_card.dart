@@ -1,310 +1,7 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-//
-// import '../../../../domain/domain.dart';
-// import '../../../blocs/blocs.dart';
-// import '../../../extensions/extensions.dart';
-// import '../new_booking_view.dart';
-//
-// class BookingCard extends StatelessWidget {
-//   final BookingEntity booking;
-//   final UserEntity currentUser;
-//   final VoidCallback onBookingUpdated;
-//   final VoidCallback? onTap;
-//
-//   const BookingCard({
-//     super.key,
-//     required this.booking,
-//     required this.currentUser,
-//     required this.onBookingUpdated,
-//     this.onTap,
-//   });
-//
-//   bool get isOwner => currentUser.role == UserRole.owner;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//
-//     return Card(
-//       margin: const EdgeInsets.only(bottom: 12),
-//       elevation: 0,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(16),
-//         side: BorderSide(
-//           color: theme.colorScheme.outlineVariant.withAlpha(128),
-//         ),
-//       ),
-//       clipBehavior: Clip.antiAlias,
-//       child: InkWell(
-//         onTap: onTap ??
-//             () async {
-//               BookingCubit? bookingCubit;
-//               try {
-//                 bookingCubit = context.read<BookingCubit>();
-//               } catch (_) {}
-//
-//               final updated = await Navigator.of(context).push<bool>(
-//                 MaterialPageRoute(
-//                   builder: (_) {
-//                     if (bookingCubit != null) {
-//                       return BlocProvider.value(
-//                         value: bookingCubit,
-//                         child: NewBookingView(
-//                           booking: booking,
-//                           currentUser: currentUser,
-//                         ),
-//                       );
-//                     }
-//                     return NewBookingView(
-//                       booking: booking,
-//                       currentUser: currentUser,
-//                     );
-//                   },
-//                 ),
-//               );
-//
-//               if (updated == true) {
-//                 onBookingUpdated();
-//               }
-//             },
-//         child: Padding(
-//           padding: const EdgeInsets.all(16),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // Header: Title (roomName) & Status Chip
-//               Row(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Expanded(
-//                     child: Text(
-//                       (booking.roomName != null && booking.roomName!.isNotEmpty)
-//                           ? booking.roomName!.capitalizeWords
-//                           : (booking.id.length > 8
-//                               ? 'Booking Ref #${booking.id.substring(0, 8)}'
-//                               : 'Booking Ref #${booking.id}'),
-//                       style: theme.textTheme.titleMedium?.copyWith(
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                       maxLines: 1,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 8),
-//                   _buildStatusChip(context, booking.status),
-//                 ],
-//               ),
-//               const SizedBox(height: 12),
-//
-//               // Booking Details Section
-//               if (booking.createdAt != null) ...[
-//                 _buildInfoRow(
-//                   context,
-//                   icon: Icons.calendar_today_rounded,
-//                   label: 'Requested On',
-//                   value:
-//                       '${booking.createdAt!.day}/${booking.createdAt!.month}/${booking.createdAt!.year}',
-//                 ),
-//                 const SizedBox(height: 8),
-//               ],
-//               _buildInfoRow(
-//                 context,
-//                 icon: isOwner
-//                     ? Icons.person_outline_rounded
-//                     : Icons.phone_android_rounded,
-//                 label: isOwner ? 'Tenant' : 'Contact Phone',
-//                 value: isOwner
-//                     ? (booking.tenantName ?? 'Tenant User')
-//                     : (booking.tenantPhone ?? 'N/A'),
-//               ),
-//               if (booking.roomPrice != null) ...[
-//                 const SizedBox(height: 8),
-//                 _buildInfoRow(
-//                   context,
-//                   icon: Icons.payments_outlined,
-//                   label: 'Room Price',
-//                   value: '${booking.roomPrice!.toStringAsFixed(0)} MMK',
-//                   isHighlight: true,
-//                 ),
-//               ],
-//
-//               // Action Buttons Section
-//               if (_shouldShowActions()) ...[
-//                 const Padding(
-//                   padding: EdgeInsets.symmetric(vertical: 12),
-//                   child: Divider(height: 1),
-//                 ),
-//                 _buildActionButtons(context),
-//               ],
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildInfoRow(
-//     BuildContext context, {
-//     required IconData icon,
-//     required String label,
-//     required String value,
-//     bool isHighlight = false,
-//   }) {
-//     final theme = Theme.of(context);
-//     return Row(
-//       children: [
-//         Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
-//         const SizedBox(width: 8),
-//         Text(
-//           '$label: ',
-//           style: theme.textTheme.bodyMedium?.copyWith(
-//             color: theme.colorScheme.onSurfaceVariant,
-//           ),
-//         ),
-//         Expanded(
-//           child: Text(
-//             value,
-//             textAlign: TextAlign.end,
-//             style: theme.textTheme.bodyMedium?.copyWith(
-//               fontWeight: isHighlight ? FontWeight.bold : FontWeight.normal,
-//               color: isHighlight
-//                   ? theme.colorScheme.primary
-//                   : theme.colorScheme.onSurface,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildStatusChip(BuildContext context, String status) {
-//     Color color;
-//     String label;
-//
-//     switch (status.toLowerCase()) {
-//       case 'pending':
-//         color = Colors.orange;
-//         label = 'Pending';
-//         break;
-//       case 'confirmed':
-//         color = Colors.green;
-//         label = 'Confirmed';
-//         break;
-//       case 'cancelled':
-//         color = Colors.red;
-//         label = 'Cancelled';
-//         break;
-//       case 'draft':
-//       default:
-//         color = Colors.grey;
-//         label = status.toUpperCase();
-//         break;
-//     }
-//
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-//       decoration: BoxDecoration(
-//         color: color.withAlpha(30),
-//         borderRadius: BorderRadius.circular(20),
-//         border: Border.all(color: color.withAlpha(80)),
-//       ),
-//       child: Text(
-//         label,
-//         style: TextStyle(
-//           color: color,
-//           fontSize: 12,
-//           fontWeight: FontWeight.w600,
-//         ),
-//       ),
-//     );
-//   }
-//
-//   bool _shouldShowActions() {
-//     final status = booking.status.toLowerCase();
-//     if (status == 'cancelled') return false;
-//     if (isOwner) {
-//       return status == 'pending' || status == 'draft';
-//     } else {
-//       // Tenants do not show action buttons in the booking list card
-//       return false;
-//     }
-//   }
-//
-//   Future<void> _updateStatus(
-//     BuildContext context,
-//     String newStatus,
-//     String actionTitle,
-//     String confirmMessage,
-//   ) async {
-//     final confirm = await showDialog<bool>(
-//       context: context,
-//       builder: (ctx) => AlertDialog(
-//         title: Text(actionTitle),
-//         content: Text(
-//           confirmMessage,
-//           maxLines: 3,
-//           overflow: TextOverflow.ellipsis, // Clips smoothly if it exceeds 3 lines
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.of(ctx).pop(false),
-//             child: const Text('No'),
-//           ),
-//           ElevatedButton(
-//             onPressed: () => Navigator.of(ctx).pop(true),
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: newStatus == 'cancelled'
-//                   ? Colors.red
-//                   : Theme.of(context).colorScheme.primary,
-//               foregroundColor: Colors.white,
-//             ),
-//             child: const Text('Yes'),
-//           ),
-//         ],
-//       ),
-//     );
-//
-//     if (confirm == true && context.mounted) {
-//       final updated = booking.copyWith(status: newStatus);
-//       context.read<BookingCubit>().updateBooking(updated);
-//     }
-//   }
-//
-//   Widget _buildActionButtons(BuildContext context) {
-//     if (isOwner) {
-//       if (booking.status.toLowerCase() == 'confirmed') {
-//         return const SizedBox.shrink();
-//       }
-//       return SizedBox(
-//         width: double.infinity,
-//         child: ElevatedButton(
-//           onPressed: () => _updateStatus(
-//             context,
-//             'confirmed',
-//             'Accept Booking',
-//             'Are you sure you want to accept this booking request?',
-//           ),
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Theme.of(context).colorScheme.primary,
-//             foregroundColor: Colors.white,
-//             elevation: 0,
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//           ),
-//           child: const Text('Accept & Confirm'),
-//         ),
-//       );
-//     }
-//
-//     return const SizedBox.shrink();
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../extensions/contract_extensions.dart';
+import '../../contract/widgets/contract_countdown_banner.dart';
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
@@ -317,12 +14,14 @@ class BookingCard extends StatelessWidget {
   final UserEntity currentUser;
   final VoidCallback onBookingUpdated;
   final VoidCallback? onTap;
+  final ContractEntity? contract;
 
   const BookingCard({
     super.key,
     required this.booking,
     required this.currentUser,
     required this.onBookingUpdated,
+    this.contract,
     this.onTap,
   });
 
@@ -441,7 +140,13 @@ class BookingCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: styles.spacing.spacing100),
-                    _buildStatusChip(styles, booking.status, isDark),
+                    _buildStatusChip(
+                      styles,
+                      (contract?.effectiveStatus == ContractStatus.expired)
+                          ? 'expired'
+                          : booking.status,
+                      isDark,
+                    ),
                   ],
                 ),
 
@@ -502,6 +207,20 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
 
+                // Contract countdown: only while days are left
+                if (contract != null && contract!.countsForBadge) ...[
+                  SizedBox(height: styles.spacing.spacing200),
+                  Row(
+                    children: [
+                      ContractCountdownBanner(contract: contract!),
+                      const Spacer(),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: isDark ? Colors.white60 : AppColors.clrDarkGrey,
+                      ),
+                    ],
+                  ),
+                ],
                 // Action Buttons Section
                 if (_shouldShowActions()) ...[
                   SizedBox(height: styles.spacing.spacing300),
@@ -567,9 +286,17 @@ class BookingCard extends StatelessWidget {
         chipColor = isDark ? AppColors.clrPrimaryLight : AppColors.clrPrimary;
         label = 'Confirmed';
         break;
+      case 'contracted':
+        chipColor = isDark ? AppColors.clrPrimaryLight : AppColors.clrPrimary;
+        label = 'Contracted';
+        break;
       case 'cancelled':
         chipColor = isDark ? Colors.redAccent : Colors.red.shade700;
         label = 'Cancelled';
+        break;
+      case 'expired':
+        chipColor = isDark ? Colors.redAccent : Colors.red.shade700;
+        label = 'Expired';
         break;
       case 'draft':
       default:
@@ -683,7 +410,7 @@ class BookingCard extends StatelessWidget {
           if (targetDay > lastDayOfMonth) targetDay = lastDayOfMonth;
           final endDate = DateTime(targetYear, targetMonth, targetDay);
 
-          final contract = ContractEntity(
+          final newContract = ContractEntity(
             id: '',
             bookingId: booking.id,
             roomId: booking.roomId,
@@ -697,7 +424,7 @@ class BookingCard extends StatelessWidget {
                 'Standard Rental Agreement for ${booking.roomName}. Minimum duration 3 months.',
             createdAt: now,
           );
-          await contractUseCase(contract);
+          await contractUseCase(newContract);
 
           // 3. Cancel other pending/draft requests for this room so user2 and user3 know it's rented
           final bookingRepo = inject<BookingRepository>();

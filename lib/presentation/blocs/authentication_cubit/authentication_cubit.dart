@@ -16,18 +16,21 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final GetUserUseCase _getUserUseCase;
 
   final ValueNotifier<ThemeMode> themeModeNotifier;
+  final ValueNotifier<Locale> localeNotifier;
 
   AuthenticationCubit(
     this._storage,
     this._signOutUseCase,
     this._getUserUseCase,
   )   : themeModeNotifier = ValueNotifier<ThemeMode>(_storage.themeMode),
+        localeNotifier = ValueNotifier<Locale>(_storage.locale),
         super(const AuthenticationState.initial()) {
     // Check saved session instantly on instantiation
     loadData();
   }
 
   ThemeMode get themeMode => themeModeNotifier.value;
+  Locale get locale => localeNotifier.value;
 
   UserEntity? get user => switch (state) {
         AuthenticationAuthenticated(user: final user) => user,
@@ -73,6 +76,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     await _storage.setThemeMode(mode);
   }
 
+  Future<void> setLocale(Locale locale) async {
+    localeNotifier.value = locale;
+    await _storage.setLocale(locale);
+  }
+
   Future<void> authenticateUser({
     required UserEntity user,
   }) async {
@@ -92,6 +100,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   @override
   Future<void> close() {
     themeModeNotifier.dispose();
+    localeNotifier.dispose();
     return super.close();
   }
 }

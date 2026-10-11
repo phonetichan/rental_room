@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../../domain/domain.dart';
 import '../../../../components/modal/room_filter.dart';
+import '../../../../extensions/l10n.dart';
+import '../../../../extensions/lookup_l10n.dart';
 
 class TenantFilterChips extends StatelessWidget {
   final RoomFilter filter;
@@ -16,6 +18,7 @@ class TenantFilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final categories = roomTypes.isNotEmpty
         ? roomTypes.map((type) {
             return {
@@ -39,7 +42,7 @@ class TenantFilterChips extends StatelessWidget {
         children: [
           // 1. All Chip
           FilterChipItem(
-            label: 'All',
+            label: l10n.all,
             icon: Icons.border_all_rounded,
             isSelected: isAllSelected,
             onTap: () {
@@ -52,7 +55,7 @@ class TenantFilterChips extends StatelessWidget {
 
           // 2. Favorites Chip
           FilterChipItem(
-            label: 'Favorites',
+            label: l10n.favorites,
             icon: Icons.favorite_rounded,
             iconColor: isFavoriteSelected ? Colors.red : Colors.grey,
             isSelected: isFavoriteSelected,
@@ -67,7 +70,7 @@ class TenantFilterChips extends StatelessWidget {
           // 3. Category Chips
           ...categories.map((cat) {
             final catId = cat['id']!;
-            final catName = cat['name']!;
+            final catName = context.l10n.localizedRoomType(catId);
             final isSelected = !filter.isFavoriteOnly && filter.roomTypeId == catId;
 
             return Padding(
@@ -78,7 +81,9 @@ class TenantFilterChips extends StatelessWidget {
                 isSelected: isSelected,
                 onTap: () {
                   onFilterChanged(
-                    filter.copyWith(roomTypeId: catId, isFavoriteOnly: false),
+                    filter.roomTypeId == catId
+                        ? filter.copyWith(roomTypeId: '', isFavoriteOnly: false)
+                        : filter.copyWith(roomTypeId: catId, isFavoriteOnly: false),
                   );
                 },
               ),

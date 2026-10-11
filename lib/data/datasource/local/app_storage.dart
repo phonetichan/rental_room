@@ -16,6 +16,7 @@ class AppStorage {
   static const String _keyIsNewInstall = 'is_new_install';
   static const String _keyUser = 'saved_user_info';
   static const String _keyThemeMode = 'theme_mode';
+  static const String _keyLocale = 'app_locale';
 
   // --- Synchronous Getters ---
 
@@ -25,6 +26,11 @@ class AppStorage {
     final modeStr = _prefs.getString(_keyThemeMode);
     if (modeStr == 'dark') return ThemeMode.dark;
     return ThemeMode.light;
+  }
+
+  Locale get locale {
+    final langCode = _prefs.getString(_keyLocale) ?? 'en';
+    return Locale(langCode);
   }
 
   UserEntity? get savedUserInfo {
@@ -46,6 +52,10 @@ class AppStorage {
 
   Future<void> setThemeMode(ThemeMode mode) async {
     await _prefs.setString(_keyThemeMode, mode == ThemeMode.dark ? 'dark' : 'light');
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    await _prefs.setString(_keyLocale, locale.languageCode);
   }
 
   Future<void> saveUserInfo(UserEntity user) async {

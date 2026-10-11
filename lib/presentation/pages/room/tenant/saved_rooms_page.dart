@@ -5,6 +5,7 @@ import 'package:rental_room/presentation/pages/room/tenant/widgets/room_paginate
 
 import '../../../blocs/blocs.dart';
 import '../../../../domain/domain.dart';
+import '../../../extensions/l10n.dart';
 
 class SavedRoomsPage extends StatelessWidget {
   final UserEntity user;
@@ -16,9 +17,10 @@ class SavedRoomsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SavedRoomsCubit>();
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved Rooms')),
+      appBar: AppBar(title: Text(l10n.savedRooms)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

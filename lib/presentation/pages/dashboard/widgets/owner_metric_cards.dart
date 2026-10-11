@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../presentation.dart';
 
 enum MetricType {
@@ -43,6 +44,8 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<RoomCubit, RoomState>(
       builder: (context, state) {
         return BlocBuilder<FavoriteCubit, FavoriteState>(
@@ -55,9 +58,12 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
                   orElse: () => [],
                 );
 
-                final List<BookingEntity> ownerBookings = bookingState.maybeWhen(
+                final List<BookingEntity> ownerBookings =
+                bookingState.maybeWhen(
                   loaded: (bookings) => bookings
-                      .where((b) => b.ownerId == widget.user.id || ownerRooms.any((r) => r.id == b.roomId))
+                      .where((b) =>
+                  b.ownerId == widget.user.id ||
+                      ownerRooms.any((r) => r.id == b.roomId))
                       .toList(),
                   orElse: () => [],
                 );
@@ -68,7 +74,7 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
 
                 final int totalFavorites = ownerRooms.fold(
                   0,
-                  (sum, room) => sum + favoriteState.getFavoriteCount(room.id),
+                      (sum, room) => sum + favoriteState.getFavoriteCount(room.id),
                 );
 
                 final int activePropertiesCount = ownerRooms.length;
@@ -84,88 +90,88 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
                 final List<MetricItemData> allMetrics = [
                   MetricItemData(
                     type: MetricType.activeProperties,
-                    title: 'Saved Count',
+                    title: l10n.savedCount,
                     value: '$totalFavorites',
-                    subtitle:
-                        '$totalFavorites ${totalFavorites == 1 ? 'user saved your listings' : 'users saved your listings'}',
+                    subtitle: l10n.usersSavedListing(totalFavorites),
                     icon: Icons.bookmark_rounded,
                     color: AppColors.clrPrimary,
                   ),
                   MetricItemData(
                     type: MetricType.availableRooms,
-                    title: 'Available Rooms',
+                    title: l10n.availableRooms,
                     value: '$availableRoomsCount',
-                    subtitle:
-                        '${activePropertiesCount - availableRoomsCount} rooms currently occupied',
+                    subtitle: l10n.roomsCurrentlyOccupied(
+                      activePropertiesCount - availableRoomsCount,
+                    ),
                     icon: Icons.meeting_room_outlined,
                     color: AppColors.clrSuccess,
                   ),
                   MetricItemData(
                     type: MetricType.pendingRequests,
-                    title: 'Pending Requests',
+                    title: l10n.pendingRequests,
                     value: '$pendingRequestsCount',
-                    subtitle: '$pendingRequestsCount tenant booking inquiries pending',
+                    subtitle: l10n.pendingInquiries(pendingRequestsCount),
                     icon: Icons.pending_actions_rounded,
                     color: AppColors.clrSecondary,
                   ),
                   MetricItemData(
                     type: MetricType.occupancy,
-                    title: 'Total Occupancy',
+                    title: l10n.totalOccupancy,
                     value: occupancyRate,
-                    subtitle: 'Overall occupancy rate across units',
+                    subtitle: l10n.overallOccupancyRate,
                     icon: Icons.pie_chart_outline_rounded,
                     color: AppColors.clrBlue,
                   ),
                 ];
 
-            final heroMetric = allMetrics.firstWhere(
-              (m) => m.type == _selectedHeroType,
-            );
-            final miniMetrics = allMetrics
-                .where((m) => m.type != _selectedHeroType)
-                .toList();
+                final heroMetric = allMetrics.firstWhere(
+                      (m) => m.type == _selectedHeroType,
+                );
+                final miniMetrics = allMetrics
+                    .where((m) => m.type != _selectedHeroType)
+                    .toList();
 
-            return Column(
-              children: [
-                // DYNAMIC HERO FEATURED CARD
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: HeroMetricCard(
-                    key: ValueKey(heroMetric.type),
-                    title: heroMetric.title,
-                    value: heroMetric.value,
-                    subtitle: heroMetric.subtitle,
-                    icon: heroMetric.icon,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                // DYNAMIC MINI METRICS ROW
-                Row(
-                  children: List.generate(miniMetrics.length, (index) {
-                    final item = miniMetrics[index];
-                    return Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: index == miniMetrics.length - 1 ? 0 : 8.0,
-                        ),
-                        child: MiniMetricCard(
-                          title: item.title,
-                          value: item.value,
-                          icon: item.icon,
-                          color: item.color,
-                          onTap: () {
-                            setState(() {
-                              _selectedHeroType = item.type;
-                            });
-                          },
-                        ),
+                return Column(
+                  children: [
+                    // DYNAMIC HERO FEATURED CARD
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: HeroMetricCard(
+                        key: ValueKey(heroMetric.type),
+                        title: heroMetric.title,
+                        value: heroMetric.value,
+                        subtitle: heroMetric.subtitle,
+                        icon: heroMetric.icon,
                       ),
-                    );
-                  }),
-                ),
-              ],
-            );
+                    ),
+                    const SizedBox(height: 10),
+
+                    // DYNAMIC MINI METRICS ROW
+                    Row(
+                      children: List.generate(miniMetrics.length, (index) {
+                        final item = miniMetrics[index];
+                        return Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: index == miniMetrics.length - 1 ? 0 : 8.0,
+                            ),
+                            child: MiniMetricCard(
+                              title: item.title,
+                              value: item.value,
+                              icon: item.icon,
+                              color: item.color,
+                              onTap: () {
+                                setState(() {
+                                  _selectedHeroType = item.type;
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                );
               },
             );
           },
@@ -223,7 +229,8 @@ class HeroMetricCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 350),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
                     return ScaleTransition(
                       scale: animation,
                       child: FadeTransition(opacity: animation, child: child),
@@ -292,7 +299,9 @@ class MiniMetricCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardColor = isDark ? const Color(0xFF2A2A2A) : AppColors.clrWhite;
-    final borderColor = isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.clrSoftGrey;
+    final borderColor = isDark
+        ? Colors.white.withValues(alpha: 0.12)
+        : AppColors.clrSoftGrey;
     final textColor = isDark ? Colors.white : AppColors.clrBlack;
     final subtitleColor = isDark ? Colors.white70 : AppColors.clrDarkGrey;
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../presentation.dart';
+import '../booking_detail_page.dart';
 
 class BookingListContent extends StatelessWidget {
   final List<BookingEntity> rawBookings;
@@ -11,6 +12,8 @@ class BookingListContent extends StatelessWidget {
   final String selectedFilter;
   final ValueChanged<String> onFilterSelected;
   final Future<void> Function() onRefresh;
+  final Map<String, ContractEntity> contractsByBookingId; // NEW
+
 
   const BookingListContent({
     super.key,
@@ -19,6 +22,8 @@ class BookingListContent extends StatelessWidget {
     required this.selectedFilter,
     required this.onFilterSelected,
     required this.onRefresh,
+    this.contractsByBookingId = const {}, // NEW
+
   });
 
   @override
@@ -122,6 +127,7 @@ class BookingListContent extends StatelessWidget {
         itemBuilder: (context, index) {
           final booking = displayedBookings[index];
           return BookingCard(
+            contract: contractsByBookingId[booking.id],
             booking: booking,
             currentUser: currentUser,
             onBookingUpdated: onRefresh,
@@ -133,12 +139,12 @@ class BookingListContent extends StatelessWidget {
               dynamic extraData;
 
               if (isContracted) {
-                // If contracted exists and is clicked -> Show OwnerBookingDetailView
-                routeName = OwnerBookingDetailView.routeName; // 'owner-booking-detail'
+                // If contracted exists and is clicked -> Show BookingDetailPage
+                routeName = BookingDetailPage.routeName; // 'owner-booking-detail'
                 extraData = booking;
               } else {
                 // Pending or Confirmed bookings
-                routeName = isOwner ? OwnerBookingDetailView.routeName : 'new-booking';
+                routeName = isOwner ? BookingDetailPage.routeName : 'new-booking';
                 extraData = booking;
               }
 
@@ -170,6 +176,7 @@ class BookingTabStreamView extends StatelessWidget {
   final String selectedFilter;
   final ValueChanged<String> onFilterSelected;
   final Future<void> Function() onRefresh;
+  final Map<String, ContractEntity> contractsByBookingId;
 
   const BookingTabStreamView({
     super.key,
@@ -180,6 +187,7 @@ class BookingTabStreamView extends StatelessWidget {
     required this.selectedFilter,
     required this.onFilterSelected,
     required this.onRefresh,
+    this.contractsByBookingId = const {},
     required bool showFilterChips,
   });
 
@@ -210,6 +218,7 @@ class BookingTabStreamView extends StatelessWidget {
           selectedFilter: selectedFilter,
           onFilterSelected: onFilterSelected,
           onRefresh: onRefresh,
+          contractsByBookingId: contractsByBookingId, // NEW
         );
       },
     );

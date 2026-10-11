@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/entity/user/user_entity.dart';
 import '../../../../domain/enum/role.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../edit_profile/edit_profile.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
@@ -19,6 +20,7 @@ class ProfileHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isOwner = currentUser.role == UserRole.owner;
 
     return Container(
@@ -141,7 +143,7 @@ class ProfileHeaderCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  isOwner ? 'Property Owner' : 'Tenant',
+                  isOwner ? l10n.propertyOwner : l10n.tenant,
                   style: TextStyle(
                     color: primaryColor,
                     fontSize: 12,

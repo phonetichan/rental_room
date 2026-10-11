@@ -9,12 +9,16 @@ import 'package:rental_room/domain/domain.dart';
 import '../../data/data.dart';
 import '../../di/di.dart';
 import '../pages/booking/booking_list_view.dart';
-import '../pages/booking/booking_stepper.dart';
+import '../pages/booking/owner/booking_stepper.dart';
 import '../pages/index.dart';
+import '../pages/openstreetmap/location_picker_page.dart';
+import '../pages/profile/edit_location/cubit/location_cubit.dart';
+import '../pages/profile/edit_location/edit_location.dart';
 import '../pages/room/owner/add_edit_room_page.dart';
 import '../pages/room/owner/owner_room_detail_page.dart';
 import '../pages/room/tenant/tenant_room_detail_page.dart';
 import '../pages/room/tenant/saved_rooms_page.dart';
+import '../pages/setting_pages/terms_n_conditions.dart';
 import '../presentation.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -53,17 +57,11 @@ class GoRouterRefreshStream extends ChangeNotifier {
 class NavigationRouter {
   final INavigationKeyProvider _navigationKeyProvider;
   final AppStorage _storage;
-  final ISnackShower _snackShower;
   final AuthenticationCubit _authCubit;
   SavedRoomsCubit? _savedRoomsCubit;
   FavoriteCubit? _favoriteCubit;
 
-  NavigationRouter(
-    this._navigationKeyProvider,
-    this._storage,
-    this._snackShower,
-    this._authCubit,
-  );
+  NavigationRouter(this._navigationKeyProvider, this._storage, this._authCubit);
 
   late final router = GoRouter(
     navigatorKey: _navigationKeyProvider.globalKey,
@@ -112,7 +110,6 @@ class NavigationRouter {
         // 4. Redirect unauthenticated users to LoginPage if on protected routes
         if (currentRoute != LandingPage.routePath &&
             currentRoute != TermsAndConditionsPage.routePath &&
-            currentRoute != UserGuidancePage.routePath &&
             currentRoute != LoginPage.routePath &&
             currentRoute != SignUpPage.routePath) {
           return LoginPage.routePath;
@@ -131,10 +128,32 @@ class NavigationRouter {
         builder: (context, state) => const TermsAndConditionsPage(),
       ),
       GoRoute(
-        path: UserGuidancePage.routePath,
-        builder: (context, state) => const UserGuidancePage(),
+        path: LocationPickerPage.routePath,
+        name: 'location_picker',
+        builder: (context, state) => const LocationPickerPage(), // Replace with your actual location picker widget
       ),
-
+      // // Inside your GoRouter routes list:
+      // GoRoute(
+      //   path: EditLocationScreen.routePath, // or '/edit-location'
+      //   name: 'edit_location',
+      //   builder: (context, state) =>
+      //       const EditLocationScreen(), // or LocationPickerPage()
+      // ),
+      GoRoute(
+        path: EditLocationScreen.routePath,
+        name: 'edit_location',
+        builder: (context, state) => BlocProvider(
+          create: (_) => inject<LocationCubit>(), // however you create it: getIt, sl, or LocationCubit(repo)
+          child: const EditLocationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: EditLocationScreen.routePath,
+        builder: (context, state) => BlocProvider(
+          create: (context) => inject<LocationCubit>(),
+          child: const EditLocationScreen(),
+        ),
+      ),
       // Auth routes
       GoRoute(
         path: LoginPage.routePath,
@@ -279,7 +298,7 @@ class NavigationRouter {
                     inject<FavoriteCubit>()..loadFavorites(currentUser.id),
               ),
             ],
-            child: OwnerBookingDetailView(
+            child: BookingDetailPage(
               booking: booking,
               currentUser: currentUser,
             ),
@@ -309,8 +328,8 @@ class NavigationRouter {
       ),
       // Main Entry Point
       GoRoute(
-        onExit: _handleDoubleTapToExit,
         path: IndexPage.routePath,
+        name: IndexPage.routeName,
         builder: (context, state) {
           final tabStr = state.uri.queryParameters['tab'];
           final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
@@ -321,36 +340,6 @@ class NavigationRouter {
           );
         },
       ),
-      GoRoute(
-        path: IndexPage.routePath,
-        name: IndexPage.routeName,
-        builder: (context, state) {
-          final tab = int.tryParse(state.uri.queryParameters['tab'] ?? '') ?? 0;
-          return IndexPage(
-            initialTab: tab,
-            initialRoomTypeId: state.uri.queryParameters['type'],
-          );
-        },
-      ),
     ],
   );
-
-  DateTime? currentBackPressTime;
-
-  Future<bool> _handleDoubleTapToExit(
-    BuildContext context,
-    GoRouterState state,
-  ) async {
-    final now = DateTime.now();
-    const thresholdInterval = Duration(seconds: 2);
-
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > thresholdInterval) {
-      currentBackPressTime = now;
-      _snackShower.info(message: "Press again to exit app");
-      return false;
-    }
-
-    return true;
-  }
 }

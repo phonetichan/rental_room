@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:rental_room/domain/domain.dart';
 
 part 'contract_state.dart';
+part 'contract_cubit.freezed.dart';
 
 class ContractCubit extends Cubit<ContractState> {
   final GetContractByBookingUseCase _getContractByBookingUseCase;

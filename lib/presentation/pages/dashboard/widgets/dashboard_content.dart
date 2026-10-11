@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../presentation.dart';
 import '../../index.dart';
 import 'owner_metric_cards.dart';
@@ -77,20 +78,22 @@ class _DashboardContentState extends State<DashboardContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_isOwner) ...[
-          const _SectionTitle('Overview'),
+          _SectionTitle(l10n.overview),
           const SizedBox(height: 12),
           OwnerMetricsOverview(user: widget.user),
           const SizedBox(height: 28),
           OwnerMonthlyRevenueCard(user: widget.user),
           const SizedBox(height: 28),
         ] else ...[
-          const StaticPromoCard(
-            title: 'GET YOUR 20%\nCASHBACK',
-            expirationText: '*Expired 25 Dec 2026',
+          StaticPromoCard(
+            title: l10n.promoCashback,
+            expirationText: l10n.promoExpired,
             imageAssetPath: 'assets/images/unsplash_RFDP7_80v5A.png',
           ),
           const SizedBox(height: 20),
@@ -100,17 +103,17 @@ class _DashboardContentState extends State<DashboardContent> {
             return state.maybeWhen(
               loading: () => _isOwner
                   ? const Padding(
-                      padding: EdgeInsets.all(32),
-                      child: Center(child: CircularProgressIndicator()),
-                    )
+                padding: EdgeInsets.all(32),
+                child: Center(child: CircularProgressIndicator()),
+              )
                   : const DashboardSkeletonLoader(),
               loaded: (rooms) =>
-                  _isOwner ? _buildOwner(rooms) : _buildTenant(rooms),
+              _isOwner ? _buildOwner(rooms) : _buildTenant(rooms),
               failure: (message) => Padding(
                 padding: const EdgeInsets.all(32),
                 child: Center(
                   child: Text(
-                    'Error loading rooms: $message',
+                    l10n.errorLoadingRooms(message),
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
@@ -126,11 +129,12 @@ class _DashboardContentState extends State<DashboardContent> {
   // ───────────────────────── OWNER ─────────────────────────
 
   Widget _buildOwner(List<RoomEntity> rooms) {
+    final l10n = AppLocalizations.of(context)!;
     final latest = _latest(rooms.where((r) => r.ownerId == widget.user.id));
 
     return _VerticalRoomsSection(
-      title: 'Latest Properties',
-      emptyText: 'No properties listed yet.',
+      title: l10n.latestProperties,
+      emptyText: l10n.noPropertiesYet,
       rooms: latest,
       user: widget.user,
       showOwnerActions: true,
@@ -142,6 +146,7 @@ class _DashboardContentState extends State<DashboardContent> {
   // ───────────────────────── TENANT ─────────────────────────
 
   Widget _buildTenant(List<RoomEntity> rooms) {
+    final l10n = AppLocalizations.of(context)!;
     final available = rooms.where((r) => r.status == 'available');
 
     final recommended = _latest(
@@ -158,7 +163,7 @@ class _DashboardContentState extends State<DashboardContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _SectionTitle('Categories'),
+        _SectionTitle(l10n.categories),
         const SizedBox(height: 12),
         _CategoryList(
           selectedId: _selectedTypeId,
@@ -167,15 +172,17 @@ class _DashboardContentState extends State<DashboardContent> {
         const SizedBox(height: 24),
 
         _SectionTitle(
-          typeName == null ? 'Recommended' : 'Recommended · $typeName',
+          typeName == null
+              ? l10n.recommended
+              : l10n.recommendedWithType(typeName),
           onSeeAll: () => _goToPosts(roomTypeId: _selectedTypeId),
         ),
         const SizedBox(height: 6),
         if (recommended.isEmpty)
           _EmptyText(
             typeName == null
-                ? 'No rooms available.'
-                : 'No $typeName available.',
+                ? l10n.noRoomsAvailable
+                : l10n.noTypeAvailable(typeName),
           )
         else
           SizedBox(
@@ -195,8 +202,8 @@ class _DashboardContentState extends State<DashboardContent> {
 
         if (_selectedTypeId != _miniCondoTypeId)
           _VerticalRoomsSection(
-            title: 'Mini Condo',
-            emptyText: 'No mini condos available.',
+            title: l10n.miniCondo,
+            emptyText: l10n.noMiniCondos,
             rooms: miniCondos,
             user: widget.user,
             showOwnerActions: false,
@@ -250,12 +257,12 @@ class _VerticalRoomsSection extends StatelessWidget {
             children: rooms
                 .map(
                   (room) => RoomCard(
-                    room: room,
-                    currentUser: user,
-                    showOwnerActions: showOwnerActions,
-                    onRoomUpdated: onRoomUpdated,
-                  ),
-                )
+                room: room,
+                currentUser: user,
+                showOwnerActions: showOwnerActions,
+                onRoomUpdated: onRoomUpdated,
+              ),
+            )
                 .toList(),
           ),
       ],
@@ -274,6 +281,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     final text = Text(
       title,
@@ -291,9 +299,9 @@ class _SectionTitle extends StatelessWidget {
         text,
         TextButton(
           onPressed: onSeeAll,
-          child: const Text(
-            'See all',
-            style: TextStyle(
+          child: Text(
+            l10n.seeAll,
+            style: const TextStyle(
               color: Color(0xFF6C5CE7),
               fontWeight: FontWeight.w600,
             ),
@@ -325,9 +333,9 @@ class _CategoryList extends StatelessWidget {
 
   const _CategoryList({required this.selectedId, required this.onTap});
 
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final entries = LookupConstants.roomTypes.entries.toList();
 
     return SizedBox(
@@ -339,7 +347,7 @@ class _CategoryList extends StatelessWidget {
         itemBuilder: (context, i) {
           if (i == 0) {
             return _CategoryItem(
-              label: 'All',
+              label: l10n.all,
               icon: Icons.apps_rounded,
               selected: selectedId == null,
               onTap: () => onTap(null),
@@ -408,8 +416,7 @@ class _CategoryItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight:
-                  selected ? FontWeight.bold : FontWeight.normal,
+                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
             ),

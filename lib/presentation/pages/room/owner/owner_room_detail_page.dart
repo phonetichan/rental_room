@@ -7,6 +7,7 @@ import '../../../../di/injector.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
 import '../../../components/components.dart';
+import '../../../extensions/l10n.dart';
 import '../../../extensions/number.dart';
 import 'add_edit_room_page.dart';
 
@@ -159,7 +160,7 @@ class _OwnerRoomDeleteButton extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        tooltip: 'Delete Room',
+        tooltip: context.l10n.deleteRoom,
         icon: Icon(
           Icons.delete_outline_rounded,
           color: Colors.red.shade400,
@@ -179,6 +180,8 @@ class _OwnerRoomFavoriteStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocBuilder<FavoriteCubit, FavoriteState>(
       builder: (context, favoriteState) {
         final favCount = favoriteState.getFavoriteCount(roomId);
@@ -206,16 +209,16 @@ class _OwnerRoomFavoriteStatsCard extends StatelessWidget {
                       duration: const Duration(milliseconds: 350),
                       transitionBuilder:
                           (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                              scale: animation,
-                              child: FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              ),
-                            );
-                          },
+                        return ScaleTransition(
+                          scale: animation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
                       child: Text(
-                        '$favCount ${favCount == 1 ? 'User Favorited' : 'Users Favorited'} This Room',
+                        l10n.userFavoritedRoom(favCount),
                         key: ValueKey<int>(favCount),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -226,7 +229,7 @@ class _OwnerRoomFavoriteStatsCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Track engagement for your property listing.',
+                      l10n.trackEngagement,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.red.shade700,
@@ -257,6 +260,7 @@ class _OwnerRoomBottomActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primaryColor = theme.primaryColor;
+    final l10n = context.l10n;
 
     return Container(
       padding: EdgeInsets.only(
@@ -281,9 +285,9 @@ class _OwnerRoomBottomActionBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Price',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              Text(
+                l10n.price,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               Text(
                 room.pricePerMonth.toKsFormat,
@@ -310,9 +314,12 @@ class _OwnerRoomBottomActionBar extends StatelessWidget {
                 ),
                 onPressed: () => onEditRoom(),
                 icon: const Icon(Icons.edit_outlined, size: 20),
-                label: const Text(
-                  'Edit Room Details',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                label: Text(
+                  l10n.editRoomDetails,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

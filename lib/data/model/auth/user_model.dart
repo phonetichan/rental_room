@@ -18,6 +18,9 @@ class UserModel with _$UserModel {
     required UserRole role,
     required DateTime createdAt,
     required DateTime lastLogin,
+    double? latitude, // optional
+    double? longitude, // optional
+    String? address, // optional
   }) = _UserModel;
 
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
@@ -41,6 +44,10 @@ class UserModel with _$UserModel {
       role: UserRoleX.fromString(map['role'] as String?),
       createdAt: parseDateTime(map['createdAt']),
       lastLogin: parseDateTime(map['lastLogin']),
+      // Firestore may return int or double -> go through num
+      latitude: (map['latitude'] as num?)?.toDouble(),
+      longitude: (map['longitude'] as num?)?.toDouble(),
+      address: map['address'] as String?,
     );
   }
 
@@ -59,6 +66,10 @@ class UserModel with _$UserModel {
       'role': role.value,
       'createdAt': Timestamp.fromDate(createdAt),
       'lastLogin': Timestamp.fromDate(lastLogin),
+      // only written when the user picked a location
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (address != null) 'address': address,
     };
   }
 
@@ -72,6 +83,9 @@ class UserModel with _$UserModel {
       role: role,
       createdAt: createdAt,
       lastLogin: lastLogin,
+      latitude: latitude,
+      longitude: longitude,
+      address: address,
     );
   }
 
@@ -85,6 +99,9 @@ class UserModel with _$UserModel {
       role: entity.role,
       createdAt: entity.createdAt,
       lastLogin: entity.lastLogin,
+      latitude: entity.latitude,
+      longitude: entity.longitude,
+      address: entity.address,
     );
   }
 }

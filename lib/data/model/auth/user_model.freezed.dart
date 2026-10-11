@@ -24,6 +24,9 @@ mixin _$UserModel {
   UserRole get role => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get lastLogin => throw _privateConstructorUsedError;
+  double? get latitude => throw _privateConstructorUsedError; // optional
+  double? get longitude => throw _privateConstructorUsedError; // optional
+  String? get address => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -43,7 +46,10 @@ abstract class $UserModelCopyWith<$Res> {
       String? image,
       UserRole role,
       DateTime createdAt,
-      DateTime lastLogin});
+      DateTime lastLogin,
+      double? latitude,
+      double? longitude,
+      String? address});
 }
 
 /// @nodoc
@@ -67,6 +73,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? role = null,
     Object? createdAt = null,
     Object? lastLogin = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? address = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -101,6 +110,18 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.lastLogin
           : lastLogin // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -121,7 +142,10 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String? image,
       UserRole role,
       DateTime createdAt,
-      DateTime lastLogin});
+      DateTime lastLogin,
+      double? latitude,
+      double? longitude,
+      String? address});
 }
 
 /// @nodoc
@@ -143,6 +167,9 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? role = null,
     Object? createdAt = null,
     Object? lastLogin = null,
+    Object? latitude = freezed,
+    Object? longitude = freezed,
+    Object? address = freezed,
   }) {
     return _then(_$UserModelImpl(
       id: null == id
@@ -177,6 +204,18 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.lastLogin
           : lastLogin // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      latitude: freezed == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      longitude: freezed == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -192,7 +231,10 @@ class _$UserModelImpl extends _UserModel {
       this.image,
       required this.role,
       required this.createdAt,
-      required this.lastLogin})
+      required this.lastLogin,
+      this.latitude,
+      this.longitude,
+      this.address})
       : super._();
 
   @override
@@ -211,10 +253,18 @@ class _$UserModelImpl extends _UserModel {
   final DateTime createdAt;
   @override
   final DateTime lastLogin;
+  @override
+  final double? latitude;
+// optional
+  @override
+  final double? longitude;
+// optional
+  @override
+  final String? address;
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, image: $image, role: $role, createdAt: $createdAt, lastLogin: $lastLogin)';
+    return 'UserModel(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, image: $image, role: $role, createdAt: $createdAt, lastLogin: $lastLogin, latitude: $latitude, longitude: $longitude, address: $address)';
   }
 
   @override
@@ -232,12 +282,17 @@ class _$UserModelImpl extends _UserModel {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.lastLogin, lastLogin) ||
-                other.lastLogin == lastLogin));
+                other.lastLogin == lastLogin) &&
+            (identical(other.latitude, latitude) ||
+                other.latitude == latitude) &&
+            (identical(other.longitude, longitude) ||
+                other.longitude == longitude) &&
+            (identical(other.address, address) || other.address == address));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, name, email, phoneNumber,
-      image, role, createdAt, lastLogin);
+      image, role, createdAt, lastLogin, latitude, longitude, address);
 
   @JsonKey(ignore: true)
   @override
@@ -249,13 +304,16 @@ class _$UserModelImpl extends _UserModel {
 abstract class _UserModel extends UserModel {
   const factory _UserModel(
       {required String id,
-      required  String name,
-      required  String email,
-      required  String phoneNumber,
-       String? image,
+      required String name,
+      required String email,
+      required String phoneNumber,
+      String? image,
       required UserRole role,
       required DateTime createdAt,
-      required DateTime lastLogin}) = _$UserModelImpl;
+      required DateTime lastLogin,
+      double? latitude,
+      double? longitude,
+      String? address}) = _$UserModelImpl;
   const _UserModel._() : super._();
 
   @override
@@ -274,6 +332,12 @@ abstract class _UserModel extends UserModel {
   DateTime get createdAt;
   @override
   DateTime get lastLogin;
+  @override
+  double? get latitude;
+  @override // optional
+  double? get longitude;
+  @override // optional
+  String? get address;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

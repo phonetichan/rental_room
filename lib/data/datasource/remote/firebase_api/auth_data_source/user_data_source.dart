@@ -47,6 +47,21 @@ class UserRemoteDataSource {
     return UserModel.fromFirestore(updatedDoc);
   }
 
+  Future<UserModel> updateUserLocation({
+    required String userId,
+    required double latitude,
+    required double longitude,
+    required String address,
+  }) async {
+    final ref = FirebaseFirestore.instance.collection('users').doc(userId);
+    await ref.update({
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+    });
+    return UserModel.fromFirestore(await ref.get());
+  }
+
   Future<void> updatePassword({
     required String currentPassword,
     required String newPassword,

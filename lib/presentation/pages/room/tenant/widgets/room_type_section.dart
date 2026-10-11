@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../domain/domain.dart';
+import '../../../../extensions/lookup_l10n.dart';
 
 class RoomTypeSection extends StatelessWidget {
   final String? roomTypeId;
@@ -16,6 +17,7 @@ class RoomTypeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +68,7 @@ class RoomTypeSection extends StatelessWidget {
             ...LookupConstants.roomTypes.entries.map((entry) {
               final isSelected = roomTypeId == entry.key;
               return ChoiceChip(
-                label: Text(entry.value),
+                label: Text(l10n.localizedRoomType(entry.key)),
                 selected: isSelected,
                 onSelected: (_) => onRoomTypeChanged(entry.key),
                 selectedColor: colorScheme.primary,

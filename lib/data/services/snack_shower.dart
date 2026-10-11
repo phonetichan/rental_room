@@ -20,7 +20,7 @@ class SnackShowerImpl implements ISnackShower {
 
   @override
   void info({BuildContext? context, required String message, SnackGravity gravity = SnackGravity.top}) {
-    final ctx = context ?? _navKeyProvider.globalKey.currentContext;
+    final ctx = context ?? _navKeyProvider.scaffoldContext ?? _navKeyProvider.globalKey.currentContext;
     if (ctx != null) {
       Snacks.info(ctx, message: message, gravity: gravity);
     }
@@ -28,7 +28,7 @@ class SnackShowerImpl implements ISnackShower {
 
   @override
   void error({BuildContext? context, required String message, SnackGravity gravity = SnackGravity.top}) {
-    final ctx = context ?? _navKeyProvider.globalKey.currentContext;
+    final ctx = context ?? _navKeyProvider.scaffoldContext ?? _navKeyProvider.globalKey.currentContext;
     if (ctx != null) {
       Snacks.error(ctx, message: message, gravity: gravity);
     }
@@ -36,7 +36,7 @@ class SnackShowerImpl implements ISnackShower {
 
   @override
   void success({BuildContext? context, required String message, SnackGravity gravity = SnackGravity.top}) {
-    final ctx = context ?? _navKeyProvider.globalKey.currentContext;
+    final ctx = context ?? _navKeyProvider.scaffoldContext ?? _navKeyProvider.globalKey.currentContext;
     if (ctx != null) {
       Snacks.success(ctx, message: message, gravity: gravity);
     }

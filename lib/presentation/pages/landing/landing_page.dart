@@ -258,7 +258,7 @@ class _LandingModel {
 class _OverlappingImages extends StatelessWidget {
   final int pageIndex;
 
-  const _OverlappingImages({super.key, required this.pageIndex});
+  const _OverlappingImages({required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {

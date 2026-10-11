@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rental_room/di/di.dart';
+import 'package:rental_room/l10n/app_localizations.dart';
 import 'package:rental_room/presentation/pages/room/tenant/widgets/room_paginated_tab.dart';
 import 'package:rental_room/presentation/pages/room/tenant/widgets/segmented_tab_bar.dart';
 
@@ -67,13 +68,21 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         SegmentedTabBar(
           controller: _tabController,
-          tabs: const [
-            SegmentedTabItem(icon: Icons.meeting_room_outlined, label: 'Available'),
-            SegmentedTabItem(icon: Icons.check_circle_outline, label: 'Rented'),
+          tabs: [
+            SegmentedTabItem(
+              icon: Icons.meeting_room_outlined,
+              label: l10n.available,
+            ),
+            SegmentedTabItem(
+              icon: Icons.check_circle_outline,
+              label: l10n.rented,
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -86,14 +95,14 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
                 user: widget.user,
                 onRefresh: _refreshData,
                 emptyIcon: Icons.no_meeting_room_outlined,
-                emptyMessage: 'No available rooms found.',
+                emptyMessage: l10n.noAvailableRooms,
               ),
               RoomPaginatedTab(
                 cubit: _rentedRoomsCubit,
                 user: widget.user,
                 onRefresh: _refreshData,
                 emptyIcon: Icons.check_circle_outline,
-                emptyMessage: 'No rented rooms found.',
+                emptyMessage: l10n.noRentedRooms,
               ),
             ],
           ),

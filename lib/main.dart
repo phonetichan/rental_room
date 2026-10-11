@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'data/data.dart';
 import 'di/di.dart';
+import 'l10n/app_localizations.dart';
 import 'presentation/presentation.dart';
 
 void main() async {
@@ -32,16 +32,24 @@ class MyApp extends StatelessWidget {
           return ValueListenableBuilder<ThemeMode>(
             valueListenable: authCubit.themeModeNotifier,
             builder: (context, themeMode, child) {
-              // 1. Removed AnimatedTheme wrapper
-              return MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-                theme: $styles.light,
-                darkTheme: $styles.dark,
-                themeMode: themeMode,
-                // 2. Disables MaterialApp's theme switch animation instantly
-                themeAnimationDuration: Duration.zero,
-                title: "Rental Room",
-                routerConfig: inject<NavigationRouter>().router,
+              return ValueListenableBuilder<Locale>(
+                valueListenable: authCubit.localeNotifier,
+                builder: (context, locale, child) {
+                  // 1. Removed AnimatedTheme wrapper
+                  return MaterialApp.router(
+                    debugShowCheckedModeBanner: false,
+                    theme: $styles.light,
+                    darkTheme: $styles.dark,
+                    themeMode: themeMode,
+                    // 2. Disables MaterialApp's theme switch animation instantly
+                    themeAnimationDuration: Duration.zero,
+                    locale: locale,
+                    localizationsDelegates: AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    title: "Rental Room",
+                    routerConfig: inject<NavigationRouter>().router,
+                  );
+                },
               );
             },
           );

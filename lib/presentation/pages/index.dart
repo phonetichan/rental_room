@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rental_room/presentation/pages/room/tenant/post_view.dart';
+import 'package:rental_room/presentation/pages/room/post_view.dart';
 
 import '../../di/di.dart';
 import '../../domain/domain.dart';
+import '../../l10n/app_localizations.dart';
 import '../blocs/blocs.dart';
+import '../components/button/confirm_cancel_button.dart';
 import '../navigation/navigation_key_provider.dart';
 
 import 'booking/booking_list_view.dart';
@@ -45,6 +48,7 @@ class _IndexPageState extends State<IndexPage> {
     super.initState();
     _currentIndex = widget.initialTab;
   }
+
   @override
   void didUpdateWidget(covariant IndexPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -69,6 +73,7 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     inject<INavigationKeyProvider>().scaffoldContext = context;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) {
@@ -91,26 +96,26 @@ class _IndexPageState extends State<IndexPage> {
           ProfileView(user: user),
         ];
 
-        const navItems = [
+        final navItems = [
           NavItemData(
             icon: Icons.home_outlined,
             selectedIcon: Icons.home_rounded,
-            label: "Home",
+            label: l10n.home,
           ),
           NavItemData(
             icon: Icons.add_circle_outline_rounded,
             selectedIcon: Icons.add_circle_rounded,
-            label: "Rooms",
+            label: l10n.rooms,
           ),
           NavItemData(
             icon: Icons.calendar_today_outlined,
             selectedIcon: Icons.calendar_today_rounded,
-            label: "Bookings",
+            label: l10n.booking,
           ),
           NavItemData(
             icon: Icons.person_outline_rounded,
             selectedIcon: Icons.person_rounded,
-            label: "Profile",
+            label: l10n.profile,
           ),
         ];
 
@@ -119,7 +124,7 @@ class _IndexPageState extends State<IndexPage> {
             BlocProvider(create: (context) => inject<RoomCubit>()),
             BlocProvider(
               create: (context) =>
-                  inject<FavoriteCubit>()..loadFavorites(user.id),
+              inject<FavoriteCubit>()..loadFavorites(user.id),
             ),
             BlocProvider(
               create: (context) {
@@ -132,24 +137,67 @@ class _IndexPageState extends State<IndexPage> {
               },
             ),
           ],
-          child: Scaffold(
-            body: SafeArea(
-              top: true,
-              child: IndexedStack(index: _currentIndex, children: pages),
-            ),
-            bottomNavigationBar: NavigationBar(
-              selectedIndex: _currentIndex,
-              elevation: 3,
-              onDestinationSelected: _changeTab,
-              destinations: navItems
-                  .map(
-                    (item) => NavigationDestination(
-                      label: item.label,
-                      icon: Icon(item.icon),
-                      selectedIcon: Icon(item.selectedIcon),
+          child: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
+
+              if (_currentIndex != 0) {
+                _changeTab(0);
+                return;
+              }
+
+              final shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (dialogContext) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  title: Text(
+                    l10n.exitApp,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  content: Text(
+                    l10n.exitAppConfirm,
+                    maxLines: 2,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  actions: [
+                    ConfirmCancelButtons(
+                      confirmText: l10n.exit,
+                      cancelText: l10n.cancel,
+                      confirmColor: Colors.red.shade600,
+                      onConfirm: () => Navigator.of(dialogContext).pop(true),
+                      onCancel: () => Navigator.of(dialogContext).pop(false),
                     ),
-                  )
-                  .toList(),
+                  ],
+                ),
+              );
+
+              if (shouldExit == true) {
+                await SystemNavigator.pop();
+              }
+            },
+            child: Scaffold(
+              body: SafeArea(
+                top: true,
+                child: IndexedStack(index: _currentIndex, children: pages),
+              ),
+              bottomNavigationBar: NavigationBar(
+                selectedIndex: _currentIndex,
+                elevation: 3,
+                onDestinationSelected: _changeTab,
+                destinations: navItems
+                    .map(
+                      (item) => NavigationDestination(
+                    label: item.label,
+                    icon: Icon(item.icon),
+                    selectedIcon: Icon(item.selectedIcon),
+                  ),
+                )
+                    .toList(),
+              ),
             ),
           ),
         );

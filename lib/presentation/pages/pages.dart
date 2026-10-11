@@ -1,11 +1,9 @@
 export 'landing/landing_page.dart';
-export 'setting_pages/terms_n_conditions.dart';
-export 'setting_pages/user_guidance.dart';
 export 'profile/profile_view.dart';
 export 'profile/edit_profile/edit_profile.dart';
 export 'profile/edit_profile/cubit/edit_profile_cubit.dart';
 export 'profile/edit_password/edit_password.dart';
 export 'profile/edit_password/cubit/edit_password_cubit.dart';
 export '../components/components.dart';
-export 'booking/owner/owner_booking_detail_view.dart';
+export 'booking/booking_detail_page.dart';
 export 'contract/contract_detail_page.dart';

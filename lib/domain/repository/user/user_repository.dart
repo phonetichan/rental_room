@@ -11,4 +11,11 @@ abstract class UserRepository {
     required String currentPassword,
     required String newPassword,
   });
+
+  Future<UserEntity> updateUserLocation({
+    required String userId,
+    required double latitude,
+    required double longitude,
+    required String address,
+  });
 }

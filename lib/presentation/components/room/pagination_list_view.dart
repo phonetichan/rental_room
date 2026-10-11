@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../extensions/l10n.dart';
 
 class PaginatedListView<T> extends StatefulWidget {
   const PaginatedListView({
@@ -84,6 +85,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     WidgetsBinding.instance.addPostFrameCallback((_) => _fillIfNeeded());
 
     // No items to show
@@ -101,7 +103,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
                 ),
                 TextButton(
                   onPressed: widget.onRetry,
-                  child: const Text('Retry'),
+                  child: Text(l10n.retry),
                 ),
               ],
             ),
@@ -111,7 +113,7 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
       if (!widget.hasMore) {
         return _scrollable(
           widget.emptyBuilder?.call(context) ??
-              const Center(child: Text('No data')),
+              Center(child: Text(l10n.noMoreData)),
         );
       }
       // Filters removed everything loaded so far, but more pages exist
@@ -137,11 +139,11 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
               child: widget.errorMessage != null
                   ? TextButton(
                       onPressed: widget.onRetry,
-                      child: const Text('Retry'),
+                      child: Text(l10n.retry),
                     )
                   : widget.hasMore
                   ? const CircularProgressIndicator()
-                  : const Text('No more data'),
+                  : Text(l10n.noMoreData),
             ),
           );
         },
