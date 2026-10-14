@@ -1,10 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../presentation.dart';
-import '../../contract/contract_detail_page.dart';
-import 'booking_card.dart';
 
 class BookingListContent extends StatelessWidget {
   final List<BookingEntity> rawBookings;
@@ -12,6 +11,7 @@ class BookingListContent extends StatelessWidget {
   final String selectedFilter;
   final ValueChanged<String> onFilterSelected;
   final Future<void> Function() onRefresh;
+  final Set<String> contractedBookingIds;
 
   const BookingListContent({
     super.key,
@@ -20,6 +20,7 @@ class BookingListContent extends StatelessWidget {
     required this.selectedFilter,
     required this.onFilterSelected,
     required this.onRefresh,
+    this.contractedBookingIds = const {},
   });
 
   @override
@@ -40,11 +41,7 @@ class BookingListContent extends StatelessWidget {
             .toList();
       } else if (selectedFilter == 'confirmed') {
         displayedBookings = validOwnerBookings
-            .where((b) => b.status.toLowerCase() == 'confirmed')
-            .toList();
-      } else if (selectedFilter == 'contracted') {
-        displayedBookings = validOwnerBookings
-            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .where((b) => b.status.toLowerCase() == 'confirmed' && !contractedBookingIds.contains(b.id))
             .toList();
       } else {
         displayedBookings = validOwnerBookings
@@ -58,11 +55,7 @@ class BookingListContent extends StatelessWidget {
             .toList();
       } else if (selectedFilter == 'confirmed') {
         displayedBookings = rawBookings
-            .where((b) => b.status.toLowerCase() == 'confirmed')
-            .toList();
-      } else if (selectedFilter == 'contracted') {
-        displayedBookings = rawBookings
-            .where((b) => b.status.toLowerCase() == 'contracted' || b.status.toLowerCase() == 'voucher_ready')
+            .where((b) => b.status.toLowerCase() == 'confirmed' && !contractedBookingIds.contains(b.id))
             .toList();
       } else {
         displayedBookings = rawBookings
@@ -70,8 +63,6 @@ class BookingListContent extends StatelessWidget {
             .toList();
       }
     }
-
-
 
     Widget listOrEmpty;
     if (displayedBookings.isEmpty) {
@@ -94,18 +85,10 @@ class BookingListContent extends StatelessWidget {
                 isOwner
                     ? (selectedFilter == 'pending'
                         ? 'No pending booking requests.'
-                        : selectedFilter == 'confirmed'
-                            ? 'No confirmed booking requests.'
-                            : selectedFilter == 'contracted'
-                                ? 'No contracted booking requests.'
-                                : 'No booking requests found.')
+                        : 'No confirmed booking requests.')
                     : (selectedFilter == 'pending'
                         ? 'No pending bookings.'
-                        : selectedFilter == 'confirmed'
-                            ? 'No confirmed bookings.'
-                            : selectedFilter == 'contracted'
-                                ? 'No contracted bookings.'
-                                : 'No bookings found at the moment.'),
+                        : 'No confirmed bookings.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -122,82 +105,28 @@ class BookingListContent extends StatelessWidget {
         itemCount: displayedBookings.length,
         itemBuilder: (context, index) {
           final booking = displayedBookings[index];
+          final isConfirmedForOwner = isOwner && booking.status.toLowerCase() == 'confirmed';
+
           return BookingCard(
             booking: booking,
             currentUser: currentUser,
             onBookingUpdated: onRefresh,
-            onTap: () async {
-              final isContracted = selectedFilter == 'contracted' ||
-                  booking.status.toLowerCase() == 'contracted' ||
-                  booking.status.toLowerCase() == 'voucher_ready';
+            onTap: isConfirmedForOwner
+                ? null // Do not route when owner clicks a confirmed booking
+                : () async {
+                    final result = await context.pushNamed<bool>(
+                      'new-booking',
+                      extra: booking,
+                    );
 
-              String routeName;
-              dynamic extraData;
-
-              if (isContracted) {
-                // If contracted exists and is clicked -> Show OwnerBookingDetailView
-                routeName = OwnerBookingDetailView.routeName; // 'owner-booking-detail'
-                extraData = booking;
-              } else {
-                // Pending or Confirmed bookings
-                routeName = isOwner ? OwnerBookingDetailView.routeName : 'new-booking';
-                extraData = booking;
-              }
-
-              final result = await context.pushNamed<bool>(
-                routeName,
-                extra: extraData,
-              );
-
-              if (result == true && context.mounted) {
-                onRefresh();
-              }
-            },
+                    if (result == true && context.mounted) {
+                      onRefresh();
+                    }
+                  },
           );
         },
       );
     }
-    //   listOrEmpty = ListView.builder(
-    //     padding: const EdgeInsets.symmetric(vertical: 12),
-    //     itemCount: displayedBookings.length,
-    //     itemBuilder: (context, index) {
-    //       final booking = displayedBookings[index];
-    //       return BookingCard(
-    //         booking: booking,
-    //         currentUser: currentUser,
-    //         onBookingUpdated: onRefresh,
-    //         onTap: () async {
-    //           if (!isOwner &&
-    //               (selectedFilter == 'contracted' ||
-    //                   booking.status.toLowerCase() == 'contracted' ||
-    //                   booking.status.toLowerCase() == 'voucher_ready')) {
-    //             final result = await context.pushNamed<bool>(
-    //               ContractDetailPage.routeName,
-    //               extra: booking.id,
-    //             );
-    //             if (result == true && context.mounted) {
-    //               onRefresh();
-    //             }
-    //             return;
-    //           }
-    //
-    //           final routeName =
-    //               isOwner ? 'owner-booking-detail' : 'new-booking';
-    //
-    //           final result = await context.pushNamed<bool>(
-    //             routeName,
-    //             extra: booking,
-    //           );
-    //
-    //           if (result == true && context.mounted) {
-    //             onRefresh();
-    //           }
-    //         },
-    //       );
-    //     },
-    //   );
-    // }
-
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: listOrEmpty,
@@ -213,6 +142,7 @@ class BookingTabStreamView extends StatelessWidget {
   final String selectedFilter;
   final ValueChanged<String> onFilterSelected;
   final Future<void> Function() onRefresh;
+  final Set<String> contractedBookingIds;
 
   const BookingTabStreamView({
     super.key,
@@ -222,35 +152,31 @@ class BookingTabStreamView extends StatelessWidget {
     required this.currentUser,
     required this.selectedFilter,
     required this.onFilterSelected,
-    required this.onRefresh, required bool showFilterChips,
+    required this.onRefresh,
+    this.contractedBookingIds = const {},
+    required bool showFilterChips,
   });
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<BookingEntity>>(
       stream: stream,
+      initialData: cachedBookings,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            cachedBookings == null) {
+        final bookings = snapshot.data;
+
+        if (bookings == null) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
           return const Center(child: CircularProgressIndicator.adaptive());
         }
-        if (snapshot.hasError) {
-          if (cachedBookings != null) {
-            return BookingListContent(
-              rawBookings: cachedBookings!,
-              currentUser: currentUser,
-              selectedFilter: selectedFilter,
-              onFilterSelected: onFilterSelected,
-              onRefresh: onRefresh,
-            );
-          }
-          return Center(child: Text('Error: ${snapshot.error}'));
+
+        if (!listEquals(bookings, cachedBookings)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            onCacheUpdate(bookings);
+          });
         }
-
-        final bookings = snapshot.data ?? cachedBookings ?? [];
-        onCacheUpdate(bookings);
-
-
 
         return BookingListContent(
           rawBookings: bookings,
@@ -258,6 +184,7 @@ class BookingTabStreamView extends StatelessWidget {
           selectedFilter: selectedFilter,
           onFilterSelected: onFilterSelected,
           onRefresh: onRefresh,
+          contractedBookingIds: contractedBookingIds,
         );
       },
     );

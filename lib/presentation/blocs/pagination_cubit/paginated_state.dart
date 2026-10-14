@@ -1,7 +1,7 @@
 part of 'paginated_cubit.dart';
 
 @freezed
-abstract class PaginatedState<T> with _$PaginatedState<T> {
+class PaginatedState<T> with _$PaginatedState<T> {
   const factory PaginatedState({
     @Default([]) List<T> items,          // everything loaded so far
     @Default(true) bool isInitialLoading, // first page in progress
@@ -11,4 +11,3 @@ abstract class PaginatedState<T> with _$PaginatedState<T> {
     String? error,
   }) = _PaginatedState<T>;
 }
-

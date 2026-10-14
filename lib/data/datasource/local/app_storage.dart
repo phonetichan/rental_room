@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../domain/entity/user_entity.dart';
+import '../../../domain/entity/user/user_entity.dart';
 import '../../../domain/enum/role.dart';
-import '../../model/user_model.dart';
+import 'package:rental_room/data/data.dart';
 
 @lazySingleton
 class AppStorage {
@@ -16,6 +16,7 @@ class AppStorage {
   static const String _keyIsNewInstall = 'is_new_install';
   static const String _keyUser = 'saved_user_info';
   static const String _keyThemeMode = 'theme_mode';
+  static const String _keyLocale = 'app_locale';
 
   // --- Synchronous Getters ---
 
@@ -27,12 +28,17 @@ class AppStorage {
     return ThemeMode.light;
   }
 
+  Locale get locale {
+    final langCode = _prefs.getString(_keyLocale) ?? 'en';
+    return Locale(langCode);
+  }
+
   UserEntity? get savedUserInfo {
     final jsonStr = _prefs.getString(_keyUser);
     if (jsonStr == null || jsonStr.isEmpty) return null;
     try {
       final map = jsonDecode(jsonStr) as Map<String, dynamic>;
-      return UserModel.fromMap(map, map['id'] as String? ?? '');
+      return UserModel.fromMap(map, map['id'] as String? ?? '').toEntity();
     } catch (_) {
       return null;
     }
@@ -46,6 +52,10 @@ class AppStorage {
 
   Future<void> setThemeMode(ThemeMode mode) async {
     await _prefs.setString(_keyThemeMode, mode == ThemeMode.dark ? 'dark' : 'light');
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    await _prefs.setString(_keyLocale, locale.languageCode);
   }
 
   Future<void> saveUserInfo(UserEntity user) async {

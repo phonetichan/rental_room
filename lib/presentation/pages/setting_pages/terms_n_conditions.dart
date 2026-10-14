@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../extensions/l10n/l10n.dart';
 
 class TermsAndConditionsPage extends StatelessWidget {
   static const String routePath = '/terms';
@@ -8,21 +9,22 @@ class TermsAndConditionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Terms & Conditions',
+          title: Text(
+            l10n.termsAndConditions,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           elevation: 0,
-          bottom: const TabBar(
+          bottom: TabBar(
             indicatorWeight: 3,
             tabs: [
-              Tab(icon: Icon(Icons.person_outline_rounded), text: 'Tenant Terms'),
-              Tab(icon: Icon(Icons.home_work_outlined), text: 'Owner Terms'),
+              Tab(icon: const Icon(Icons.person_outline_rounded), text: l10n.tenantTerms),
+              Tab(icon: const Icon(Icons.home_work_outlined), text: l10n.ownerTerms),
             ],
           ),
         ),
@@ -42,39 +44,36 @@ class _TenantTermsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
-      children: const [
+      children: [
         _TermCard(
           number: '1',
-          title: 'General Usage & Account Responsibility',
-          content:
-          'By creating an account and using the Rental Room application, Tenants agree to provide accurate, truthful identification information. Tenants are responsible for keeping their login credentials confidential and must not share their account with unauthorized third parties.',
+          title: l10n.tenantTerm1Title,
+          content: l10n.tenantTerm1Content,
           badgeColor: Colors.blue,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '2',
-          title: 'Rental Agreements & Lease Obligations',
-          content:
-          'Any rental, lease, or sublease agreement entered into is strictly a legal contract between the Tenant and the Property Owner. The Rental Room platform acts solely as an informational directory and is not liable for monetary disputes, lease breaches, or property damages.',
+          title: l10n.tenantTerm2Title,
+          content: l10n.tenantTerm2Content,
           badgeColor: Colors.teal,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '3',
-          title: 'House Rules, Respect & Quiet Hours',
-          content:
-          'Tenants agree to strictly follow all house rules specified in the property listing, including noise guidelines, visitor policies, parking regulations, and timely rent payment schedules.',
+          title: l10n.tenantTerm3Title,
+          content: l10n.tenantTerm3Content,
           badgeColor: Colors.indigo,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '4',
-          title: 'Cancellation & Refund Policy',
-          content:
-          'Booking cancellations and security deposit refunds are subject to the specific terms outlined by the Property Owner in the property listing agreement.',
+          title: l10n.tenantTerm4Title,
+          content: l10n.tenantTerm4Content,
           badgeColor: Colors.amber,
         ),
       ],
@@ -87,39 +86,36 @@ class _OwnerTermsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
-      children: const [
+      children: [
         _TermCard(
           number: '1',
-          title: 'Listing Accuracy & Transparency',
-          content:
-          'Property Owners must provide truthful details regarding room pricing, amenities, and property condition. Deliberately misleading information may lead to account suspension.',
+          title: l10n.ownerTerm1Title,
+          content: l10n.ownerTerm1Content,
           badgeColor: Colors.deepOrange,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '2',
-          title: 'Location & Map Coordinates',
-          content:
-          'Providing exact latitude and longitude map coordinates is optional. While exact coordinates help tenants locate rooms easily, owners may choose to leave map location fields empty without restriction.',
+          title: l10n.ownerTerm2Title,
+          content: l10n.ownerTerm2Content,
           badgeColor: Colors.purple,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '3',
-          title: 'Property Right & Safety Compliance',
-          content:
-          'Property Owners represent that they hold legal rights to sublet or rent out the listed property and comply with all local housing safety codes and regulations.',
+          title: l10n.ownerTerm3Title,
+          content: l10n.ownerTerm3Content,
           badgeColor: Colors.green,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _TermCard(
           number: '4',
-          title: 'Fair Treatment & Non-Discrimination',
-          content:
-          'Property Owners agree to treat all tenant applicants fairly and without discrimination based on race, religion, gender, or nationality.',
+          title: l10n.ownerTerm4Title,
+          content: l10n.ownerTerm4Content,
           badgeColor: Colors.pink,
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../post/widgets/tenant_filter_chips.dart';
+
+import '../../room/tenant/widgets/tenant_filter_chips.dart';
 
 class BookingFilterChips extends StatelessWidget {
   final String selectedFilter;

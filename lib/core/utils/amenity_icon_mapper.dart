@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+
+IconData getAmenityIcon(String iconName) {
+  switch (iconName) {
+    case 'wifi':
+      return Icons.wifi;
+    case 'ac_unit':
+      return Icons.ac_unit;
+    case 'air':
+      return Icons.air;
+    case 'king_bed':
+      return Icons.king_bed;
+    case 'table_restaurant':
+    case 'desk':
+      return Icons.table_restaurant;
+    case 'checkroom':
+      return Icons.checkroom;
+    case 'blinds':
+      return Icons.blinds;
+    case 'elevator':
+      return Icons.elevator;
+    case 'door_sliding':
+      return Icons.door_sliding;
+    case 'electric_bolt':
+      return Icons.electric_bolt;
+    case 'battery_charging_full':
+      return Icons.battery_charging_full;
+    case 'balcony':
+      return Icons.balcony;
+    case 'kitchen':
+      return Icons.kitchen;
+    case 'soup_kitchen':
+    case 'countertops':
+      return Icons.soup_kitchen;
+    case 'water_drop':
+      return Icons.water_drop;
+    case 'shower':
+      return Icons.shower;
+    case 'sanitation':
+    case 'wc':
+      return Icons.clean_hands_outlined;
+    case 'hot_tub':
+      return Icons.hot_tub;
+    case 'local_parking':
+      return Icons.local_parking;
+    case 'two_wheeler':
+      return Icons.two_wheeler;
+    case 'tv':
+      return Icons.tv;
+    case 'fitness_center':
+      return Icons.fitness_center;
+    case 'pool':
+      return Icons.pool;
+    case 'deck':
+      return Icons.deck;
+    case 'security':
+      return Icons.security;
+    case 'videocam':
+      return Icons.videocam;
+    case 'iron':
+      return Icons.iron;
+    case 'delete_outline':
+      return Icons.delete_outline;
+    case 'local_laundry_service':
+      return Icons.local_laundry_service;
+    default:
+      return Icons.help_outline;
+  }
+}

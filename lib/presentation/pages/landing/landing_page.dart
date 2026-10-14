@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../data/data.dart';
 import '../../../di/di.dart';
 import '../../styles/styles.dart';
-import 'login/login_page.dart';
+import '../auth/login/login_page.dart';
 
 class LandingPage extends StatefulWidget {
   static const String routePath = '/landing';
@@ -258,7 +258,7 @@ class _LandingModel {
 class _OverlappingImages extends StatelessWidget {
   final int pageIndex;
 
-  const _OverlappingImages({super.key, required this.pageIndex});
+  const _OverlappingImages({required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {

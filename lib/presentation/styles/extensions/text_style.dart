@@ -1,36 +1,36 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:rental_room/presentation/presentation.dart';
 
-extension TextStyleUtil on TextStyle {
-  TextStyle get thin => copyWith(fontWeight: FontWeight.w100);
+extension TextStyleUtil on material.TextStyle {
+  material.TextStyle get thin => copyWith(fontWeight: material.FontWeight.w100);
 
-  TextStyle get extraLight => copyWith(fontWeight: FontWeight.w200);
+  material.TextStyle get extraLight => copyWith(fontWeight: material.FontWeight.w200);
 
-  TextStyle get light => copyWith(fontWeight: FontWeight.w300);
+  material.TextStyle get light => copyWith(fontWeight: material.FontWeight.w300);
 
-  TextStyle get regular => copyWith(fontWeight: FontWeight.w400);
+  material.TextStyle get regular => copyWith(fontWeight: material.FontWeight.w400);
 
-  TextStyle get medium => copyWith(fontWeight: FontWeight.w500);
+  material.TextStyle get medium => copyWith(fontWeight: material.FontWeight.w500);
 
-  TextStyle get semiBold => copyWith(fontWeight: FontWeight.w600);
+  material.TextStyle get semiBold => copyWith(fontWeight: material.FontWeight.w600);
 
-  TextStyle get bold => copyWith(fontWeight: FontWeight.w700);
+  material.TextStyle get bold => copyWith(fontWeight: material.FontWeight.w700);
 
-  TextStyle get extraBold => copyWith(fontWeight: FontWeight.w800);
+  material.TextStyle get extraBold => copyWith(fontWeight: material.FontWeight.w800);
 
-  TextStyle get superBold => copyWith(fontWeight: FontWeight.w900);
+  material.TextStyle get superBold => copyWith(fontWeight: material.FontWeight.w900);
 
-  TextStyle get title => copyWith(fontSize: 19.5);
+  material.TextStyle get title => copyWith(fontSize: 19.5);
 
-  TextStyle get extraSmall => copyWith(fontSize: 10);
+  material.TextStyle get extraSmall => copyWith(fontSize: 10);
 
-  TextStyle get option =>
-      copyWith(color: $styles.color.clrBlack.withValues(alpha: 0.7));
+  material.TextStyle get option =>
+      copyWith(color: $styles.color.clrBlack.withOpacity(0.7)); // Changed to withOpacity for SDK 3.13 compatibility
 
-  TextStyle get grey =>
-      copyWith(color: $styles.color.clrBlack.withValues(alpha: 0.5));
+  material.TextStyle get grey =>
+      copyWith(color: $styles.color.clrBlack.withOpacity(0.5));
 
-  TextStyle get withPrimary =>
+  material.TextStyle get withPrimary =>
       copyWith(color: $styles.color.clrPrimary);
 
   double? get lineHeight {

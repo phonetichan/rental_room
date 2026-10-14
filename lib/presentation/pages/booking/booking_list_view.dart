@@ -1,255 +1,9 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-//
-// import '../../../di/di.dart';
-// import '../../../domain/domain.dart';
-// import '../../presentation.dart';
-//
-// class BookingView extends StatefulWidget {
-//   static const String routeName = 'booking-list';
-//   static const String routePath = '/booking-list';
-//   final UserEntity user;
-//   final bool isCurrentTab;
-//
-//   const BookingView({
-//     super.key,
-//     required this.user,
-//     this.isCurrentTab = true,
-//   });
-//
-//   @override
-//   State<BookingView> createState() => _BookingViewState();
-// }
-//
-// class _BookingViewState extends State<BookingView>
-//     with SingleTickerProviderStateMixin {
-//   late final TabController _tabController;
-//   List<BookingEntity>? _cachedAllBookings;
-//   List<BookingEntity>? _cachedMyBookings;
-//   List<BookingEntity>? _cachedPendingBookings;
-//   List<BookingEntity>? _cachedConfirmedBookings;
-//   String _selectedFilter = 'all';
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: 2, vsync: this);
-//   }
-//
-//   @override
-//   void dispose() {
-//     _tabController.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   void didUpdateWidget(covariant BookingView oldWidget) {
-//     super.didUpdateWidget(oldWidget);
-//     if (!oldWidget.isCurrentTab && widget.isCurrentTab) {
-//       _refreshData();
-//     }
-//   }
-//
-//   Future<void> _refreshData() async {
-//     final isOwner = widget.user.role == UserRole.owner;
-//     await context.read<BookingCubit>().fetchBookings(
-//       widget.user.id,
-//       userId: isOwner ? null : widget.user.id,
-//       ownerId: isOwner ? widget.user.id : null,
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     final isDark = theme.brightness == Brightness.dark;
-//     final isOwner = widget.user.role == UserRole.owner;
-//
-//     final contentWidget = Padding(
-//       padding: const EdgeInsets.all(16.0),
-//       child: Column(
-//         children: [
-//           // SEGMENTED TAB BAR HEADER (All/My for Owner, Pending/Confirmed for Tenant)
-//           Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 8),
-//             child: Container(
-//               height: 48,
-//               padding: const EdgeInsets.all(4),
-//               decoration: BoxDecoration(
-//                 color: isDark
-//                     ? Colors.white.withValues(alpha: 0.06)
-//                     : theme.colorScheme.surfaceContainerHighest
-//                         .withValues(alpha: 0.5),
-//                 borderRadius: BorderRadius.circular(12),
-//                 border: Border.all(
-//                   color: isDark
-//                       ? Colors.white.withValues(alpha: 0.08)
-//                       : theme.dividerColor.withValues(alpha: 0.1),
-//                 ),
-//               ),
-//               child: TabBar(
-//                 controller: _tabController,
-//                 indicatorSize: TabBarIndicatorSize.tab,
-//                 dividerColor: Colors.transparent,
-//                 labelPadding: EdgeInsets.zero,
-//                 labelStyle: const TextStyle(
-//                   fontSize: 14,
-//                   fontWeight: FontWeight.w600,
-//                 ),
-//                 unselectedLabelStyle: const TextStyle(
-//                   fontSize: 14,
-//                   fontWeight: FontWeight.w400,
-//                 ),
-//                 labelColor: theme.colorScheme.primary,
-//                 unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
-//                 indicator: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(8),
-//                   color: theme.colorScheme.primary.withValues(alpha: 0.12),
-//                 ),
-//                 tabs: isOwner
-//                     ? const [
-//                         Tab(
-//                           height: 40,
-//                           child: Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               Icon(Icons.calendar_month_outlined, size: 18),
-//                               SizedBox(width: 8),
-//                               Text('All Bookings'),
-//                             ],
-//                           ),
-//                         ),
-//                         Tab(
-//                           height: 40,
-//                           child: Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               Icon(Icons.bookmark_outline_rounded, size: 18),
-//                               SizedBox(width: 8),
-//                               Text('My Bookings'),
-//                             ],
-//                           ),
-//                         ),
-//                       ]
-//                     : const [
-//                         Tab(
-//                           height: 40,
-//                           child: Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               Icon(Icons.hourglass_top_rounded, size: 18),
-//                               SizedBox(width: 8),
-//                               Text('Pending'),
-//                             ],
-//                           ),
-//                         ),
-//                         Tab(
-//                           height: 40,
-//                           child: Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               Icon(Icons.check_circle_outline_rounded, size: 18),
-//                               SizedBox(width: 8),
-//                               Text('Confirmed'),
-//                             ],
-//                           ),
-//                         ),
-//                       ],
-//               ),
-//             ),
-//           ),
-//           const SizedBox(height: 8),
-//           Expanded(
-//             child: TabBarView(
-//               controller: _tabController,
-//               children: isOwner
-//                   ? [
-//                       // Owner Tab 1: All Bookings
-//                       BookingTabStreamView(
-//                         stream: context.read<BookingCubit>().watchBookings(
-//                               userId: null,
-//                               ownerId: widget.user.id,
-//                             ),
-//                         cachedBookings: _cachedAllBookings,
-//                         onCacheUpdate: (list) => _cachedAllBookings = list,
-//                         currentUser: widget.user,
-//                         selectedFilter: _selectedFilter,
-//                         onFilterSelected: (val) => setState(() => _selectedFilter = val),
-//                         onRefresh: _refreshData,
-//                       ),
-//                       // Owner Tab 2: My Bookings
-//                       BookingTabStreamView(
-//                         stream: context.read<BookingCubit>().watchBookings(
-//                               userId: null,
-//                               ownerId: widget.user.id,
-//                             ),
-//                         cachedBookings: _cachedMyBookings,
-//                         onCacheUpdate: (list) => _cachedMyBookings = list,
-//                         currentUser: widget.user,
-//                         selectedFilter: _selectedFilter,
-//                         onFilterSelected: (val) => setState(() => _selectedFilter = val),
-//                         onRefresh: _refreshData,
-//                       ),
-//                     ]
-//                   : [
-//                       // Tenant Tab 1: Pending Bookings
-//                       BookingTabStreamView(
-//                         stream: context.read<BookingCubit>().watchBookings(
-//                               userId: widget.user.id,
-//                               ownerId: null,
-//                             ),
-//                         cachedBookings: _cachedPendingBookings,
-//                         onCacheUpdate: (list) => _cachedPendingBookings = list,
-//                         currentUser: widget.user,
-//                         selectedFilter: 'pending',
-//                         onFilterSelected: (_) {},
-//                         onRefresh: _refreshData,
-//                       ),
-//                       // Tenant Tab 2: Confirmed Bookings
-//                       BookingTabStreamView(
-//                         stream: context.read<BookingCubit>().watchBookings(
-//                               userId: widget.user.id,
-//                               ownerId: null,
-//                             ),
-//                         cachedBookings: _cachedConfirmedBookings,
-//                         onCacheUpdate: (list) => _cachedConfirmedBookings = list,
-//                         currentUser: widget.user,
-//                         selectedFilter: 'confirmed',
-//                         onFilterSelected: (_) {},
-//                         onRefresh: _refreshData,
-//                       ),
-//                     ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//
-//     // Provide BookingCubit safely if missing higher in the widget tree
-//     try {
-//       context.read<BookingCubit>();
-//       return contentWidget;
-//     } catch (_) {
-//       return BlocProvider<BookingCubit>(
-//         create: (context) => inject<BookingCubit>()
-//           ..fetchBookings(
-//             widget.user.id,
-//             userId: isOwner ? null : widget.user.id,
-//             ownerId: isOwner ? widget.user.id : null,
-//           ),
-//         child: Builder(
-//           builder: (nestedContext) => contentWidget,
-//         ),
-//       );
-//     }
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../di/di.dart';
 import '../../../domain/domain.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../presentation.dart';
 
 class BookingView extends StatefulWidget {
@@ -269,14 +23,29 @@ class _BookingViewState extends State<BookingView>
   late final TabController _tabController;
   List<BookingEntity>? _cachedPendingBookings;
   List<BookingEntity>? _cachedConfirmedBookings;
-  List<BookingEntity>? _cachedContractedBookings;
-
+  Set<String> _contractedBookingIds = {};
 
   bool get _isOwner => widget.user.role == UserRole.owner;
 
-  List<String> get _filters => const ['pending', 'confirmed', 'contracted'];
+  List<String> get _filters => const ['pending', 'confirmed'];
 
   String _selectedFilter = 'pending';
+
+  Future<void> _loadContracts() async {
+    try {
+      final repo = inject<ContractRepository>();
+      final list = _isOwner
+          ? await repo.getContractsByOwnerId(widget.user.id)
+          : await repo.getContractsByTenantId(widget.user.id);
+      if (!mounted) return;
+      setState(() {
+        _contractedBookingIds = list
+            .where((c) => c.status == ContractStatus.active)
+            .map((c) => c.bookingId)
+            .toSet();
+      });
+    } catch (_) {}
+  }
 
   @override
   void initState() {
@@ -293,9 +62,8 @@ class _BookingViewState extends State<BookingView>
         });
       }
     });
+    _loadContracts();
   }
-
-
 
   @override
   void dispose() {
@@ -317,18 +85,20 @@ class _BookingViewState extends State<BookingView>
       userId: _isOwner ? null : widget.user.id,
       ownerId: _isOwner ? widget.user.id : null,
     );
+    await _loadContracts();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     final contentWidget = Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // SEGMENTED TAB BAR HEADER (All/Pending/Confirmed for Owner, Pending/Confirmed for Tenant)
+          // SEGMENTED TAB BAR HEADER (Pending & Confirmed only)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Container(
@@ -338,8 +108,8 @@ class _BookingViewState extends State<BookingView>
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.06)
                     : theme.colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.5,
-                      ),
+                  alpha: 0.5,
+                ),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isDark
@@ -366,15 +136,21 @@ class _BookingViewState extends State<BookingView>
                   borderRadius: BorderRadius.circular(8),
                   color: theme.colorScheme.primary.withValues(alpha: 0.12),
                 ),
-                tabs: const [
+                tabs: [
                   Tab(
                     height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.hourglass_top_rounded, size: 18),
-                        SizedBox(width: 8),
-                        Text('Pending'),
+                        const Icon(Icons.hourglass_top_rounded, size: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.pending,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -383,26 +159,16 @@ class _BookingViewState extends State<BookingView>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 18,
+                        const Icon(Icons.check_circle_outline_rounded,
+                            size: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.confirmed,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        SizedBox(width: 8),
-                        Text('Confirmed'),
-                      ],
-                    ),
-                  ),
-                  Tab(
-                    height: 40,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.handshake_outlined,
-                          size: 18,
-                        ),
-                        SizedBox(width: 8),
-                        Text('Contracted'),
                       ],
                     ),
                   ),
@@ -414,22 +180,19 @@ class _BookingViewState extends State<BookingView>
           // SINGLE STREAM VIEW DRIVEN BY THE SEGMENTED TAB BAR
           Expanded(
             child: BookingTabStreamView(
+              contractedBookingIds: _contractedBookingIds,
               stream: context.read<BookingCubit>().watchBookings(
                 userId: _isOwner ? null : widget.user.id,
                 ownerId: _isOwner ? widget.user.id : null,
               ),
               cachedBookings: _selectedFilter == 'pending'
                   ? _cachedPendingBookings
-                  : _selectedFilter == 'confirmed'
-                  ? _cachedConfirmedBookings
-                  : _cachedContractedBookings,
+                  : _cachedConfirmedBookings,
               onCacheUpdate: (list) {
                 if (_selectedFilter == 'pending') {
                   _cachedPendingBookings = list;
                 } else if (_selectedFilter == 'confirmed') {
                   _cachedConfirmedBookings = list;
-                } else if (_selectedFilter == 'contracted') {
-                  _cachedContractedBookings = list;
                 }
               },
               currentUser: widget.user,
@@ -466,9 +229,7 @@ class _BookingViewState extends State<BookingView>
 
     if (isStandalone) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Bookings'),
-        ),
+        appBar: AppBar(title: Text(l10n.booking)),
         body: bodyWidget,
       );
     }

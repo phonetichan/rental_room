@@ -9,7 +9,17 @@ import 'package:rental_room/domain/domain.dart';
 import '../../data/data.dart';
 import '../../di/di.dart';
 import '../pages/booking/booking_list_view.dart';
+import '../pages/booking/tenant/booking_stepper.dart';
+import '../pages/contract/contract_history_page.dart';
 import '../pages/index.dart';
+import '../pages/openstreetmap/location_picker_page.dart';
+import '../pages/profile/edit_location/cubit/location_cubit.dart';
+import '../pages/profile/edit_location/edit_location.dart';
+import '../pages/room/owner/add_edit_room_page.dart';
+import '../pages/room/owner/owner_room_detail_page.dart';
+import '../pages/room/tenant/tenant_room_detail_page.dart';
+import '../pages/room/tenant/saved_rooms_page.dart';
+import '../pages/setting_pages/terms_n_conditions.dart';
 import '../presentation.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -48,21 +58,21 @@ class GoRouterRefreshStream extends ChangeNotifier {
 class NavigationRouter {
   final INavigationKeyProvider _navigationKeyProvider;
   final AppStorage _storage;
-  final ISnackShower _snackShower;
   final AuthenticationCubit _authCubit;
+  SavedRoomsCubit? _savedRoomsCubit;
+  FavoriteCubit? _favoriteCubit;
 
-  NavigationRouter(
-    this._navigationKeyProvider,
-    this._storage,
-    this._snackShower,
-    this._authCubit,
-  );
+  NavigationRouter(this._navigationKeyProvider, this._storage, this._authCubit);
 
   late final router = GoRouter(
     navigatorKey: _navigationKeyProvider.globalKey,
     refreshListenable: GoRouterRefreshStream(
       _authCubit.stream,
       onUnauthenticated: () {
+        _savedRoomsCubit?.close();
+        _savedRoomsCubit = null;
+        _favoriteCubit?.close();
+        _favoriteCubit = null;
         final context = _navigationKeyProvider.globalKey.currentContext;
         if (context != null &&
             GoRouter.of(context).routerDelegate.currentConfiguration.uri.path !=
@@ -101,7 +111,6 @@ class NavigationRouter {
         // 4. Redirect unauthenticated users to LoginPage if on protected routes
         if (currentRoute != LandingPage.routePath &&
             currentRoute != TermsAndConditionsPage.routePath &&
-            currentRoute != UserGuidancePage.routePath &&
             currentRoute != LoginPage.routePath &&
             currentRoute != SignUpPage.routePath) {
           return LoginPage.routePath;
@@ -120,10 +129,32 @@ class NavigationRouter {
         builder: (context, state) => const TermsAndConditionsPage(),
       ),
       GoRoute(
-        path: UserGuidancePage.routePath,
-        builder: (context, state) => const UserGuidancePage(),
+        path: LocationPickerPage.routePath,
+        name: 'location_picker',
+        builder: (context, state) => const LocationPickerPage(), // Replace with your actual location picker widget
       ),
-
+      // // Inside your GoRouter routes list:
+      // GoRoute(
+      //   path: EditLocationScreen.routePath, // or '/edit-location'
+      //   name: 'edit_location',
+      //   builder: (context, state) =>
+      //       const EditLocationScreen(), // or LocationPickerPage()
+      // ),
+      GoRoute(
+        path: EditLocationScreen.routePath,
+        name: 'edit_location',
+        builder: (context, state) => BlocProvider(
+          create: (_) => inject<LocationCubit>(), // however you create it: getIt, sl, or LocationCubit(repo)
+          child: const EditLocationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: EditLocationScreen.routePath,
+        builder: (context, state) => BlocProvider(
+          create: (context) => inject<LocationCubit>(),
+          child: const EditLocationScreen(),
+        ),
+      ),
       // Auth routes
       GoRoute(
         path: LoginPage.routePath,
@@ -163,6 +194,13 @@ class NavigationRouter {
           );
         },
       ),
+      GoRoute(
+        path: ContractHistoryPage.routePath,
+        builder: (context, state) {
+          final user = state.extra as UserEntity;
+          return ContractHistoryPage(user: user);
+        },
+      ),
 
       // Room routes
       GoRoute(
@@ -172,6 +210,32 @@ class NavigationRouter {
           return BlocProvider(
             create: (context) => inject<RoomCubit>(),
             child: AddEditRoomScreen(room: room),
+          );
+        },
+      ),
+      GoRoute(
+        path: SavedRoomsPage.routePath,
+        builder: (context, state) {
+          final user = state.extra as UserEntity;
+          _favoriteCubit ??= inject<FavoriteCubit>()..loadFavorites(user.id);
+          _savedRoomsCubit ??= SavedRoomsCubit(
+            fetcher: (cursor, limit) async {
+              final res = await inject<GetUserFavoritesUseCase>()(user.id);
+              return await inject<RoomRepository>().fetchRoomsByIds(
+                res.data?.map((f) => f.roomId).toList() ?? [],
+                cursor,
+                limit,
+              );
+            },
+          )..refresh();
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => inject<RoomCubit>()),
+              BlocProvider.value(value: _favoriteCubit!),
+              BlocProvider.value(value: _savedRoomsCubit!),
+            ],
+            child: SavedRoomsPage(user: user),
           );
         },
       ),
@@ -221,37 +285,38 @@ class NavigationRouter {
           );
         },
       ),
-      // GoRoute(
-      //   path: '/owner-booking-detail',
-      //   name: 'owner-booking-detail',
-      //   builder: (context, state) {
-      //     // 1. Extract the booking entity passed via extra
-      //     final booking = state.extra as BookingEntity;
-      //
-      //     // 2. Obtain current authenticated user from AuthenticationCubit
-      //     final currentUser = context.read<AuthenticationCubit>().user!;
-      //
-      //     // 3. Provide BookingCubit to the detail view
-      //     return BlocProvider(
-      //       create: (context) => inject<BookingCubit>(),
-      //       child: OwnerBookingDetailView(
-      //         booking: booking,
-      //         currentUser: currentUser,
-      //       ),
-      //     );
-      //   },
-      // ),
       GoRoute(
-        path: '/owner-booking-detail',
-        name: 'owner-booking-detail',
+        path: VoucherDetailPage.routePath,
+        name: VoucherDetailPage.routeName,
         builder: (context, state) {
-          // 1. Extract the booking entity passed via extra
-          final booking = state.extra as BookingEntity;
-
-          // 2. Obtain current authenticated user from AuthenticationCubit
+          final extra = state.extra;
           final currentUser = context.read<AuthenticationCubit>().user!;
 
-          // 3. Provide both BookingCubit and FavoriteCubit to the detail view
+          BookingEntity booking;
+          if (extra is BookingEntity) {
+            booking = extra;
+          } else if (extra is ContractEntity) {
+            booking = BookingEntity(
+              id: extra.bookingId,
+              roomId: extra.roomId,
+              userId: extra.tenantId,
+              ownerId: extra.ownerId,
+              roomPrice: extra.monthlyRent,
+              status: 'contracted',
+              createdAt: extra.createdAt,
+            );
+          } else if (extra is String) {
+            booking = BookingEntity(
+              id: extra,
+              roomId: '',
+              userId: '',
+              status: 'contracted',
+              createdAt: DateTime.now(),
+            );
+          } else {
+            booking = extra as BookingEntity;
+          }
+
           return MultiBlocProvider(
             providers: [
               BlocProvider<BookingCubit>(
@@ -262,7 +327,7 @@ class NavigationRouter {
                     inject<FavoriteCubit>()..loadFavorites(currentUser.id),
               ),
             ],
-            child: OwnerBookingDetailView(
+            child: VoucherDetailPage(
               booking: booking,
               currentUser: currentUser,
             ),
@@ -283,17 +348,17 @@ class NavigationRouter {
         },
       ),
       GoRoute(
-        path: ContractDetailPage.routePath,
-        name: ContractDetailPage.routeName,
+        path: ContractUpdatePage.routePath,
+        name: ContractUpdatePage.routeName,
         builder: (context, state) {
           final bookingId = state.extra as String;
-          return ContractDetailPage(bookingId: bookingId);
+          return ContractUpdatePage(bookingId: bookingId);
         },
       ),
       // Main Entry Point
       GoRoute(
-        onExit: _handleDoubleTapToExit,
         path: IndexPage.routePath,
+        name: IndexPage.routeName,
         builder: (context, state) {
           final tabStr = state.uri.queryParameters['tab'];
           final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
@@ -306,23 +371,4 @@ class NavigationRouter {
       ),
     ],
   );
-
-  DateTime? currentBackPressTime;
-
-  Future<bool> _handleDoubleTapToExit(
-    BuildContext context,
-    GoRouterState state,
-  ) async {
-    final now = DateTime.now();
-    const thresholdInterval = Duration(seconds: 2);
-
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > thresholdInterval) {
-      currentBackPressTime = now;
-      _snackShower.info(message: "Press again to exit app");
-      return false;
-    }
-
-    return true;
-  }
 }

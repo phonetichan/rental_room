@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class ProfileSignOutButton extends StatelessWidget {
   final VoidCallback onSignOut;
 
@@ -7,6 +9,8 @@ class ProfileSignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return SizedBox(
       width: double.infinity,
       height: 52,
@@ -21,9 +25,9 @@ class ProfileSignOutButton extends StatelessWidget {
           ),
         ),
         icon: const Icon(Icons.logout_rounded, size: 20),
-        label: const Text(
-          'Sign Out',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        label: Text(
+          l10n.signOut,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         onPressed: onSignOut,
       ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../domain/entity/user_entity.dart';
+import '../../../../domain/entity/user/user_entity.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
+import '../edit_location/edit_location.dart';
 import '../edit_password/edit_password.dart';
 import '../edit_profile/edit_profile.dart';
 import '../../setting_pages/terms_n_conditions.dart';
-import '../../setting_pages/user_guidance.dart';
 import 'setting_icon.dart';
 
 class ProfileSettingsCard extends StatelessWidget {
@@ -25,12 +26,14 @@ class ProfileSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // SETTINGS SECTION HEADER
         Text(
-          'Settings & Preferences',
+          l10n.settingsPreferences,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleMedium
@@ -38,7 +41,6 @@ class ProfileSettingsCard extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // SETTINGS CARD GROUP
         Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -62,14 +64,17 @@ class ProfileSettingsCard extends StatelessWidget {
                       : Icons.light_mode_rounded,
                   color: Colors.purple,
                 ),
-                title: const Text(
-                  'Theme',
+                title: Text(
+                  l10n.theme,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
                 ),
                 subtitle: Text(
-                  isDarkMode ? 'Dark Mode' : 'Light Mode',
+                  isDarkMode ? l10n.darkMode : l10n.lightMode,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 12.5),
@@ -85,12 +90,67 @@ class ProfileSettingsCard extends StatelessWidget {
               Divider(
                 height: 1,
                 indent: 64,
-                color: isDarkMode
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade100,
+                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
 
-              // 2. EDIT PROFILE NAVIGATION
+              // 2. LANGUAGE SWITCHER
+              ValueListenableBuilder<Locale>(
+                valueListenable: authCubit.localeNotifier,
+                builder: (context, locale, child) {
+                  final isMyanmar = locale.languageCode == 'my';
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: const SettingIcon(
+                      icon: Icons.language_rounded,
+                      color: Colors.green,
+                    ),
+                    title: Text(
+                      l10n.language,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                    subtitle: Text(
+                      isMyanmar ? l10n.myanmar : l10n.english,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12.5),
+                    ),
+                    trailing: DropdownButton<String>(
+                      value: isMyanmar ? 'my' : 'en',
+                      underline: const SizedBox.shrink(),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'en',
+                          child: Text(l10n.english),
+                        ),
+                        DropdownMenuItem(
+                          value: 'my',
+                          child: Text(l10n.myanmar),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) {
+                          authCubit.setLocale(Locale(val));
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+              Divider(
+                height: 1,
+                indent: 64,
+                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
+              ),
+
+              // 3. EDIT PROFILE
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -100,11 +160,11 @@ class ProfileSettingsCard extends StatelessWidget {
                   icon: Icons.person_outline_rounded,
                   color: Colors.blue,
                 ),
-                title: const Text(
-                  'Edit Profile',
+                title: Text(
+                  l10n.editProfile,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
@@ -118,12 +178,10 @@ class ProfileSettingsCard extends StatelessWidget {
               Divider(
                 height: 1,
                 indent: 64,
-                color: isDarkMode
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade100,
+                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
 
-              // 3. EDIT PASSWORD NAVIGATION
+              // 4. EDIT PASSWORD
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -133,11 +191,11 @@ class ProfileSettingsCard extends StatelessWidget {
                   icon: Icons.lock_outline_rounded,
                   color: Colors.indigo,
                 ),
-                title: const Text(
-                  'Edit Password',
+                title: Text(
+                  l10n.editPassword,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
@@ -151,66 +209,64 @@ class ProfileSettingsCard extends StatelessWidget {
               Divider(
                 height: 1,
                 indent: 64,
-                color: isDarkMode
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade100,
+                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
 
-              // 4. TERMS AND CONDITIONS
+              // 5. UPDATE LOCATION
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 4,
                 ),
                 leading: const SettingIcon(
-                  icon: Icons.description_outlined,
-                  color: Colors.orange,
+                  icon: Icons.location_on_outlined,
+                  color: Colors.redAccent,
                 ),
-                title: const Text(
-                  'Terms and Conditions',
+                title: Text(
+                  l10n.updateLocation,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
                 ),
                 trailing: const Icon(
                   Icons.chevron_right_rounded,
                   color: Colors.grey,
                 ),
-                onTap: () {
-                  context.push(TermsAndConditionsPage.routePath);
-                },
+                onTap: () => context.push(EditLocationScreen.routePath),
               ),
               Divider(
                 height: 1,
                 indent: 64,
-                color: isDarkMode
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade100,
+                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
 
-              // 5. USER GUIDANCE
+              // 6. TERMS AND CONDITIONS
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 4,
                 ),
                 leading: const SettingIcon(
-                  icon: Icons.help_outline_rounded,
-                  color: Colors.teal,
+                  icon: Icons.description_rounded,
+                  color: Colors.orange,
                 ),
-                title: const Text(
-                  'User Guidance & Help',
+                title: Text(
+                  l10n.termsAndConditions,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
                 ),
                 trailing: const Icon(
                   Icons.chevron_right_rounded,
                   color: Colors.grey,
                 ),
-                onTap: () {
-                  context.push(UserGuidancePage.routePath);
-                },
+                onTap: () => context.push(TermsAndConditionsPage.routePath),
               ),
             ],
           ),
