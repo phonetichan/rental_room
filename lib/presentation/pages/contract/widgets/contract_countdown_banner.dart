@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../domain/domain.dart';
-import '../../../extensions/contract_extensions.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/contract/contract_extensions.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class ContractCountdownBanner extends StatelessWidget {
   final ContractEntity contract;

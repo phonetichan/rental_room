@@ -3,7 +3,6 @@ import 'package:rental_room/domain/entity/room/page_result.dart';
 
 import '../../../domain/entity/room/room_entity.dart';
 import '../../../domain/repository/room/room_repository.dart';
-import '../../datasource/remote/firebase_api/owner_data_source/room_data_source.dart';
 import '../../data.dart';
 
 @LazySingleton(as: RoomRepository)

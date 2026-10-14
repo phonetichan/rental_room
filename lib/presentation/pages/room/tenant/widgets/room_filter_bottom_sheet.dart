@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../../../domain/domain.dart';
-import '../../../../components/modal/room_filter.dart';
+import '../../../../extensions/extensions.dart';
 import '../../../../presentation.dart';
 
 class RoomFilterBottomSheet extends StatefulWidget {
@@ -72,17 +73,64 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
     Navigator.pop(context);
   }
 
+  Widget _sectionTitle(String text, Color color) {
+    return Text(
+      text,
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+    );
+  }
+
+  Widget _countChips({
+    required int? selectedValue,
+    required ValueChanged<int?> onChanged,
+    required String anyLabel,
+  }) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ChoiceChip(
+              label: Text(anyLabel),
+              selected: selectedValue == null,
+              onSelected: (selected) {
+                if (selected) onChanged(null);
+              },
+            ),
+          ),
+          ...List.generate(4, (index) {
+            final count = index + 1;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(context.localizedNumber(index == 3 ? '4+' : count)),
+                selected: selectedValue == count,
+                onSelected: (selected) => onChanged(selected ? count : null),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.clrDarkSurface : AppColors.clrWhite;
-    final fillColor = isDark ? AppColors.clrWhite.withValues(alpha: 0.08) : AppColors.clrSoftGrey;
+    final backgroundColor = isDark
+        ? AppColors.clrDarkSurface
+        : AppColors.clrWhite;
+    final fillColor = isDark
+        ? AppColors.clrWhite.withValues(alpha: 0.08)
+        : AppColors.clrSoftGrey;
     final textColor = isDark ? AppColors.clrWhite : AppColors.clrBlack;
+    final l10n = context.l10n;
 
-    final categories = LookupConstants.roomTypes.entries.map((entry) {
-      return {'id': entry.key, 'name': entry.value};
-    }).toList();
+    final categories = LookupConstants.roomTypes.keys
+        .map((id) => (id: id, name: l10n.localizedRoomType(id)))
+        .toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -105,7 +153,7 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Filter Options',
+                  l10n.filterOptions,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -114,25 +162,18 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                 ),
                 TextButton(
                   onPressed: _resetFilters,
-                  child: const Text('Clear All'),
+                  child: Text(l10n.filterClearAll),
                 ),
               ],
             ),
             const Divider(),
             const SizedBox(height: 12),
 
-            // 1. PRICE RANGE SECTION
+            // 1. PRICE RANGE
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Price Range',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                ),
+                _sectionTitle(l10n.filterPriceRange, textColor),
                 GestureDetector(
                   onTap: () {
                     _minPriceController.clear();
@@ -140,7 +181,7 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                     setState(() {});
                   },
                   child: Text(
-                    'Clear',
+                    l10n.filterClear,
                     style: TextStyle(color: AppColors.clrGrey, fontSize: 13),
                   ),
                 ),
@@ -155,11 +196,14 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: textColor),
                     decoration: InputDecoration(
-                      hintText: 'from',
+                      hintText: l10n.filterFrom,
                       hintStyle: TextStyle(color: AppColors.clrGrey),
                       filled: true,
                       fillColor: fillColor,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
@@ -174,11 +218,14 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: textColor),
                     decoration: InputDecoration(
-                      hintText: 'to',
+                      hintText: l10n.filterTo,
                       hintStyle: TextStyle(color: AppColors.clrGrey),
                       filled: true,
                       fillColor: fillColor,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
@@ -188,7 +235,10 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: fillColor,
                     borderRadius: BorderRadius.circular(10),
@@ -207,40 +257,26 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
 
             const SizedBox(height: 20),
 
-            // 2. ROOM TYPE (CATEGORY) SECTION
-            Text(
-              'Room Type',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
+            // 2. ROOM TYPE
+            _sectionTitle(l10n.filterRoomType, textColor),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               runSpacing: 4,
               children: [
                 ChoiceChip(
-                  label: const Text('All Types'),
+                  label: Text(l10n.filterAllTypes),
                   selected: _roomTypeId == null || _roomTypeId!.isEmpty,
                   onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _roomTypeId = null);
-                    }
+                    if (selected) setState(() => _roomTypeId = null);
                   },
                 ),
                 ...categories.map((cat) {
-                  final catId = cat['id']!;
-                  final catName = cat['name']!;
-                  final isSelected = _roomTypeId == catId;
                   return ChoiceChip(
-                    label: Text(catName),
-                    selected: isSelected,
+                    label: Text(cat.name),
+                    selected: _roomTypeId == cat.id,
                     onSelected: (selected) {
-                      setState(() {
-                        _roomTypeId = selected ? catId : null;
-                      });
+                      setState(() => _roomTypeId = selected ? cat.id : null);
                     },
                   );
                 }),
@@ -249,98 +285,24 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
 
             const SizedBox(height: 20),
 
-            // 3. ROOM NUMBER (BEDROOMS) SECTION: Any, 1, 2, 3, 4+
-            Text(
-              'Room Number (Bedrooms)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
+            // 3. ROOM NUMBER (BEDROOMS)
+            _sectionTitle(l10n.filterRoomNumber, textColor),
             const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: const Text('Any'),
-                      selected: _bedrooms == null,
-                      onSelected: (selected) {
-                        if (selected) {
-                          setState(() => _bedrooms = null);
-                        }
-                      },
-                    ),
-                  ),
-                  ...List.generate(4, (index) {
-                    final count = index + 1;
-                    final isSelected = _bedrooms == count;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(index == 3 ? '4+' : '$count'),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            _bedrooms = selected ? count : null;
-                          });
-                        },
-                      ),
-                    );
-                  }),
-                ],
-              ),
+            _countChips(
+              selectedValue: _bedrooms,
+              anyLabel: l10n.filterAny,
+              onChanged: (v) => setState(() => _bedrooms = v),
             ),
 
             const SizedBox(height: 20),
 
-            // 4. MAX GUESTS SECTION: Any, 1, 2, 3, 4+
-            Text(
-              'Max Guests',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
+            // 4. MAX GUESTS
+            _sectionTitle(l10n.filterMaxGuests, textColor),
             const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: const Text('Any'),
-                      selected: _maxGuests == null,
-                      onSelected: (selected) {
-                        if (selected) {
-                          setState(() => _maxGuests = null);
-                        }
-                      },
-                    ),
-                  ),
-                  ...List.generate(4, (index) {
-                    final count = index + 1;
-                    final isSelected = _maxGuests == count;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(index == 3 ? '4+' : '$count'),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            _maxGuests = selected ? count : null;
-                          });
-                        },
-                      ),
-                    );
-                  }),
-                ],
-              ),
+            _countChips(
+              selectedValue: _maxGuests,
+              anyLabel: l10n.filterAny,
+              onChanged: (v) => setState(() => _maxGuests = v),
             ),
 
             const SizedBox(height: 24),
@@ -356,7 +318,10 @@ class _RoomFilterBottomSheetState extends State<RoomFilterBottomSheet> {
                   ),
                 ),
                 onPressed: _applyFilters,
-                child: const Text('Apply Filters', style: TextStyle(fontSize: 16)),
+                child: Text(
+                  l10n.filterApply,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],

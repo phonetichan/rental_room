@@ -5,7 +5,7 @@ import 'package:rental_room/presentation/pages/room/tenant/widgets/room_paginate
 
 import '../../../blocs/blocs.dart';
 import '../../../../domain/domain.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class SavedRoomsPage extends StatelessWidget {
   final UserEntity user;

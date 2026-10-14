@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../styles/colors.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 import 'contract_voucher_header.dart';
 import 'contract_voucher_financial_section.dart';
 
@@ -10,14 +10,12 @@ class ContractVoucherCard extends StatelessWidget {
   final ContractEntity contract;
   final RoomEntity? room;
   final double? depositAmount;
-  final String? depositReceiverName;
 
   const ContractVoucherCard({
     super.key,
     required this.contract,
     this.room,
     this.depositAmount,
-    this.depositReceiverName,
   });
 
   String _formatDate(BuildContext context, DateTime date) {
@@ -47,8 +45,7 @@ class ContractVoucherCard extends StatelessWidget {
     final l10n = context.l10n;
 
     final double? effectiveDeposit = depositAmount ?? room?.depositeAmount;
-    final String? effectiveReceiver =
-        depositReceiverName ?? room?.agentName; // Use depositReceiverName here
+    final String? effectiveAgentName = room?.agentName;
 
     return Container(
       width: double.infinity,
@@ -138,9 +135,8 @@ class ContractVoucherCard extends StatelessWidget {
                     monthlyRent: contract.monthlyRent,
                     durationMonth: contract.durationMonth,
                     depositAmount: effectiveDeposit,
-                    depositReceiverName: effectiveReceiver,
                     agentFees: room?.agentFees,
-                    agentName: effectiveReceiver,
+                    agentName: effectiveAgentName,
                   ),
 
                   if (contract.description.isNotEmpty) ...[

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class ContractSummarySection extends StatelessWidget {
   final List<int> allowedDurations;
@@ -53,7 +53,7 @@ class ContractSummarySection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: GestureDetector(
-                  onTap: isCompleted ? null : () => onDurationSelected(months),
+                  onTap: () => onDurationSelected(months),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -97,7 +97,7 @@ class ContractSummarySection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         InkWell(
-          onTap: isCompleted ? null : onSelectStartDate,
+          onTap: onSelectStartDate,
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.all(14),

@@ -10,3 +10,6 @@ export 'booking_period_section.dart';
 export 'booking_user_card.dart';
 export 'booking_price_details_section.dart';
 export 'booking_checklist_card.dart';
+export 'booking_step_contact_view.dart';
+export 'booking_step_inspect_view.dart';
+export 'booking_step_review_view.dart';

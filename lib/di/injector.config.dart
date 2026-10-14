@@ -15,11 +15,11 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:logger/logger.dart' as _i974;
 import 'package:rental_room/data/data.dart' as _i582;
+import 'package:rental_room/data/datasource/auth/auth_data_source.dart'
+    as _i753;
 import 'package:rental_room/data/datasource/local/app_storage.dart' as _i45;
-import 'package:rental_room/data/datasource/remote/firebase_api/auth_data_source/auth_data_source.dart'
-    as _i544;
-import 'package:rental_room/data/datasource/remote/firebase_api/auth_data_source/user_data_source.dart'
-    as _i1022;
+import 'package:rental_room/data/datasource/local/location_device_data_source.dart'
+    as _i290;
 import 'package:rental_room/data/datasource/remote/firebase_api/owner_data_source/contract_data_source.dart'
     as _i54;
 import 'package:rental_room/data/datasource/remote/firebase_api/owner_data_source/room_data_source.dart'
@@ -30,6 +30,12 @@ import 'package:rental_room/data/datasource/remote/firebase_api/tenant_data_sour
     as _i905;
 import 'package:rental_room/data/datasource/remote/firebase_api/tenant_data_source/favorite_data_source.dart'
     as _i686;
+import 'package:rental_room/data/datasource/remote/nominatim_remote_data_source.dart'
+    as _i0;
+import 'package:rental_room/data/datasource/seed/seed_data_source.dart'
+    as _i378;
+import 'package:rental_room/data/datasource/user/user_data_source.dart'
+    as _i211;
 import 'package:rental_room/data/repository/auth/auth_repository_impl.dart'
     as _i1001;
 import 'package:rental_room/data/repository/booking/booking_repository_impl.dart'
@@ -38,6 +44,8 @@ import 'package:rental_room/data/repository/contract/contract_repository_impl.da
     as _i682;
 import 'package:rental_room/data/repository/favourite/favorite_repository_impl.dart'
     as _i828;
+import 'package:rental_room/data/repository/location/location_repository_impl.dart'
+    as _i240;
 import 'package:rental_room/data/repository/room/room_repository_impl.dart'
     as _i1032;
 import 'package:rental_room/data/repository/room/room_view_impl.dart' as _i195;
@@ -57,6 +65,8 @@ import 'package:rental_room/domain/repository/contract/contract_repository.dart'
     as _i1024;
 import 'package:rental_room/domain/repository/favorite/favorite_repository.dart'
     as _i809;
+import 'package:rental_room/domain/repository/location/location_repository.dart'
+    as _i594;
 import 'package:rental_room/domain/repository/room/room_repository.dart'
     as _i956;
 import 'package:rental_room/domain/repository/room/room_view_respository.dart'
@@ -73,6 +83,8 @@ import 'package:rental_room/domain/usecase/booking/update_booking_usecase.dart'
     as _i552;
 import 'package:rental_room/domain/usecase/contract/create_contract_usecase.dart'
     as _i355;
+import 'package:rental_room/domain/usecase/contract/expire_contract_usecase.dart'
+    as _i220;
 import 'package:rental_room/domain/usecase/contract/get_contract_by_booking_usecase.dart'
     as _i375;
 import 'package:rental_room/domain/usecase/contract/update_contract_usecase.dart'
@@ -83,6 +95,12 @@ import 'package:rental_room/domain/usecase/favorite/get_user_favorites_usecase.d
     as _i195;
 import 'package:rental_room/domain/usecase/favorite/toggle_favorite_usecase.dart'
     as _i1052;
+import 'package:rental_room/domain/usecase/location/get_current_location_usecase.dart'
+    as _i235;
+import 'package:rental_room/domain/usecase/location/reverse_geocode_usecase.dart'
+    as _i604;
+import 'package:rental_room/domain/usecase/location/search_location_usecase.dart'
+    as _i454;
 import 'package:rental_room/domain/usecase/room/create_room_usecase.dart'
     as _i401;
 import 'package:rental_room/domain/usecase/room/delete_room_usecase.dart'
@@ -157,6 +175,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i45.AppStorage(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i383.INavigationKeyProvider>(
         () => _i383.NavigationKeyProviderImpl());
+    gh.lazySingleton<_i0.NominatimRemoteDataSource>(
+        () => _i0.NominatimRemoteDataSourceImpl());
+    gh.lazySingleton<_i290.LocationDeviceDataSource>(
+        () => _i290.LocationDeviceDataSourceImpl());
     gh.lazySingleton<_i541.RoomViewRemoteDataSource>(() =>
         _i541.RoomViewRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.lazySingleton<_i54.ContractRemoteDataSource>(
@@ -167,39 +189,55 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i905.BookingRemoteDataSource(gh<_i974.FirebaseFirestore>()));
     gh.lazySingleton<_i686.FavoriteRemoteDataSource>(
         () => _i686.FavoriteRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+    gh.lazySingleton<_i378.SeedDataSource>(
+        () => _i378.SeedDataSource(gh<_i974.FirebaseFirestore>()));
     gh.lazySingleton<_i296.RoomViewRepository>(() =>
         _i195.RoomViewRepositoryImpl(gh<_i582.RoomViewRemoteDataSource>()));
-    gh.lazySingleton<_i544.AuthDataSource>(() => _i544.AuthDataSource(
-          gh<_i59.FirebaseAuth>(),
-          gh<_i974.FirebaseFirestore>(),
-        ));
-    gh.lazySingleton<_i1022.UserRemoteDataSource>(
-        () => _i1022.UserRemoteDataSource(
+    gh.lazySingleton<_i211.UserRemoteDataSource>(
+        () => _i211.UserRemoteDataSource(
               gh<_i59.FirebaseAuth>(),
               gh<_i974.FirebaseFirestore>(),
             ));
     gh.lazySingleton<_i615.ISnackShower>(
         () => _i615.SnackShowerImpl(gh<_i383.INavigationKeyProvider>()));
+    gh.lazySingleton<_i753.AuthDataSource>(() => _i753.AuthDataSource(
+          gh<_i59.FirebaseAuth>(),
+          gh<_i974.FirebaseFirestore>(),
+          gh<_i211.UserRemoteDataSource>(),
+          gh<_i378.SeedDataSource>(),
+        ));
     gh.lazySingleton<_i1066.RemoveRoomViewUseCase>(
         () => _i1066.RemoveRoomViewUseCase(gh<_i296.RoomViewRepository>()));
     gh.lazySingleton<_i522.GetRoomVisitorCountUseCase>(
         () => _i522.GetRoomVisitorCountUseCase(gh<_i296.RoomViewRepository>()));
     gh.lazySingleton<_i74.RecordRoomViewUseCase>(
         () => _i74.RecordRoomViewUseCase(gh<_i296.RoomViewRepository>()));
+    gh.lazySingleton<_i594.LocationRepository>(
+        () => _i240.LocationRepositoryImpl(
+              gh<_i0.NominatimRemoteDataSource>(),
+              gh<_i290.LocationDeviceDataSource>(),
+            ));
+    gh.lazySingleton<_i454.SearchLocationUseCase>(
+        () => _i454.SearchLocationUseCase(gh<_i594.LocationRepository>()));
+    gh.lazySingleton<_i235.GetCurrentLocationUseCase>(
+        () => _i235.GetCurrentLocationUseCase(gh<_i594.LocationRepository>()));
+    gh.lazySingleton<_i604.ReverseGeocodeUseCase>(
+        () => _i604.ReverseGeocodeUseCase(gh<_i594.LocationRepository>()));
+    gh.lazySingleton<_i956.RoomRepository>(
+        () => _i1032.RoomRepositoryImpl(gh<_i582.RoomRemoteDataSource>()));
+    gh.lazySingleton<_i1024.ContractRepository>(() =>
+        _i682.ContractRepositoryImpl(gh<_i54.ContractRemoteDataSource>()));
+    gh.lazySingleton<_i304.GetRoomsUseCase>(() => _i304.GetRoomsUseCase(
+          gh<_i956.RoomRepository>(),
+          gh<_i1024.ContractRepository>(),
+          gh<_i220.ExpireContractUseCase>(),
+        ));
+    gh.lazySingleton<_i809.FavoriteRepository>(() =>
+        _i828.FavoriteRepositoryImpl(gh<_i686.FavoriteRemoteDataSource>()));
     gh.lazySingleton<_i794.AuthRepository>(
         () => _i1001.AuthRepositoryImpl(gh<_i582.AuthDataSource>()));
     gh.lazySingleton<_i795.UserRepository>(
         () => _i252.UserRepositoryImpl(gh<_i582.UserRemoteDataSource>()));
-    gh.lazySingleton<_i956.RoomRepository>(
-        () => _i1032.RoomRepositoryImpl(gh<_i760.RoomRemoteDataSource>()));
-    gh.lazySingleton<_i1024.ContractRepository>(() =>
-        _i682.ContractRepositoryImpl(gh<_i54.ContractRemoteDataSource>()));
-    gh.lazySingleton<_i809.FavoriteRepository>(() =>
-        _i828.FavoriteRepositoryImpl(gh<_i686.FavoriteRemoteDataSource>()));
-    gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
-        () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()));
-    gh.lazySingleton<_i633.UpdateUserLocationUseCase>(
-        () => _i633.UpdateUserLocationUseCase(gh<_i795.UserRepository>()));
     gh.lazySingleton<_i312.BookingRepository>(
         () => _i586.BookingRepositoryImpl(gh<_i905.BookingRemoteDataSource>()));
     gh.lazySingleton<_i954.DeleteBookingUseCase>(
@@ -232,10 +270,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i401.CreateRoomUseCase(gh<_i956.RoomRepository>()));
     gh.lazySingleton<_i146.UpdateRoomUseCase>(
         () => _i146.UpdateRoomUseCase(gh<_i956.RoomRepository>()));
-    gh.lazySingleton<_i304.GetRoomsUseCase>(
-        () => _i304.GetRoomsUseCase(gh<_i956.RoomRepository>()));
-    gh.factory<_i338.LocationCubit>(
-        () => _i338.LocationCubit(gh<_i156.UpdateUserLocationUseCase>()));
+    gh.lazySingleton<_i220.ExpireContractUseCase>(
+        () => _i220.ExpireContractUseCase(
+              gh<_i1024.ContractRepository>(),
+              gh<_i956.RoomRepository>(),
+              gh<_i312.BookingRepository>(),
+            ));
     gh.factory<_i435.SignUpCubit>(
         () => _i435.SignUpCubit(gh<_i156.SignUpUseCase>()));
     gh.lazySingleton<_i622.SignOutUseCase>(
@@ -262,6 +302,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i156.SignOutUseCase>(),
           gh<_i156.GetUserUseCase>(),
         ));
+    gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
+        () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()));
+    gh.lazySingleton<_i633.UpdateUserLocationUseCase>(
+        () => _i633.UpdateUserLocationUseCase(gh<_i795.UserRepository>()));
     gh.factory<_i722.EditPasswordCubit>(() => _i722.EditPasswordCubit(
           gh<_i247.UpdatePasswordUseCase>(),
           gh<_i912.AuthenticationCubit>(),
@@ -278,6 +322,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i45.AppStorage>(),
           gh<_i912.AuthenticationCubit>(),
         ));
+    gh.factory<_i338.LocationCubit>(
+        () => _i338.LocationCubit(gh<_i156.UpdateUserLocationUseCase>()));
     gh.lazySingleton<_i828.NavigationRouter>(() => _i828.NavigationRouter(
           gh<_i276.INavigationKeyProvider>(),
           gh<_i582.AppStorage>(),

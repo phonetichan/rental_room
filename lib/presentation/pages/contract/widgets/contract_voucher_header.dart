@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../styles/colors.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class ContractVoucherHeader extends StatelessWidget {
   final int durationMonth;

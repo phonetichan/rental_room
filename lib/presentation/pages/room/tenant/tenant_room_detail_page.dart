@@ -5,10 +5,10 @@ import '../../../../data/data.dart';
 import '../../../../di/injector.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
-import '../../../extensions/l10n.dart';
-import '../../../extensions/number.dart';
-import '../../booking/owner/booking_stepper.dart';
-import '../owner/widgets/room_detail_screen.dart';
+import '../../booking/tenant/booking_stepper.dart';
+import '../widgets/widgets.dart';
+import 'widgets/tenant_room_bottom_action_bar.dart';
+import 'widgets/tenant_room_content_body.dart';
 
 class TenantRoomDetailScreen extends StatefulWidget {
   static const String routeName = 'tenant-room-detail';
@@ -27,7 +27,6 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
   List<Map<String, dynamic>> _amenitiesList = [];
   UserModel? _ownerUser;
   bool _isBookingLoading = false;
-  // final ISnackShower _snackShower = inject<ISnackShower>();
 
   @override
   void initState() {
@@ -61,7 +60,7 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
 
   Future<void> _loadOwnerData() async {
     final ownerId = _room.ownerId;
-    if (ownerId != null && ownerId.trim().isNotEmpty) {
+    if (ownerId.trim().isNotEmpty) {
       try {
         final owner = await inject<AuthDataSource>().getUserById(ownerId.trim());
         if (mounted) {
@@ -150,7 +149,7 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
               images: _room.images,
               currentUser: currentUser,
             ),
-            _TenantRoomContentBody(
+            TenantRoomContentBody(
               room: _room,
               amenitiesList: _amenitiesList,
               ownerUser: _ownerUser,
@@ -158,187 +157,12 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _TenantRoomBottomActionBar(
+      bottomNavigationBar: TenantRoomBottomActionBar(
         room: _room,
         currentUser: currentUser,
         isBookingLoading: _isBookingLoading,
         onHandleBooking: (user) => _handleBooking(user),
         onOpenExistingBooking: (booking, user) => _openExistingBooking(booking, user),
-      ),
-    );
-  }
-}
-// 2. Content Body Widget
-class _TenantRoomContentBody extends StatelessWidget {
-  final RoomEntity room;
-  final List<Map<String, dynamic>> amenitiesList;
-  final UserModel? ownerUser;
-
-  const _TenantRoomContentBody({
-    required this.room,
-    required this.amenitiesList,
-    required this.ownerUser,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RoomCollapsibleDescriptionSection(description: room.description),
-          RoomOwnerInfoTile(ownerId: room.ownerId, owner: ownerUser),
-          RoomAmenitiesSection(
-            amenityIds: room.amenityIds,
-            amenitiesList: amenitiesList,
-          ),
-          RoomLocationMapSection(room: room),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-}
-
-// 3. Bottom Action Bar Widget
-class _TenantRoomBottomActionBar extends StatelessWidget {
-  final RoomEntity room;
-  final UserEntity? currentUser;
-  final bool isBookingLoading;
-  final ValueChanged<UserEntity> onHandleBooking;
-  final void Function(BookingEntity booking, UserEntity currentUser) onOpenExistingBooking;
-
-  const _TenantRoomBottomActionBar({
-    required this.room,
-    required this.currentUser,
-    required this.isBookingLoading,
-    required this.onHandleBooking,
-    required this.onOpenExistingBooking,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
-
-    return Container(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
-      ),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Price',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-              Text(
-                room.pricePerMonth.toKsFormat,
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: BlocBuilder<BookingCubit, BookingState>(
-              builder: (context, bookingState) {
-                final existingBooking = bookingState.maybeWhen(
-                  loaded: (bookings) {
-                    try {
-                      return bookings.firstWhere((b) => b.roomId == room.id);
-                    } catch (_) {
-                      return null;
-                    }
-                  },
-                  orElse: () => null,
-                );
-
-                final isAlreadyBooked = existingBooking != null;
-
-                return SizedBox(
-                  height: 48,
-                  child: isAlreadyBooked
-                      ? OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: primaryColor,
-                            side: BorderSide(color: primaryColor, width: 1.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (currentUser != null) {
-                              onOpenExistingBooking(existingBooking, currentUser!);
-                            }
-                          },
-                          icon: const Icon(Icons.assignment_outlined, size: 20),
-                          label: const Text(
-                            'Request Detail',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          onPressed: (isBookingLoading || currentUser == null)
-                              ? null
-                              : () => onHandleBooking(currentUser!),
-                          icon: isBookingLoading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.bookmark_add_outlined, size: 20),
-                          label: Text(
-                            context.l10n.rentNow,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../extensions/contract_extensions.dart';
+import '../../../extensions/contract/contract_extensions.dart';
 import '../../contract/widgets/contract_countdown_banner.dart';
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
@@ -144,7 +144,9 @@ class BookingCard extends StatelessWidget {
                       styles,
                       (contract?.effectiveStatus == ContractStatus.expired)
                           ? 'expired'
-                          : booking.status,
+                          : (contract != null && contract?.status == ContractStatus.active)
+                              ? 'contracted'
+                              : booking.status,
                       isDark,
                     ),
                   ],

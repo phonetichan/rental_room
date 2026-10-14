@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class ContractBottomActionBar extends StatelessWidget {
   final bool isCompleted;

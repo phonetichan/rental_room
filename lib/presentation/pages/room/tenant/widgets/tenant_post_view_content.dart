@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../../di/injector.dart';
 import '../../../../../domain/domain.dart';
 import '../../../../blocs/blocs.dart';
 import '../../../../components/components.dart';
 import '../../../../components/modal/room_filter.dart';
-import '../saved_rooms_page.dart';
+import '../../../../extensions/l10n/l10n.dart';
 import 'filter_summary.dart';
 import 'post_search_bar.dart';
 import 'room_filter_bottom_sheet.dart';
@@ -189,33 +188,22 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: PostSearchBar(
-                controller: _searchController,
-                searchQuery: _searchQuery,
-                hintText: 'Search rooms, location...',
-                hasActiveFilters: _filter.hasActiveFilters,
-                activeFilterCount: _filter.activeCount,
-                onFilterTap: () => _showFilterBottomSheet(context),
-                onClear: () {
-                  _searchController.clear();
-                  setState(() => _searchQuery = '');
-                  _fillDebounced();
-                },
-                onChanged: (value) {
-                  setState(() => _searchQuery = value.trim().toLowerCase());
-                  _fillDebounced();
-                },
-              ),
-            ),
-            const SizedBox(width: 8),
-            SavedRoomsButton(
-              onTap: () =>
-                  context.push(SavedRoomsPage.routePath, extra: widget.user),
-            ),
-          ],
+        PostSearchBar(
+          controller: _searchController,
+          searchQuery: _searchQuery,
+          hintText: context.l10n.searchRoomsHint,
+          hasActiveFilters: _filter.hasActiveFilters,
+          activeFilterCount: _filter.activeCount,
+          onFilterTap: () => _showFilterBottomSheet(context),
+          onClear: () {
+            _searchController.clear();
+            setState(() => _searchQuery = '');
+            _fillDebounced();
+          },
+          onChanged: (value) {
+            setState(() => _searchQuery = value.trim().toLowerCase());
+            _fillDebounced();
+          },
         ),
         FilterSummary(filter: _filter),
         const SizedBox(height: 8),

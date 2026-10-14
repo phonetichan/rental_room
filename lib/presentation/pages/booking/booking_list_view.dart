@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../di/di.dart';
 import '../../../domain/domain.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../extensions/contract_extensions.dart';
 import '../../presentation.dart';
 
 class BookingView extends StatefulWidget {
@@ -24,18 +23,13 @@ class _BookingViewState extends State<BookingView>
   late final TabController _tabController;
   List<BookingEntity>? _cachedPendingBookings;
   List<BookingEntity>? _cachedConfirmedBookings;
-  List<BookingEntity>? _cachedContractedBookings;
-  Map<String, ContractEntity> _contractsByBookingId = {};
+  Set<String> _contractedBookingIds = {};
 
   bool get _isOwner => widget.user.role == UserRole.owner;
 
-  List<String> get _filters => const ['pending', 'confirmed', 'contracted'];
+  List<String> get _filters => const ['pending', 'confirmed'];
 
   String _selectedFilter = 'pending';
-
-  /// Contracts that are active and have 1 month or less left
-  int get _alertCount =>
-      _contractsByBookingId.values.where((c) => c.countsForBadge).length;
 
   Future<void> _loadContracts() async {
     try {
@@ -45,7 +39,10 @@ class _BookingViewState extends State<BookingView>
           : await repo.getContractsByTenantId(widget.user.id);
       if (!mounted) return;
       setState(() {
-        _contractsByBookingId = {for (final c in list) c.bookingId: c};
+        _contractedBookingIds = list
+            .where((c) => c.status == ContractStatus.active)
+            .map((c) => c.bookingId)
+            .toSet();
       });
     } catch (_) {}
   }
@@ -101,7 +98,7 @@ class _BookingViewState extends State<BookingView>
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // SEGMENTED TAB BAR HEADER
+          // SEGMENTED TAB BAR HEADER (Pending & Confirmed only)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Container(
@@ -175,31 +172,6 @@ class _BookingViewState extends State<BookingView>
                       ],
                     ),
                   ),
-                  Tab(
-                    height: 40,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Badge(
-                          isLabelVisible: _alertCount > 0,
-                          backgroundColor: isDark
-                              ? AppColors.clrPrimaryLight
-                              : AppColors.clrPrimary,
-                          textColor: Colors.white,
-                          label: Text('$_alertCount'),
-                          child: const Icon(Icons.handshake_outlined, size: 18),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            l10n.contracted,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -208,23 +180,19 @@ class _BookingViewState extends State<BookingView>
           // SINGLE STREAM VIEW DRIVEN BY THE SEGMENTED TAB BAR
           Expanded(
             child: BookingTabStreamView(
-              contractsByBookingId: _contractsByBookingId,
+              contractedBookingIds: _contractedBookingIds,
               stream: context.read<BookingCubit>().watchBookings(
                 userId: _isOwner ? null : widget.user.id,
                 ownerId: _isOwner ? widget.user.id : null,
               ),
               cachedBookings: _selectedFilter == 'pending'
                   ? _cachedPendingBookings
-                  : _selectedFilter == 'confirmed'
-                  ? _cachedConfirmedBookings
-                  : _cachedContractedBookings,
+                  : _cachedConfirmedBookings,
               onCacheUpdate: (list) {
                 if (_selectedFilter == 'pending') {
                   _cachedPendingBookings = list;
                 } else if (_selectedFilter == 'confirmed') {
                   _cachedConfirmedBookings = list;
-                } else if (_selectedFilter == 'contracted') {
-                  _cachedContractedBookings = list;
                 }
               },
               currentUser: widget.user,

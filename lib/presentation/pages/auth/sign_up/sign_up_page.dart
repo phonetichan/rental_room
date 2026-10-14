@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../data/services/snack_shower.dart';
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
 import '../../setting_pages/terms_n_conditions.dart';
 import 'cubit/sign_up_cubit.dart';
@@ -46,10 +47,11 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _onSignUpPressed() {
+    final l10n = AppLocalizations.of(context)!;
     if (!_acceptedTerms) {
       _snackShower.error(
         context: context,
-        message: 'Please accept the Terms & Conditions to proceed.',
+        message: l10n.pleaseAcceptTerms,
       );
       return;
     }
@@ -73,6 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
               _snackShower.success(
                 context: context,
-                message: 'Account created as ${_selectedRole.value.toUpperCase()}!',
+                message: l10n.accountCreated(_selectedRole.value.toUpperCase()),
               );
 
               context.go('/');

@@ -40,3 +40,8 @@ export 'usecase/contract/update_contract_usecase.dart';
 export 'usecase/contract/expire_contract_usecase.dart';
 export 'usecase/user/update_location_usecase.dart';
 export 'entity/room/page_result.dart';
+export 'entity/location/picked_location.dart';
+export 'repository/location/location_repository.dart';
+export 'usecase/location/reverse_geocode_usecase.dart';
+export 'usecase/location/search_location_usecase.dart';
+export 'usecase/location/get_current_location_usecase.dart';

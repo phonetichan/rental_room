@@ -11,4 +11,8 @@ export 'repository/room/room_repository_impl.dart';
 export 'repository/favourite/favorite_repository_impl.dart';
 export 'repository/contract/contract_repository_impl.dart';
 export 'repository/room/room_view_impl.dart';
+export 'repository/location/location_repository_impl.dart';
+export 'datasource/remote/nominatim_remote_data_source.dart';
+export 'datasource/local/location_device_data_source.dart';
 export 'services/snack_shower.dart';
+export 'services/geo_service.dart';

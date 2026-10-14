@@ -11,9 +11,10 @@ import '../../../../data/data.dart';
 import '../../../../data/services/image_kit.dart';
 import '../../../../di/injector.dart';
 import '../../../../domain/domain.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../blocs/blocs.dart';
 import '../../../components/components.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 import '../../openstreetmap/location_widgets.dart';
 import '../../openstreetmap/picker_location.dart';
 
@@ -252,8 +253,9 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
 
   Future<void> _submitForm() async {
     final authUser = context.read<AuthenticationCubit>().user;
+    final l10n = AppLocalizations.of(context)!;
     if (authUser == null) {
-      _snackShower.error(context: context, message: 'User session not found.');
+      _snackShower.error(context: context, message: l10n.userSessionNotFound);
       return;
     }
 
@@ -330,7 +332,8 @@ class _AddEditRoomScreenState extends State<AddEditRoomScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _snackShower.error(context: context, message: 'Error saving room: $e');
+        final l10n = AppLocalizations.of(context)!;
+        _snackShower.error(context: context, message: l10n.errorSavingRoom(e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);

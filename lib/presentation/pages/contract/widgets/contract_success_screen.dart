@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rental_room/domain/entity/contract/contract_entity.dart';
-import '../../../extensions/l10n.dart';
+import '../../../extensions/l10n/l10n.dart';
 
 class ContractSuccessScreen extends StatelessWidget {
   const ContractSuccessScreen({super.key, required ContractEntity contract});

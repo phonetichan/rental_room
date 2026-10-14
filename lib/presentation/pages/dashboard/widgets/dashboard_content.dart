@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:rental_room/presentation/extensions/extensions.dart';
 
 import '../../../../domain/domain.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../presentation.dart';
 import '../../index.dart';
+import 'dashboard_category_list.dart';
+import 'dashboard_empty_text.dart';
+import 'dashboard_section_title.dart';
 import 'owner_metric_cards.dart';
 import 'owner_monthly_revenue_card.dart';
 import 'static_promo_card.dart';
+import 'vertical_rooms_section.dart';
 
 /// Tab index of "Posts" inside IndexPage.
 const int _postsTabIndex = 1;
@@ -17,9 +23,7 @@ const int _postsTabIndex = 1;
 const int _sectionLimit = 4;
 
 /// Firestore room type IDs.
-// const String _dormTypeId = 'rt_dorm';
 String? _selectedTypeId; // null = all types
-const String _miniCondoTypeId = 'rt_minicondo';
 
 class DashboardContent extends StatefulWidget {
   final UserEntity user;
@@ -42,7 +46,12 @@ class _DashboardContentState extends State<DashboardContent> {
   @override
   void didUpdateWidget(covariant DashboardContent oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.user.id != widget.user.id) _scheduleLoad();
+    if (oldWidget.user.id != widget.user.id ||
+        oldWidget.user.latitude != widget.user.latitude ||
+        oldWidget.user.longitude != widget.user.longitude ||
+        oldWidget.user.address != widget.user.address) {
+      _scheduleLoad();
+    }
   }
 
   /// Single place for all initial loading (one frame callback only).
@@ -84,7 +93,7 @@ class _DashboardContentState extends State<DashboardContent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_isOwner) ...[
-          _SectionTitle(l10n.overview),
+          DashboardSectionTitle(l10n.overview),
           const SizedBox(height: 12),
           OwnerMetricsOverview(user: widget.user),
           const SizedBox(height: 28),
@@ -132,7 +141,7 @@ class _DashboardContentState extends State<DashboardContent> {
     final l10n = AppLocalizations.of(context)!;
     final latest = _latest(rooms.where((r) => r.ownerId == widget.user.id));
 
-    return _VerticalRoomsSection(
+    return VerticalRoomsSection(
       title: l10n.latestProperties,
       emptyText: l10n.noPropertiesYet,
       rooms: latest,
@@ -154,32 +163,75 @@ class _DashboardContentState extends State<DashboardContent> {
           ? available
           : available.where((r) => r.roomTypeId == _selectedTypeId),
     );
-    final miniCondos = _latest(
-      available.where((r) => r.roomTypeId == _miniCondoTypeId),
-    );
 
-    final typeName = LookupConstants.roomTypes[_selectedTypeId];
+    // Nearby rooms based on user location (latitude/longitude or address matching)
+    final userLat = widget.user.latitude;
+    final userLng = widget.user.longitude;
+    List<RoomEntity> nearbyRooms = [];
+
+    if (userLat != null && userLng != null) {
+      const distance = Distance();
+      final roomsWithDistance = available.where((r) => r.latitude != null && r.longitude != null).map((r) {
+        final dist = distance.as(LengthUnit.Kilometer, LatLng(userLat, userLng), LatLng(r.latitude!, r.longitude!));
+        return MapEntry(r, dist);
+      }).toList()..sort((a, b) => a.value.compareTo(b.value));
+      nearbyRooms = roomsWithDistance.map((e) => e.key).take(_sectionLimit).toList();
+    }
+
+    if (nearbyRooms.isEmpty && widget.user.address != null && widget.user.address!.trim().isNotEmpty) {
+      final userAddress = widget.user.address!.toLowerCase();
+      final parts = userAddress
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) =>
+              e.isNotEmpty &&
+              e != 'myanmar' &&
+              e != 'burma' &&
+              e != 'myanmar (burma)' &&
+              !RegExp(r'^\d+$').hasMatch(e))
+          .toList();
+
+      if (parts.isNotEmpty) {
+        // Exclude broad region names if more specific township/district parts exist
+        final specificParts = parts.where((p) {
+          final lower = p.toLowerCase();
+          return !lower.contains('region') &&
+              !lower.contains('state') &&
+              !lower.contains('division') &&
+              lower != 'yangon' &&
+              lower != 'mandalay' &&
+              lower != 'naypyidaw';
+        }).toList();
+
+        final searchKeywords = specificParts.isNotEmpty ? specificParts : parts;
+
+        nearbyRooms = available.where((r) {
+          final rAddr = r.location.toLowerCase();
+          return searchKeywords.any((kw) => rAddr.contains(kw));
+        }).take(_sectionLimit).toList();
+      }
+    }
+
+    final typeName = _selectedTypeId != null ? l10n.localizedRoomType(_selectedTypeId!) : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionTitle(l10n.categories),
+        DashboardSectionTitle(l10n.categories),
         const SizedBox(height: 12),
-        _CategoryList(
+        DashboardCategoryList(
           selectedId: _selectedTypeId,
           onTap: (id) => setState(() => _selectedTypeId = id),
         ),
         const SizedBox(height: 24),
 
-        _SectionTitle(
-          typeName == null
-              ? l10n.recommended
-              : l10n.recommendedWithType(typeName),
+        DashboardSectionTitle(
+          typeName ?? l10n.recommended,
           onSeeAll: () => _goToPosts(roomTypeId: _selectedTypeId),
         ),
         const SizedBox(height: 6),
         if (recommended.isEmpty)
-          _EmptyText(
+          DashboardEmptyText(
             typeName == null
                 ? l10n.noRoomsAvailable
                 : l10n.noTypeAvailable(typeName),
@@ -200,16 +252,15 @@ class _DashboardContentState extends State<DashboardContent> {
           ),
         const SizedBox(height: 20),
 
-        if (_selectedTypeId != _miniCondoTypeId)
-          _VerticalRoomsSection(
-            title: l10n.miniCondo,
-            emptyText: l10n.noMiniCondos,
-            rooms: miniCondos,
-            user: widget.user,
-            showOwnerActions: false,
-            onSeeAll: () => _goToPosts(roomTypeId: _miniCondoTypeId),
-            onRoomUpdated: _refreshRooms,
-          ),
+        VerticalRoomsSection(
+          title: l10n.nearby,
+          emptyText: l10n.noNearbyRooms,
+          rooms: nearbyRooms,
+          user: widget.user,
+          showOwnerActions: false,
+          onSeeAll: () => _goToPosts(),
+          onRoomUpdated: _refreshRooms,
+        ),
       ],
     );
   }
@@ -220,209 +271,5 @@ class _DashboardContentState extends State<DashboardContent> {
     final list = rooms.toList()
       ..sort((a, b) => (b.createdAt ?? epoch).compareTo(a.createdAt ?? epoch));
     return list.take(_sectionLimit).toList();
-  }
-}
-
-/// Title + "See all" + vertical RoomCards + empty state.
-class _VerticalRoomsSection extends StatelessWidget {
-  final String title;
-  final String emptyText;
-  final List<RoomEntity> rooms;
-  final UserEntity user;
-  final bool showOwnerActions;
-  final VoidCallback onSeeAll;
-  final VoidCallback onRoomUpdated;
-
-  const _VerticalRoomsSection({
-    required this.title,
-    required this.emptyText,
-    required this.rooms,
-    required this.user,
-    required this.showOwnerActions,
-    required this.onSeeAll,
-    required this.onRoomUpdated,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SectionTitle(title, onSeeAll: onSeeAll),
-        const SizedBox(height: 12),
-        if (rooms.isEmpty)
-          _EmptyText(emptyText)
-        else
-          Column(
-            children: rooms
-                .map(
-                  (room) => RoomCard(
-                room: room,
-                currentUser: user,
-                showOwnerActions: showOwnerActions,
-                onRoomUpdated: onRoomUpdated,
-              ),
-            )
-                .toList(),
-          ),
-      ],
-    );
-  }
-}
-
-/// Section heading with optional "See all" button.
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  final VoidCallback? onSeeAll;
-
-  const _SectionTitle(this.title, {this.onSeeAll});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
-
-    final text = Text(
-      title,
-      style: theme.textTheme.titleLarge?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: isDark ? Colors.white : AppColors.clrBlack,
-      ),
-    );
-
-    if (onSeeAll == null) return text;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        text,
-        TextButton(
-          onPressed: onSeeAll,
-          child: Text(
-            l10n.seeAll,
-            style: const TextStyle(
-              color: Color(0xFF6C5CE7),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _EmptyText extends StatelessWidget {
-  final String text;
-
-  const _EmptyText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      alignment: Alignment.center,
-      child: Text(text, style: TextStyle(color: Colors.grey.shade600)),
-    );
-  }
-}
-
-class _CategoryList extends StatelessWidget {
-  final String? selectedId; // null = All
-  final ValueChanged<String?> onTap;
-
-  const _CategoryList({required this.selectedId, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final entries = LookupConstants.roomTypes.entries.toList();
-
-    return SizedBox(
-      height: 104,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: entries.length + 1, // +1 for "All"
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) {
-          if (i == 0) {
-            return _CategoryItem(
-              label: l10n.all,
-              icon: Icons.apps_rounded,
-              selected: selectedId == null,
-              onTap: () => onTap(null),
-            );
-          }
-          final e = entries[i - 1];
-          return _CategoryItem(
-            label: e.value,
-            icon: roomTypeIcon(e.key),
-            selected: e.key == selectedId,
-            onTap: () => onTap(e.key),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _CategoryItem extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _CategoryItem({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Column(
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: selected ? scheme.primary : Colors.grey.shade300,
-                ),
-              ),
-              child: CircleAvatar(
-                radius: 24,
-                backgroundColor: selected ? scheme.primary : Colors.white,
-                child: Icon(
-                  icon,
-                  size: 22,
-                  color: selected ? scheme.onPrimary : Colors.black87,
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            SizedBox(
-              width: 80,
-              child: Text(
-                label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

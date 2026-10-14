@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../styles/colors.dart';
-import '../../../extensions/number.dart';
+import '../../../extensions/number/number.dart';
 
 class BookingPropertyHeaderCard extends StatelessWidget {
   final String roomName;

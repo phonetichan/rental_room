@@ -605,7 +605,7 @@ abstract class AppLocalizations {
   /// No description provided for @durationMonths.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 mo} other{{count} mos}}'**
+  /// **'{count} Months'**
   String durationMonths(int count);
 
   /// No description provided for @requested.
@@ -977,7 +977,7 @@ abstract class AppLocalizations {
   /// No description provided for @securityDeposit.
   ///
   /// In en, this message translates to:
-  /// **'Security Deposit'**
+  /// **'Deposit'**
   String get securityDeposit;
 
   /// No description provided for @depositReceiver.
@@ -1061,7 +1061,7 @@ abstract class AppLocalizations {
   /// No description provided for @noContractFound.
   ///
   /// In en, this message translates to:
-  /// **'No contract found for this booking. Contract must be issued by owner.'**
+  /// **'No contract founded'**
   String get noContractFound;
 
   /// No description provided for @failedToUpdateContract.
@@ -1433,7 +1433,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewRentalContractVoucher.
   ///
   /// In en, this message translates to:
-  /// **'View Rental Contract Voucher'**
+  /// **'View Contract'**
   String get viewRentalContractVoucher;
 
   /// No description provided for @completed.
@@ -1597,6 +1597,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// Small label above the selected place name in the dashboard header
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// Shown in the header when no location is chosen
+  ///
+  /// In en, this message translates to:
+  /// **'Select location'**
+  String get selectLocation;
+
+  /// No description provided for @nearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get nearby;
+
+  /// No description provided for @noNearbyRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby rooms found.'**
+  String get noNearbyRooms;
+
+  /// No description provided for @filterOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Options'**
+  String get filterOptions;
+
+  /// No description provided for @filterClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get filterClearAll;
+
+  /// No description provided for @filterPriceRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Range'**
+  String get filterPriceRange;
+
+  /// No description provided for @filterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get filterClear;
+
+  /// No description provided for @filterFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from'**
+  String get filterFrom;
+
+  /// No description provided for @filterTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get filterTo;
+
+  /// No description provided for @filterRoomType.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Type'**
+  String get filterRoomType;
+
+  /// No description provided for @filterAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All Types'**
+  String get filterAllTypes;
+
+  /// No description provided for @filterRoomNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Number (Bedrooms)'**
+  String get filterRoomNumber;
+
+  /// No description provided for @filterAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get filterAny;
+
+  /// No description provided for @filterMaxGuests.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Guests'**
+  String get filterMaxGuests;
+
+  /// No description provided for @filterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Filters'**
+  String get filterApply;
+
+  /// No description provided for @searchRoomsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search rooms, locations...'**
+  String get searchRoomsHint;
+
+  /// No description provided for @bookingPriceDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Details'**
+  String get bookingPriceDetails;
+
+  /// No description provided for @bookingPeriodTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Period time'**
+  String get bookingPeriodTime;
+
+  /// No description provided for @bookingMonthlyPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly payment'**
+  String get bookingMonthlyPayment;
+
+  /// No description provided for @bookingTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get bookingTax;
+
+  /// No description provided for @bookingTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get bookingTotal;
+
+  /// No description provided for @bookingMonthSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Month'**
+  String bookingMonthSingular(String count);
+
+  /// No description provided for @bookingMonthPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Months'**
+  String bookingMonthPlural(String count);
+
+  /// No description provided for @bookingVoucher.
+  ///
+  /// In en, this message translates to:
+  /// **'Voucher'**
+  String get bookingVoucher;
+
+  /// No description provided for @bookingPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get bookingPeriod;
+
+  /// No description provided for @bookingDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get bookingDate;
+
+  /// No description provided for @bookingCheckDateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure to check your date before making any sort of payments'**
+  String get bookingCheckDateNote;
+
+  /// No description provided for @bookingTenantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Tenant Details'**
+  String get bookingTenantDetails;
+
+  /// No description provided for @bookingOwnerDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Details'**
+  String get bookingOwnerDetails;
+
+  /// No description provided for @bookingPropertyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Name'**
+  String get bookingPropertyName;
+
+  /// No description provided for @bookingNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get bookingNotAvailable;
+
+  /// No description provided for @itemPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get itemPassword;
+
+  /// No description provided for @itemLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get itemLocation;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a Photo'**
+  String get takePhoto;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Photo'**
+  String get removePhoto;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @pleaseEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name'**
+  String get pleaseEnterName;
+
+  /// No description provided for @pleaseEnterPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number'**
+  String get pleaseEnterPhone;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @userSessionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User session not found.'**
+  String get userSessionNotFound;
+
+  /// No description provided for @unableToLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load user profile. Please re-login.'**
+  String get unableToLoadProfile;
+
+  /// No description provided for @failedToPickImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick image: {error}'**
+  String failedToPickImage(String error);
+
+  /// No description provided for @failedToUploadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload profile image: {error}'**
+  String failedToUploadImage(String error);
+
+  /// No description provided for @updatePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get updatePasswordTitle;
+
+  /// No description provided for @passwordChangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing your password will require you to log in again.'**
+  String get passwordChangeNote;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get currentPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @confirmNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New Password'**
+  String get confirmNewPassword;
+
+  /// No description provided for @pleaseEnterCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter current password'**
+  String get pleaseEnterCurrentPassword;
+
+  /// No description provided for @pleaseEnterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter new password'**
+  String get pleaseEnterNewPassword;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @pleaseConfirmNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm new password'**
+  String get pleaseConfirmNewPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @myLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'My Location'**
+  String get myLocation;
+
+  /// No description provided for @tapChooseLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Choose location on map\" to set your location.'**
+  String get tapChooseLocationHint;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully!'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @passwordUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully! Please log in again.'**
+  String get passwordUpdatedSuccessfully;
+
+  /// No description provided for @locationUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Location updated successfully!'**
+  String get locationUpdatedSuccessfully;
+
+  /// No description provided for @errorSavingRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving room: {error}'**
+  String errorSavingRoom(String error);
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {name}!'**
+  String welcomeBack(String name);
+
+  /// No description provided for @pleaseAcceptTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the Terms & Conditions to proceed.'**
+  String get pleaseAcceptTerms;
+
+  /// No description provided for @accountCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created as {role}!'**
+  String accountCreated(String role);
+
+  /// No description provided for @roomCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Room created successfully!'**
+  String get roomCreatedSuccessfully;
+
+  /// No description provided for @roomUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Room updated successfully!'**
+  String get roomUpdatedSuccessfully;
+
+  /// No description provided for @roomDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Room deleted successfully!'**
+  String get roomDeletedSuccessfully;
+
+  /// No description provided for @bookingCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking request created successfully!'**
+  String get bookingCreatedSuccessfully;
+
+  /// No description provided for @bookingUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking updated successfully!'**
+  String get bookingUpdatedSuccessfully;
+
+  /// No description provided for @bookingDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking request is successfully deleted!'**
+  String get bookingDeletedSuccessfully;
+
+  /// No description provided for @contractCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract created successfully!'**
+  String get contractCreatedSuccessfully;
+
+  /// No description provided for @contractUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract updated successfully!'**
+  String get contractUpdatedSuccessfully;
+
+  /// No description provided for @ownersCannotFavoriteOwnRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners cannot favorite their own rooms.'**
+  String get ownersCannotFavoriteOwnRooms;
+
+  /// No description provided for @thisPhoneAlreadyRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already registered by another user.'**
+  String get thisPhoneAlreadyRegistered;
+
+  /// No description provided for @currentPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'The current password you entered is incorrect.'**
+  String get currentPasswordIncorrect;
+
+  /// No description provided for @invalidEmailOrPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password. Please try again.'**
+  String get invalidEmailOrPassword;
+
+  /// No description provided for @emailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered.'**
+  String get emailAlreadyInUse;
+
+  /// No description provided for @contractHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract History'**
+  String get contractHistory;
+
+  /// No description provided for @activeContracts.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Contracts'**
+  String get activeContracts;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
 }
 
 class _AppLocalizationsDelegate

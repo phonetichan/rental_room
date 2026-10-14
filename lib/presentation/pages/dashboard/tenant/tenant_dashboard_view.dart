@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
-import '../../../extensions/number.dart';
+import '../../../extensions/l10n/l10n.dart';
+import '../../../extensions/number/number.dart';
+import '../../profile/edit_location/edit_location.dart';
+import '../../room/tenant/saved_rooms_page.dart';
 import '../widgets/dashboard_header.dart';
 
 class TenantDashboardView extends StatelessWidget {
@@ -12,20 +16,24 @@ class TenantDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Card with Profile Image & Plus Button
           DashboardHeader(
-            user: user,
             isOwner: false,
+            address: user.address,
+            user: user,
+            onLocationPressed: () => context.push(EditLocationScreen.routePath),
+            onSavedRoomsPressed: () =>
+                context.push(SavedRoomsPage.routePath, extra: user),
           ),
           const SizedBox(height: 20),
 
           // Search Header
           TextField(
             decoration: InputDecoration(
-              hintText: 'Search rooms, locations...',
+              hintText: context.l10n.searchRoomsHint,
               prefixIcon: const Icon(Icons.search_rounded),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

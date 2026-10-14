@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../domain/domain.dart';
+import '../../profile/edit_location/edit_location.dart';
+import '../widgets/dashboard_header.dart';
 
 class OwnerDashboardView extends StatelessWidget {
   final UserEntity user;
@@ -8,10 +12,19 @@ class OwnerDashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isOwner = user.role == UserRole.owner;
+
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          DashboardHeader(
+            isOwner: isOwner,
+            address: user.address,
+            onLocationPressed: () => context.push(EditLocationScreen.routePath),
+          ),
+          const SizedBox(height: 20),
           // Overview Metrics
           Text('Overview', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 12),

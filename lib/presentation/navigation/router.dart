@@ -9,7 +9,8 @@ import 'package:rental_room/domain/domain.dart';
 import '../../data/data.dart';
 import '../../di/di.dart';
 import '../pages/booking/booking_list_view.dart';
-import '../pages/booking/owner/booking_stepper.dart';
+import '../pages/booking/tenant/booking_stepper.dart';
+import '../pages/contract/contract_history_page.dart';
 import '../pages/index.dart';
 import '../pages/openstreetmap/location_picker_page.dart';
 import '../pages/profile/edit_location/cubit/location_cubit.dart';
@@ -193,6 +194,13 @@ class NavigationRouter {
           );
         },
       ),
+      GoRoute(
+        path: ContractHistoryPage.routePath,
+        builder: (context, state) {
+          final user = state.extra as UserEntity;
+          return ContractHistoryPage(user: user);
+        },
+      ),
 
       // Room routes
       GoRoute(
@@ -278,16 +286,37 @@ class NavigationRouter {
         },
       ),
       GoRoute(
-        path: '/owner-booking-detail',
-        name: 'owner-booking-detail',
+        path: VoucherDetailPage.routePath,
+        name: VoucherDetailPage.routeName,
         builder: (context, state) {
-          // 1. Extract the booking entity passed via extra
-          final booking = state.extra as BookingEntity;
-
-          // 2. Obtain current authenticated user from AuthenticationCubit
+          final extra = state.extra;
           final currentUser = context.read<AuthenticationCubit>().user!;
 
-          // 3. Provide both BookingCubit and FavoriteCubit to the detail view
+          BookingEntity booking;
+          if (extra is BookingEntity) {
+            booking = extra;
+          } else if (extra is ContractEntity) {
+            booking = BookingEntity(
+              id: extra.bookingId,
+              roomId: extra.roomId,
+              userId: extra.tenantId,
+              ownerId: extra.ownerId,
+              roomPrice: extra.monthlyRent,
+              status: 'contracted',
+              createdAt: extra.createdAt,
+            );
+          } else if (extra is String) {
+            booking = BookingEntity(
+              id: extra,
+              roomId: '',
+              userId: '',
+              status: 'contracted',
+              createdAt: DateTime.now(),
+            );
+          } else {
+            booking = extra as BookingEntity;
+          }
+
           return MultiBlocProvider(
             providers: [
               BlocProvider<BookingCubit>(
@@ -298,7 +327,7 @@ class NavigationRouter {
                     inject<FavoriteCubit>()..loadFavorites(currentUser.id),
               ),
             ],
-            child: BookingDetailPage(
+            child: VoucherDetailPage(
               booking: booking,
               currentUser: currentUser,
             ),
@@ -319,11 +348,11 @@ class NavigationRouter {
         },
       ),
       GoRoute(
-        path: ContractDetailPage.routePath,
-        name: ContractDetailPage.routeName,
+        path: ContractUpdatePage.routePath,
+        name: ContractUpdatePage.routeName,
         builder: (context, state) {
           final bookingId = state.extra as String;
-          return ContractDetailPage(bookingId: bookingId);
+          return ContractUpdatePage(bookingId: bookingId);
         },
       ),
       // Main Entry Point

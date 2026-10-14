@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../data/services/snack_shower.dart';
 import '../../../../di/di.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../blocs/authentication_cubit/authentication_cubit.dart';
 import '../sign_up/sign_up_page.dart';
 import 'cubit/login_cubit.dart';
@@ -52,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: BlocListener<LoginCubit, LoginState>(
@@ -62,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
 
               _snackShower.success(
                 context: context,
-                message: 'Welcome back, ${user.name}!',
+                message: l10n.welcomeBack(user.name),
               );
 
               context.go('/');

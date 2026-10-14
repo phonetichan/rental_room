@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../extensions/l10n.dart';
+import '../../../../extensions/extensions.dart';
 import 'counter_selector_widget.dart';
 
 class AddEditRoomFormStep extends StatelessWidget {
@@ -124,14 +124,19 @@ class AddEditRoomFormStep extends StatelessWidget {
           ),
           items: roomTypes
               .map(
-                (type) => DropdownMenuItem<String>(
-              value: type['id'] as String,
-              child: Text(
-                type['name'] as String,
-                style: const TextStyle(fontSize: 14),
-              ),
-            ),
-          )
+                (type) {
+                  final typeId = type['id'] as String;
+                  final localized = l10n.localizedRoomType(typeId);
+                  final typeName = localized != typeId ? localized : (type['name'] as String? ?? typeId);
+                  return DropdownMenuItem<String>(
+                    value: typeId,
+                    child: Text(
+                      typeName,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  );
+                },
+              )
               .toList(),
           onChanged: isSubmitting ? null : onRoomTypeChanged,
           validator: (v) =>

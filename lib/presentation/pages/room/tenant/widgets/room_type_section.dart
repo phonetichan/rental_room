@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../domain/domain.dart';
-import '../../../../extensions/lookup_l10n.dart';
+import '../../../../extensions/l10n/l10n.dart';
+import '../../../../extensions/l10n/lookup_l10n.dart';
 
 class RoomTypeSection extends StatelessWidget {
   final String? roomTypeId;

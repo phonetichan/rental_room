@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../data/data.dart';
 import '../../../../../di/di.dart';
+import '../../../../extensions/extensions.dart';
 
 class RoomAmenitiesSelectorWidget extends StatelessWidget {
   final List<Map<String, dynamic>> amenitiesList;
@@ -26,7 +27,8 @@ class RoomAmenitiesSelectorWidget extends StatelessWidget {
       runSpacing: 8, // Removes the wide vertical gap between rows
       children: amenitiesList.map((amenity) {
         final amenityId = amenity['id'] as String;
-        final amenityName = amenity['name'] as String;
+        final localized = context.l10n.localizedAmenity(amenityId);
+        final amenityName = localized != amenityId ? localized : (amenity['name'] as String? ?? amenityId);
         final amenityIcon = (amenity['icon'] as String?) ?? 'help_outline';
         final isSelected = selectedAmenityIds.contains(amenityId);
 

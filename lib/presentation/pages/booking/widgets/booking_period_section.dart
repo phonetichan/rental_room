@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../extensions/l10n/l10n.dart';
 import '../../../styles/colors.dart';
 
 class BookingPeriodSection extends StatelessWidget {
@@ -12,12 +13,13 @@ class BookingPeriodSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Period',
+          l10n.bookingPeriod,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.clrBlack,
@@ -39,26 +41,27 @@ class BookingPeriodSection extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Date',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.clrGrey,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.bookingDate,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.clrGrey,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  dateRangeText,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.clrBlack,
+                  const SizedBox(height: 2),
+                  Text(
+                    dateRangeText,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.clrBlack,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
@@ -68,7 +71,8 @@ class BookingPeriodSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Make sure to check your date before making any sort of payments', maxLines: 3,
+          l10n.bookingCheckDateNote,
+          maxLines: 3,
           style: theme.textTheme.bodySmall?.copyWith(
             color: AppColors.clrGrey,
             fontSize: 12,

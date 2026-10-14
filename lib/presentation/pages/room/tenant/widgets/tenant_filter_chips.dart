@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../../domain/domain.dart';
 import '../../../../components/modal/room_filter.dart';
-import '../../../../extensions/l10n.dart';
-import '../../../../extensions/lookup_l10n.dart';
+import '../../../../extensions/l10n/l10n.dart';
+import '../../../../extensions/l10n/lookup_l10n.dart';
 
 class TenantFilterChips extends StatelessWidget {
   final RoomFilter filter;

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
-import '../../../extensions/number.dart';
+import '../../../extensions/number/number.dart';
 import '../../../presentation.dart';
 import '../../room/tenant/tenant_room_detail_page.dart';
 /// Static Promo Banner Widget

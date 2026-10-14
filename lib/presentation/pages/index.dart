@@ -9,6 +9,7 @@ import '../../domain/domain.dart';
 import '../../l10n/app_localizations.dart';
 import '../blocs/blocs.dart';
 import '../components/button/confirm_cancel_button.dart';
+import 'package:rental_room/presentation/extensions/contract/contract_extensions.dart';
 import '../navigation/navigation_key_provider.dart';
 
 import 'booking/booking_list_view.dart';
@@ -42,6 +43,8 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   late int _currentIndex;
+  int _contractBadgeCount = 0;
+  String? _loadedUserId;
 
   @override
   void initState() {
@@ -55,6 +58,21 @@ class _IndexPageState extends State<IndexPage> {
     if (oldWidget.initialTab != widget.initialTab) {
       setState(() => _currentIndex = widget.initialTab);
     }
+  }
+
+  Future<void> _loadContractCount(UserEntity user) async {
+    try {
+      final repo = inject<ContractRepository>();
+      final isOwner = user.role == UserRole.owner;
+      final list = isOwner
+          ? await repo.getContractsByOwnerId(user.id)
+          : await repo.getContractsByTenantId(user.id);
+      if (mounted) {
+        setState(() {
+          _contractBadgeCount = list.where((c) => ContractStatusX(c).countsForBadge).length;
+        });
+      }
+    } catch (_) {}
   }
 
   void _changeTab(int index) {
@@ -84,6 +102,8 @@ class _IndexPageState extends State<IndexPage> {
         if (user == null) {
           return const Scaffold(body: SizedBox.shrink());
         }
+
+        _loadContractCount(user);
 
         // 1. Single Unified Home Dashboard View
         final Widget homeView = DashboardView(user: user);
@@ -188,15 +208,31 @@ class _IndexPageState extends State<IndexPage> {
                 selectedIndex: _currentIndex,
                 elevation: 3,
                 onDestinationSelected: _changeTab,
-                destinations: navItems
-                    .map(
-                      (item) => NavigationDestination(
+                destinations: navItems.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
+                  final isProfileTab = index == 3;
+
+                  Widget iconWidget = Icon(item.icon);
+                  Widget selectedIconWidget = Icon(item.selectedIcon);
+
+                  if (isProfileTab && _contractBadgeCount > 0) {
+                    iconWidget = Badge(
+                      label: Text('$_contractBadgeCount'),
+                      child: iconWidget,
+                    );
+                    selectedIconWidget = Badge(
+                      label: Text('$_contractBadgeCount'),
+                      child: selectedIconWidget,
+                    );
+                  }
+
+                  return NavigationDestination(
                     label: item.label,
-                    icon: Icon(item.icon),
-                    selectedIcon: Icon(item.selectedIcon),
-                  ),
-                )
-                    .toList(),
+                    icon: iconWidget,
+                    selectedIcon: selectedIconWidget,
+                  );
+                }).toList(),
               ),
             ),
           ),

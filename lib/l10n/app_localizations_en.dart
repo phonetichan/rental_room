@@ -327,13 +327,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String durationMonths(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count mos',
-      one: '1 mo',
-    );
-    return '$_temp0';
+    return '$count Months';
   }
 
   @override
@@ -544,7 +538,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get securityDeposit => 'Security Deposit';
+  String get securityDeposit => 'Deposit';
 
   @override
   String get depositReceiver => 'Deposit Receiver';
@@ -590,8 +584,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noContractFound =>
-      'No contract found for this booking. Contract must be issued by owner.';
+  String get noContractFound => 'No contract founded';
 
   @override
   String failedToUpdateContract(String reason) {
@@ -791,7 +784,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Review your checklist and submit your booking request to the owner.';
 
   @override
-  String get viewRentalContractVoucher => 'View Rental Contract Voucher';
+  String get viewRentalContractVoucher => 'View Contract';
 
   @override
   String get completed => 'Completed';
@@ -881,4 +874,279 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get selectLocation => 'Select location';
+
+  @override
+  String get nearby => 'Nearby';
+
+  @override
+  String get noNearbyRooms => 'No nearby rooms found.';
+
+  @override
+  String get filterOptions => 'Filter Options';
+
+  @override
+  String get filterClearAll => 'Clear All';
+
+  @override
+  String get filterPriceRange => 'Price Range';
+
+  @override
+  String get filterClear => 'Clear';
+
+  @override
+  String get filterFrom => 'from';
+
+  @override
+  String get filterTo => 'to';
+
+  @override
+  String get filterRoomType => 'Room Type';
+
+  @override
+  String get filterAllTypes => 'All Types';
+
+  @override
+  String get filterRoomNumber => 'Room Number (Bedrooms)';
+
+  @override
+  String get filterAny => 'Any';
+
+  @override
+  String get filterMaxGuests => 'Max Guests';
+
+  @override
+  String get filterApply => 'Apply Filters';
+
+  @override
+  String get searchRoomsHint => 'Search rooms, locations...';
+
+  @override
+  String get bookingPriceDetails => 'Price Details';
+
+  @override
+  String get bookingPeriodTime => 'Period time';
+
+  @override
+  String get bookingMonthlyPayment => 'Monthly payment';
+
+  @override
+  String get bookingTax => 'Tax';
+
+  @override
+  String get bookingTotal => 'Total';
+
+  @override
+  String bookingMonthSingular(String count) {
+    return '$count Month';
+  }
+
+  @override
+  String bookingMonthPlural(String count) {
+    return '$count Months';
+  }
+
+  @override
+  String get bookingVoucher => 'Voucher';
+
+  @override
+  String get bookingPeriod => 'Period';
+
+  @override
+  String get bookingDate => 'Date';
+
+  @override
+  String get bookingCheckDateNote =>
+      'Make sure to check your date before making any sort of payments';
+
+  @override
+  String get bookingTenantDetails => 'Tenant Details';
+
+  @override
+  String get bookingOwnerDetails => 'Owner Details';
+
+  @override
+  String get bookingPropertyName => 'Property Name';
+
+  @override
+  String get bookingNotAvailable => 'N/A';
+
+  @override
+  String get itemPassword => 'Password';
+
+  @override
+  String get itemLocation => 'Location';
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get takePhoto => 'Take a Photo';
+
+  @override
+  String get removePhoto => 'Remove Photo';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get pleaseEnterName => 'Please enter your name';
+
+  @override
+  String get pleaseEnterPhone => 'Please enter your phone number';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get userSessionNotFound => 'User session not found.';
+
+  @override
+  String get unableToLoadProfile =>
+      'Unable to load user profile. Please re-login.';
+
+  @override
+  String failedToPickImage(String error) {
+    return 'Failed to pick image: $error';
+  }
+
+  @override
+  String failedToUploadImage(String error) {
+    return 'Failed to upload profile image: $error';
+  }
+
+  @override
+  String get updatePasswordTitle => 'Update Password';
+
+  @override
+  String get passwordChangeNote =>
+      'Changing your password will require you to log in again.';
+
+  @override
+  String get currentPassword => 'Current Password';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get confirmNewPassword => 'Confirm New Password';
+
+  @override
+  String get pleaseEnterCurrentPassword => 'Please enter current password';
+
+  @override
+  String get pleaseEnterNewPassword => 'Please enter new password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get pleaseConfirmNewPassword => 'Please confirm new password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get myLocation => 'My Location';
+
+  @override
+  String get tapChooseLocationHint =>
+      'Tap \"Choose location on map\" to set your location.';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully!';
+
+  @override
+  String get passwordUpdatedSuccessfully =>
+      'Password updated successfully! Please log in again.';
+
+  @override
+  String get locationUpdatedSuccessfully => 'Location updated successfully!';
+
+  @override
+  String errorSavingRoom(String error) {
+    return 'Error saving room: $error';
+  }
+
+  @override
+  String welcomeBack(String name) {
+    return 'Welcome back, $name!';
+  }
+
+  @override
+  String get pleaseAcceptTerms =>
+      'Please accept the Terms & Conditions to proceed.';
+
+  @override
+  String accountCreated(String role) {
+    return 'Account created as $role!';
+  }
+
+  @override
+  String get roomCreatedSuccessfully => 'Room created successfully!';
+
+  @override
+  String get roomUpdatedSuccessfully => 'Room updated successfully!';
+
+  @override
+  String get roomDeletedSuccessfully => 'Room deleted successfully!';
+
+  @override
+  String get bookingCreatedSuccessfully =>
+      'Booking request created successfully!';
+
+  @override
+  String get bookingUpdatedSuccessfully => 'Booking updated successfully!';
+
+  @override
+  String get bookingDeletedSuccessfully =>
+      'Booking request is successfully deleted!';
+
+  @override
+  String get contractCreatedSuccessfully => 'Contract created successfully!';
+
+  @override
+  String get contractUpdatedSuccessfully => 'Contract updated successfully!';
+
+  @override
+  String get ownersCannotFavoriteOwnRooms =>
+      'Owners cannot favorite their own rooms.';
+
+  @override
+  String get thisPhoneAlreadyRegistered =>
+      'This phone number is already registered by another user.';
+
+  @override
+  String get currentPasswordIncorrect =>
+      'The current password you entered is incorrect.';
+
+  @override
+  String get invalidEmailOrPassword =>
+      'Invalid email or password. Please try again.';
+
+  @override
+  String get emailAlreadyInUse => 'This email is already registered.';
+
+  @override
+  String get contractHistory => 'Contract History';
+
+  @override
+  String get activeContracts => 'Active Contracts';
+
+  @override
+  String get history => 'History';
 }

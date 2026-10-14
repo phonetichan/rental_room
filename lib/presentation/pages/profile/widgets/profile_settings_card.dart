@@ -25,7 +25,6 @@ class ProfileSettingsCard extends StatelessWidget {
   });
 
   @override
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
@@ -213,7 +212,7 @@ class ProfileSettingsCard extends StatelessWidget {
                 color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
 
-              // 4.5. UPDATE LOCATION
+              // 5. UPDATE LOCATION
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -225,7 +224,6 @@ class ProfileSettingsCard extends StatelessWidget {
                 ),
                 title: Text(
                   l10n.updateLocation,
-                  // Ensure you have this translation key or write plain text like 'Update Location'
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -244,14 +242,15 @@ class ProfileSettingsCard extends StatelessWidget {
                 indent: 64,
                 color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               ),
-              // 5. TERMS AND CONDITIONS
+
+              // 6. TERMS AND CONDITIONS
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 4,
                 ),
                 leading: const SettingIcon(
-                  icon: Icons.description_outlined,
+                  icon: Icons.description_rounded,
                   color: Colors.orange,
                 ),
                 title: Text(
@@ -267,16 +266,8 @@ class ProfileSettingsCard extends StatelessWidget {
                   Icons.chevron_right_rounded,
                   color: Colors.grey,
                 ),
-                onTap: () {
-                  context.push(TermsAndConditionsPage.routePath);
-                },
+                onTap: () => context.push(TermsAndConditionsPage.routePath),
               ),
-              Divider(
-                height: 1,
-                indent: 64,
-                color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
-              ),
-
             ],
           ),
         ),

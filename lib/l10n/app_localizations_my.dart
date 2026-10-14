@@ -397,10 +397,10 @@ class AppLocalizationsMy extends AppLocalizations {
   String get roomLocation => 'အခန်း တည်နေရာ';
 
   @override
-  String get latitude => 'လတ္တီကျု';
+  String get latitude => 'လတ္တီတွဒ်';
 
   @override
-  String get longitude => 'လောင်ဂျီကျု';
+  String get longitude => 'လောင်ဂျီတွဒ်';
 
   @override
   String get roomNameTitle => 'အခန်းအမည် / ခေါင်းစဉ်';
@@ -560,7 +560,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get endDate => 'ကုန်ဆုံးမည့် ရက်စွဲ';
 
   @override
-  String get monthlyRent => 'လစဉ် အငှားခ';
+  String get monthlyRent => 'လစဉ်ငှားရမ်းခ';
 
   @override
   String get contractSaved => 'စာချုပ် သိမ်းဆည်းပြီးပါပြီ!';
@@ -645,7 +645,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get agentName => 'အေးဂျင့် အမည်';
 
   @override
-  String get roomTypeApartment => 'စံ တိုက်ခန်း';
+  String get roomTypeApartment => 'တိုက်ခန်း';
 
   @override
   String get roomTypeMiniCondo => 'မီနီကွန်ဒို';
@@ -751,8 +751,7 @@ class AppLocalizationsMy extends AppLocalizations {
       'သင့် စစ်ဆေးချက်စာရင်းကို ပြန်လည်စစ်ဆေးပြီး ပိုင်ရှင်ထံ ကြိုတင်မှာယူမှု တောင်းဆိုချက်ကို တင်သွင်းပါ။';
 
   @override
-  String get viewRentalContractVoucher =>
-      'အခန်းငှားရမ်းမှု စာချုပ်ကို ကြည့်ရန်';
+  String get viewRentalContractVoucher => 'စာချုပ်ကြည့်ရန်';
 
   @override
   String get completed => 'ပြီးစီးသည်';
@@ -843,4 +842,284 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get retry => 'ထပ်ကြိုးစားရန်';
+
+  @override
+  String get location => 'တည်နေရာ';
+
+  @override
+  String get selectLocation => 'တည်နေရာ ရွေးချယ်ပါ';
+
+  @override
+  String get nearby => 'အနီးအနား';
+
+  @override
+  String get noNearbyRooms => 'အနီးအနားတွင် အခန်းများ မရှိသေးပါ။';
+
+  @override
+  String get filterOptions => 'စစ်ထုတ်ရန် ရွေးချယ်မှုများ';
+
+  @override
+  String get filterClearAll => 'အကုန်ရှင်း';
+
+  @override
+  String get filterPriceRange => 'စျေးနှုန်း အကွာအဝေး';
+
+  @override
+  String get filterClear => 'ရှင်းလင်းရန်';
+
+  @override
+  String get filterFrom => 'မှ';
+
+  @override
+  String get filterTo => 'အထိ';
+
+  @override
+  String get filterRoomType => 'အခန်းအမျိုးအစား';
+
+  @override
+  String get filterAllTypes => 'အမျိုးအစားအားလုံး';
+
+  @override
+  String get filterRoomNumber => 'အခန်းအရေအတွက် (အိပ်ခန်း)';
+
+  @override
+  String get filterAny => 'ဘာဖြစ်ဖြစ်';
+
+  @override
+  String get filterMaxGuests => 'ဧည့်သည် အများဆုံး';
+
+  @override
+  String get filterApply => 'စစ်ထုတ်မှု အသုံးပြုရန်';
+
+  @override
+  String get searchRoomsHint => 'အခန်း၊ တည်နေရာ ရှာဖွေရန်...';
+
+  @override
+  String get bookingPriceDetails => 'စျေးနှုန်း အသေးစိတ်';
+
+  @override
+  String get bookingPeriodTime => 'ကာလ';
+
+  @override
+  String get bookingMonthlyPayment => 'လစဉ်ပေးချေမှု';
+
+  @override
+  String get bookingTax => 'အခွန်';
+
+  @override
+  String get bookingTotal => 'စုစုပေါင်း';
+
+  @override
+  String bookingMonthSingular(String count) {
+    return '$count လ';
+  }
+
+  @override
+  String bookingMonthPlural(String count) {
+    return '$count လ';
+  }
+
+  @override
+  String get bookingVoucher => 'ဘောက်ချာ';
+
+  @override
+  String get bookingPeriod => 'ကာလ';
+
+  @override
+  String get bookingDate => 'ရက်စွဲ';
+
+  @override
+  String get bookingCheckDateNote =>
+      'ငွေပေးချေမှု မပြုလုပ်မီ သင့်ရက်စွဲကို စစ်ဆေးပါ';
+
+  @override
+  String get bookingTenantDetails => 'ငှားရမ်းသူ အသေးစိတ်';
+
+  @override
+  String get bookingOwnerDetails => 'ပိုင်ရှင် အသေးစိတ်';
+
+  @override
+  String get bookingPropertyName => 'ပစ္စည်းအမည်';
+
+  @override
+  String get bookingNotAvailable => 'မရှိပါ';
+
+  @override
+  String get itemPassword => 'စကားဝှက်';
+
+  @override
+  String get itemLocation => 'တည်နေရာ';
+
+  @override
+  String get editProfileTitle => 'ပရိုဖိုင် ပြင်ဆင်ရန်';
+
+  @override
+  String get chooseFromGallery => 'ဓာတ်ပုံပြခန်းမှ ရွေးရန်';
+
+  @override
+  String get takePhoto => 'ဓာတ်ပုံရိုက်ရန်';
+
+  @override
+  String get removePhoto => 'ဓာတ်ပုံ ဖယ်ရှားရန်';
+
+  @override
+  String get fullName => 'အမည်အပြည့်အစုံ';
+
+  @override
+  String get phoneNumber => 'ဖုန်းနံပါတ်';
+
+  @override
+  String get pleaseEnterName => 'သင့်အမည်ကို ထည့်ပါ';
+
+  @override
+  String get pleaseEnterPhone => 'သင့်ဖုန်းနံပါတ်ကို ထည့်ပါ';
+
+  @override
+  String get saveChanges => 'ပြောင်းလဲမှုများ သိမ်းရန်';
+
+  @override
+  String get userSessionNotFound => 'အသုံးပြုသူ session ကို မတွေ့ပါ။';
+
+  @override
+  String get unableToLoadProfile =>
+      'ပရိုဖိုင်ကို ဖွင့်၍ မရပါ။ ပြန်လည် ဝင်ရောက်ပါ။';
+
+  @override
+  String failedToPickImage(String error) {
+    return 'ဓာတ်ပုံ ရွေးချယ်၍ မရပါ - $error';
+  }
+
+  @override
+  String failedToUploadImage(String error) {
+    return 'ပရိုဖိုင်ဓာတ်ပုံ တင်၍ မရပါ - $error';
+  }
+
+  @override
+  String get updatePasswordTitle => 'စကားဝှက် ပြောင်းရန်';
+
+  @override
+  String get passwordChangeNote =>
+      'စကားဝှက်ပြောင်းလျှင် ပြန်လည် ဝင်ရောက်ရပါမည်။';
+
+  @override
+  String get currentPassword => 'လက်ရှိ စကားဝှက်';
+
+  @override
+  String get newPassword => 'စကားဝှက်အသစ်';
+
+  @override
+  String get confirmNewPassword => 'စကားဝှက်အသစ် အတည်ပြုရန်';
+
+  @override
+  String get pleaseEnterCurrentPassword => 'လက်ရှိ စကားဝှက်ကို ထည့်ပါ';
+
+  @override
+  String get pleaseEnterNewPassword => 'စကားဝှက်အသစ်ကို ထည့်ပါ';
+
+  @override
+  String get passwordMinLength => 'စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်';
+
+  @override
+  String get pleaseConfirmNewPassword => 'စကားဝှက်အသစ်ကို အတည်ပြုပါ';
+
+  @override
+  String get passwordsDoNotMatch => 'စကားဝှက်များ မကိုက်ညီပါ';
+
+  @override
+  String get myLocation => 'ကျွန်ုပ်၏ တည်နေရာ';
+
+  @override
+  String get tapChooseLocationHint =>
+      'သင့်တည်နေရာ သတ်မှတ်ရန် \"မြေပုံပေါ်တွင် တည်နေရာရွေးရန်\" ကို နှိပ်ပါ။';
+
+  @override
+  String get change => 'ပြောင်းရန်';
+
+  @override
+  String get profileUpdatedSuccessfully =>
+      'ပရိုဖိုင် ပြင်ဆင်မှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get passwordUpdatedSuccessfully =>
+      'စကားဝှက် ပြောင်းလဲမှု အောင်မြင်ပါသည်။ ပြန်လည် ဝင်ရောက်ပေးပါ။';
+
+  @override
+  String get locationUpdatedSuccessfully =>
+      'တည်နေရာ ပြင်ဆင်မှု အောင်မြင်ပါသည်!';
+
+  @override
+  String errorSavingRoom(String error) {
+    return 'အခန်း သိမ်းဆည်းရာတွင် အမှားဖြစ်ပွားပါသည် - $error';
+  }
+
+  @override
+  String welcomeBack(String name) {
+    return 'ပြန်လည်ကြိုဆိုပါသည်၊ $name!';
+  }
+
+  @override
+  String get pleaseAcceptTerms =>
+      'ဆက်လက်လုပ်ဆောင်ရန် စည်းမျဉ်းစည်းကမ်းများကို လက်ခံပေးပါ။';
+
+  @override
+  String accountCreated(String role) {
+    return '$role အဖြစ် အကောင့်ဖန်တီးပြီးပါပြီ!';
+  }
+
+  @override
+  String get roomCreatedSuccessfully => 'အခန်းသစ် ဖန်တီးမှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get roomUpdatedSuccessfully =>
+      'အခန်းအချက်အလက် ပြင်ဆင်မှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get roomDeletedSuccessfully => 'အခန်း ဖျက်သိမ်းမှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get bookingCreatedSuccessfully =>
+      'ငှားရမ်းရန် တောင်းဆိုမှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get bookingUpdatedSuccessfully =>
+      'ငှားရမ်းမှု အခြေအနေ ပြောင်းလဲမှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get bookingDeletedSuccessfully =>
+      'ငှားရမ်းမှု တောင်းဆိုချက်ကို ဖျက်သိမ်းပြီးပါပြီ!';
+
+  @override
+  String get contractCreatedSuccessfully => 'စာချုပ် ဖန်တီးမှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get contractUpdatedSuccessfully =>
+      'စာချုပ် ပြင်ဆင်မှု အောင်မြင်ပါသည်!';
+
+  @override
+  String get ownersCannotFavoriteOwnRooms =>
+      'အိမ်ရှင်များသည် မိမိ၏ အခန်းများကို သဘောကျသက်မှတ်၍ မရပါ';
+
+  @override
+  String get thisPhoneAlreadyRegistered =>
+      'ဤဖုန်းနံပါတ်ကို အခြားသူတစ်ဦးမှ မှတ်ပုံတင်ထားပြီးဖြစ်သည်။';
+
+  @override
+  String get currentPasswordIncorrect =>
+      'ထည့်သွင်းထားသော လက်ရှိ စကားဝှက် မှားယွင်းနေပါသည်။';
+
+  @override
+  String get invalidEmailOrPassword =>
+      'အီးမေးလ် သို့မဟုတ် စကားဝှက် မှားယွင်းနေပါသည်။ ပြန်လည် ကြိုးစားပါ။';
+
+  @override
+  String get emailAlreadyInUse => 'ဤအီးမေးလ်ဖြင့် အကောင့်ဖွင့်ထားပြီး ဖြစ်သည်။';
+
+  @override
+  String get contractHistory => 'စာချုပ် မှတ်တမ်း';
+
+  @override
+  String get activeContracts => 'လက်ရှိ စာချုပ်များ';
+
+  @override
+  String get history => 'မှတ်တမ်း';
 }

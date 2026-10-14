@@ -5,5 +5,5 @@ export 'profile/edit_profile/cubit/edit_profile_cubit.dart';
 export 'profile/edit_password/edit_password.dart';
 export 'profile/edit_password/cubit/edit_password_cubit.dart';
 export '../components/components.dart';
-export 'booking/booking_detail_page.dart';
-export 'contract/contract_detail_page.dart';
+export 'contract/voucher_detail_page.dart';
+export 'contract/contract_update_page.dart';
