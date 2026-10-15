@@ -65,7 +65,7 @@ class GetBookingsUseCase implements UseCase<DataState<List<BookingEntity>>, GetB
       // OWNER ROLE: Filter out draft bookings so owner only sees submitted requests (e.g. pending)
       if (param.ownerId != null) {
         final filteredForOwner = bookings
-            .where((booking) => booking.status.toLowerCase() != 'draft')
+            .where((booking) => !booking.isDraft)
             .toList();
         return Success(filteredForOwner);
       }

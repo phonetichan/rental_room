@@ -74,12 +74,13 @@ class _DashboardContentState extends State<DashboardContent> {
   }
 
   /// Opens the Posts tab. Pass [roomTypeId] to pre-apply a type filter.
-  void _goToPosts({String? roomTypeId}) {
+  void _goToPosts({String? roomTypeId, bool nearby = false}) {
     final uri = Uri(
       path: IndexPage.routePath,
       queryParameters: {
         'tab': '$_postsTabIndex',
         if (roomTypeId != null) 'type': roomTypeId,
+        if (nearby) 'nearby': 'true',
       },
     );
     context.go(uri.toString());
@@ -253,12 +254,12 @@ class _DashboardContentState extends State<DashboardContent> {
         const SizedBox(height: 20),
 
         VerticalRoomsSection(
-          title: l10n.nearby,
+          title: 'Rooms Near ${widget.user.name.isNotEmpty ? widget.user.name : 'You'}',
           emptyText: l10n.noNearbyRooms,
           rooms: nearbyRooms,
           user: widget.user,
           showOwnerActions: false,
-          onSeeAll: () => _goToPosts(),
+          onSeeAll: () => _goToPosts(nearby: true),
           onRoomUpdated: _refreshRooms,
         ),
       ],

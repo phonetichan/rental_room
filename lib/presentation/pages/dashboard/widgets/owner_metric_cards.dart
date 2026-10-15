@@ -58,15 +58,16 @@ class _OwnerMetricsOverviewState extends State<OwnerMetricsOverview> {
                   orElse: () => [],
                 );
 
-                final List<BookingEntity> ownerBookings =
-                bookingState.maybeWhen(
-                  loaded: (bookings) => bookings
-                      .where((b) =>
-                  b.ownerId == widget.user.id ||
-                      ownerRooms.any((r) => r.id == b.roomId))
-                      .toList(),
-                  orElse: () => [],
+                final bookingCubit = context.read<BookingCubit>();
+                final bookings = bookingState.maybeWhen(
+                  loaded: (list) => list,
+                  orElse: () => bookingCubit.cachedBookings ?? [],
                 );
+                final List<BookingEntity> ownerBookings = bookings
+                    .where((b) =>
+                        b.ownerId == widget.user.id ||
+                        ownerRooms.any((r) => r.id == b.roomId))
+                    .toList();
 
                 final int pendingRequestsCount = ownerBookings
                     .where((b) => b.status.toLowerCase() == 'pending')

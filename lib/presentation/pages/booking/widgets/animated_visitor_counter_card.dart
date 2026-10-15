@@ -36,7 +36,9 @@ class _AnimatedVisitorCounterCardState
   @override
   void didUpdateWidget(covariant AnimatedVisitorCounterCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.roomId != widget.roomId || oldWidget.count != widget.count) {
+    if (oldWidget.roomId != widget.roomId ||
+        oldWidget.count != widget.count ||
+        oldWidget.isVisited != widget.isVisited) {
       _initialIsVisited = widget.isVisited;
       _fetchBaseCount();
     }
@@ -82,15 +84,7 @@ class _AnimatedVisitorCounterCardState
     }
   }
 
-  int get _computedDisplayCount {
-    if (widget.isVisited == _initialIsVisited) {
-      return _baseCount;
-    } else if (widget.isVisited) {
-      return _baseCount + 1;
-    } else {
-      return _baseCount > 0 ? _baseCount - 1 : 0;
-    }
-  }
+  int get _computedDisplayCount => _baseCount;
 
   @override
   Widget build(BuildContext context) {

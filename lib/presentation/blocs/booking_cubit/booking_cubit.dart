@@ -21,6 +21,7 @@ class BookingCubit extends Cubit<BookingState> {
   List<BookingEntity>? _cachedBookings;
   List<BookingEntity>? get cachedBookings => _cachedBookings;
   bool get isReady => _cachedBookings != null;
+  final Set<String> _recentlyDeletedBookingIds = {};
 
   BookingCubit(
     this._getBookingsUseCase,
@@ -64,9 +65,12 @@ class BookingCubit extends Cubit<BookingState> {
 
     res
       ..onSuccess((fresh) {
+        final filteredFresh = fresh
+            .where((b) => !_recentlyDeletedBookingIds.contains(b.id))
+            .toList();
         final old = _cachedBookings;
-        if (old != null && _same(old, fresh)) return; // no change -> do nothing
-        _emitLoaded(fresh); // changed (or first load) -> update instantly
+        if (old != null && _same(old, filteredFresh)) return; // no change -> do nothing
+        _emitLoaded(filteredFresh); // changed (or first load) -> update instantly
       })
       ..onError((failure) {
         if (isReady) {
@@ -212,6 +216,7 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   Future<void> deleteBooking(String bookingId) async {
+    _recentlyDeletedBookingIds.add(bookingId);
     final res = await _deleteBookingUseCase(bookingId);
 
     res
@@ -221,8 +226,12 @@ class BookingCubit extends Cubit<BookingState> {
           _emitLoaded(updatedList);
         }
         emit(const BookingState.success(message: 'Booking request is successfully deleted!'));
+        Future.delayed(const Duration(seconds: 3), () {
+          _recentlyDeletedBookingIds.remove(bookingId);
+        });
       })
       ..onError((failure) {
+        _recentlyDeletedBookingIds.remove(bookingId);
         if (!isReady) {
           emit(BookingState.failure(failure.reason));
         }

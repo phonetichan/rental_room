@@ -11,7 +11,7 @@ class TenantRoomBottomActionBar extends StatelessWidget {
   final RoomEntity room;
   final UserEntity? currentUser;
   final bool isBookingLoading;
-  final ValueChanged<UserEntity> onHandleBooking;
+  final void Function(UserEntity user, {BookingEntity? existingDraft}) onHandleBooking;
   final void Function(BookingEntity booking, UserEntity currentUser) onOpenExistingBooking;
 
   const TenantRoomBottomActionBar({
@@ -72,21 +72,20 @@ class TenantRoomBottomActionBar extends StatelessWidget {
           Expanded(
             child: BlocBuilder<BookingCubit, BookingState>(
               builder: (context, bookingState) {
-                final existingBooking = bookingState.maybeWhen(
-                  loaded: (bookings) {
-                    try {
-                      return bookings.firstWhere((b) => b.roomId == room.id);
-                    } catch (_) {
-                      return null;
-                    }
-                  },
-                  orElse: () => null,
+                final bookingCubit = context.read<BookingCubit>();
+                final bookings = bookingState.maybeWhen(
+                  loaded: (list) => list,
+                  orElse: () => bookingCubit.cachedBookings ?? [],
                 );
+                final existingBooking = bookings
+                    .where((b) => b.roomId == room.id && !b.isCancelled)
+                    .firstOrNull;
 
-                final isAlreadyBooked = existingBooking != null;
+                final hasSubmitted = existingBooking != null && !existingBooking.isDraft;
+                final isDraft = existingBooking != null && existingBooking.isDraft;
                 final isRented = room.status.toLowerCase() == 'rented';
 
-                if (isAlreadyBooked) {
+                if (hasSubmitted) {
                   return SizedBox(
                     height: 48,
                     child: OutlinedButton.icon(
@@ -152,7 +151,7 @@ class TenantRoomBottomActionBar extends StatelessWidget {
                     ),
                     onPressed: (isBookingLoading || currentUser == null)
                         ? null
-                        : () => onHandleBooking(currentUser!),
+                        : () => onHandleBooking(currentUser!, existingDraft: isDraft ? existingBooking : null),
                     icon: isBookingLoading
                         ? const SizedBox(
                             width: 18,

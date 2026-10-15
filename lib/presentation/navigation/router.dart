@@ -363,9 +363,11 @@ class NavigationRouter {
           final tabStr = state.uri.queryParameters['tab'];
           final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
           final roomTypeId = state.uri.queryParameters['type'];
+          final isNearby = state.uri.queryParameters['nearby'] == 'true';
           return IndexPage(
             initialTab: initialTab,
             initialRoomTypeId: roomTypeId,
+            nearby: isNearby,
           );
         },
       ),

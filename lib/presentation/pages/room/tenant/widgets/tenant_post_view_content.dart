@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../../../di/injector.dart';
 import '../../../../../domain/domain.dart';
@@ -17,11 +18,13 @@ import 'room_paginated_tab.dart';
 class TenantPostViewContent extends StatefulWidget {
   final UserEntity user;
   final String? initialRoomTypeId;
+  final bool? nearby;
 
   const TenantPostViewContent({
     super.key,
     required this.user,
     this.initialRoomTypeId,
+    this.nearby,
   });
 
   @override
@@ -71,7 +74,8 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
   @override
   void didUpdateWidget(covariant TenantPostViewContent oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialRoomTypeId != widget.initialRoomTypeId) {
+    if (oldWidget.initialRoomTypeId != widget.initialRoomTypeId ||
+        oldWidget.nearby != widget.nearby) {
       setState(() {
         _filter = RoomFilter(
           roomTypeId: widget.initialRoomTypeId,
@@ -139,7 +143,46 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
     }
   }
 
+  bool get _hasUserLocation =>
+      (widget.user.latitude != null && widget.user.longitude != null) ||
+      (widget.user.address != null && widget.user.address!.trim().isNotEmpty);
+
+  bool _isNearby(RoomEntity r) {
+    final userLat = widget.user.latitude;
+    final userLng = widget.user.longitude;
+    if (userLat != null && userLng != null && r.latitude != null && r.longitude != null) {
+      const distance = Distance();
+      final dist = distance.as(LengthUnit.Kilometer, LatLng(userLat, userLng), LatLng(r.latitude!, r.longitude!));
+      if (dist <= 50.0) return true;
+    }
+    if (widget.user.address != null && widget.user.address!.trim().isNotEmpty) {
+      final userAddress = widget.user.address!.toLowerCase();
+      final parts = userAddress
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) =>
+              e.isNotEmpty &&
+              e != 'myanmar' &&
+              e != 'burma' &&
+              !RegExp(r'^\d+$').hasMatch(e))
+          .toList();
+      if (parts.isNotEmpty) {
+        final rAddr = r.location.toLowerCase();
+        if (parts.any((kw) => rAddr.contains(kw))) return true;
+      }
+      final roomLocLower = r.location.toLowerCase();
+      if (userAddress.contains(roomLocLower) || roomLocLower.contains(userAddress)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool _matches(RoomEntity r) {
+    if (widget.nearby == true) {
+      if (!_hasUserLocation) return false;
+      if (!_isNearby(r)) return false;
+    }
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery;
       final ok =
@@ -206,7 +249,7 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
           },
         ),
         FilterSummary(filter: _filter),
-        const SizedBox(height: 8),
+        const SizedBox(height: 5),
         Expanded(
           child: ValueListenableBuilder<bool>(
             valueListenable: _isFilling,
@@ -217,7 +260,11 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
               filter: _matches,
               isFilling: filling,
               emptyIcon: Icons.no_meeting_room_outlined,
-              emptyMessage: 'No rooms match your filter criteria.',
+              emptyMessage: (widget.nearby == true && !_hasUserLocation)
+                  ? 'No location set. Please update your location in your profile to view nearby rooms.'
+                  : (widget.nearby == true
+                      ? 'No nearby rooms found.'
+                      : 'No rooms match your filter criteria.'),
             ),
           ),
         ),

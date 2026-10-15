@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../components/modal/room_filter.dart';
 import '../../../../extensions/l10n/l10n.dart';
 import '../../../../extensions/l10n/lookup_l10n.dart';
+
 class FilterSummary extends StatelessWidget {
   final RoomFilter filter;
 
@@ -17,21 +18,25 @@ class FilterSummary extends StatelessWidget {
   String? _build(BuildContext context) {
     final items = <String>[];
 
+    // Room Type
     final typeId = filter.roomTypeId;
     if (typeId != null && typeId.isNotEmpty) {
       items.add(context.l10n.localizedRoomType(typeId));
     }
 
+    // Max Guests
     if (filter.maxGuests != null) {
       items.add(filter.maxGuests == 4
           ? 'Guests 4+'
           : 'Guests ${filter.maxGuests}');
     }
 
+    // Room Number / Bedrooms
     if (filter.bedrooms != null) {
       items.add(filter.bedrooms == 4 ? 'Bed 4+' : 'Bed ${filter.bedrooms}');
     }
 
+    // Price Range
     if (filter.minPrice != null || filter.maxPrice != null) {
       final min = filter.minPrice?.toStringAsFixed(0);
       final max = filter.maxPrice?.toStringAsFixed(0);
@@ -44,6 +49,7 @@ class FilterSummary extends StatelessWidget {
       }
     }
 
+    // Saved only
     if (filter.isFavoriteOnly) items.add('Saved only');
 
     if (items.isEmpty) return null;

@@ -138,15 +138,15 @@ class BookingStepReviewView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-        // Delete / Cancel Booking Button (enabled before request confirm)
+        // Delete / Cancel Booking Button (tenant can delete only before submitting request to owner)
         SizedBox(
           width: double.infinity,
           height: 48,
           child: OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
-              foregroundColor: isConfirmed ? theme.disabledColor : Colors.redAccent,
+              foregroundColor: (isReadOnly && !isOwner) ? theme.disabledColor : Colors.redAccent,
               side: BorderSide(
-                color: isConfirmed ? theme.disabledColor : Colors.redAccent,
+                color: (isReadOnly && !isOwner) ? theme.disabledColor : Colors.redAccent,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -155,19 +155,21 @@ class BookingStepReviewView extends StatelessWidget {
             icon: Icon(
               Icons.delete_outline,
               size: 20,
-              color: isConfirmed ? theme.disabledColor : Colors.redAccent,
+              color: (isReadOnly && !isOwner) ? theme.disabledColor : Colors.redAccent,
             ),
             label: Text(
-              isConfirmed
-                  ? 'Booking Confirmed'
-                  : (isOwner ? 'Decline / Delete Request' : l10n.deleteBooking),
+              (isReadOnly && !isOwner)
+                  ? 'Request Submitted (Cannot Delete)'
+                  : (isConfirmed
+                      ? 'Booking Confirmed'
+                      : (isOwner ? 'Decline / Delete Request' : l10n.deleteBooking)),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: isConfirmed ? theme.disabledColor : Colors.redAccent,
+                color: (isReadOnly && !isOwner) ? theme.disabledColor : Colors.redAccent,
               ),
             ),
-            onPressed: isConfirmed ? null : onDeleteBooking,
+            onPressed: (isReadOnly && !isOwner) ? null : onDeleteBooking,
           ),
         ),
       ],

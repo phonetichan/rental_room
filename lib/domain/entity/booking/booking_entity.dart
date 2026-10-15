@@ -1,3 +1,12 @@
+abstract class BookingStatus {
+  static const draft = 'draft';
+  static const pending = 'pending';
+  static const confirmed = 'confirmed';
+  static const cancelled = 'cancelled';
+  static const contracted = 'contracted';
+  static const expired = 'expired';
+}
+
 class BookingEntity {
   final String id;
   final String userId; // Tenant ID
@@ -7,7 +16,7 @@ class BookingEntity {
   final bool isVisited;
   final bool isReadByTenant;
   final bool isReadByOwner;
-  final String status; // "draft", "pending", "confirmed", "cancelled", "contracted"
+  final String status; // "draft", "pending", "confirmed", "cancelled", "contracted", "expired"
   final DateTime? createdAt;
   final DateTime? updatedAt;
   // Optional display metadata
@@ -18,10 +27,16 @@ class BookingEntity {
   final String? tenantPhone;
 
   /// Helper getters for the refined workflow states
-  bool get isPending => status.toLowerCase() == 'pending' || status.toLowerCase() == 'draft';
-  bool get isConfirmed => status.toLowerCase() == 'confirmed';
-  bool get isContracted => status.toLowerCase() == 'contracted' || status.toLowerCase() == 'voucher_ready';
-  bool get isCancelled => status.toLowerCase() == 'cancelled';
+  bool get isDraft => status.toLowerCase() == BookingStatus.draft;
+  bool get isPending => status.toLowerCase() == BookingStatus.pending; // submitted only
+  bool get isConfirmed => status.toLowerCase() == BookingStatus.confirmed;
+  bool get isContracted =>
+      status.toLowerCase() == BookingStatus.contracted || status.toLowerCase() == 'voucher_ready';
+  bool get isCancelled => status.toLowerCase() == BookingStatus.cancelled;
+  bool get isExpired => status.toLowerCase() == BookingStatus.expired;
+
+  /// A booking the tenant actually submitted (visible to the owner)
+  bool get isSubmitted => !isDraft;
 
   const BookingEntity({
     required this.id,
@@ -32,7 +47,7 @@ class BookingEntity {
     this.isVisited = false,
     this.isReadByTenant = false,
     this.isReadByOwner = false,
-    this.status = 'draft',
+    this.status = BookingStatus.draft,
     this.createdAt,
     this.updatedAt,
     this.roomName,

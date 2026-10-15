@@ -7,8 +7,14 @@ import '../../../domain/domain.dart';
 class PostView extends StatelessWidget {
   final UserEntity user;
   final String? initialRoomTypeId;
+  final bool? nearby;
 
-  const PostView({super.key, required this.user, this.initialRoomTypeId});
+  const PostView({
+    super.key,
+    required this.user,
+    this.initialRoomTypeId,
+    this.nearby,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +25,7 @@ class PostView extends StatelessWidget {
           : TenantPostViewContent(
               user: user,
               initialRoomTypeId: initialRoomTypeId,
+              nearby: nearby,
             ),
     );
   }

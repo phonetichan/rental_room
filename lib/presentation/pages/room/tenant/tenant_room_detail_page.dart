@@ -70,7 +70,7 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
     }
   }
 
-  Future<void> _handleBooking(UserEntity currentUser) async {
+  Future<void> _handleBooking(UserEntity currentUser, {BookingEntity? existingDraft}) async {
     setState(() => _isBookingLoading = true);
     BookingCubit? bookingCubit;
     try {
@@ -83,10 +83,14 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
           if (bookingCubit != null) {
             return BlocProvider.value(
               value: bookingCubit,
-              child: NewBookingView(room: _room, currentUser: currentUser),
+              child: existingDraft != null
+                  ? NewBookingView(booking: existingDraft, currentUser: currentUser)
+                  : NewBookingView(room: _room, currentUser: currentUser),
             );
           }
-          return NewBookingView(room: _room, currentUser: currentUser);
+          return existingDraft != null
+              ? NewBookingView(booking: existingDraft, currentUser: currentUser)
+              : NewBookingView(room: _room, currentUser: currentUser);
         },
       ),
     );
@@ -161,7 +165,7 @@ class _TenantRoomDetailScreenState extends State<TenantRoomDetailScreen> {
         room: _room,
         currentUser: currentUser,
         isBookingLoading: _isBookingLoading,
-        onHandleBooking: (user) => _handleBooking(user),
+        onHandleBooking: (user, {existingDraft}) => _handleBooking(user, existingDraft: existingDraft),
         onOpenExistingBooking: (booking, user) => _openExistingBooking(booking, user),
       ),
     );

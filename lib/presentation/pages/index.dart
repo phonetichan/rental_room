@@ -31,8 +31,9 @@ class NavItemData {
 class IndexPage extends StatefulWidget {
   final int initialTab;
   final String? initialRoomTypeId;
+  final bool? nearby;
 
-  const IndexPage({super.key, this.initialTab = 0, this.initialRoomTypeId});
+  const IndexPage({super.key, this.initialTab = 0, this.initialRoomTypeId, this.nearby});
 
   static const String routeName = "index";
   static const String routePath = "/";
@@ -111,7 +112,11 @@ class _IndexPageState extends State<IndexPage> {
         // 2. Navigation Views
         final List<Widget> pages = [
           homeView,
-          PostView(user: user, initialRoomTypeId: widget.initialRoomTypeId),
+          PostView(
+            user: user,
+            initialRoomTypeId: widget.initialRoomTypeId,
+            nearby: widget.nearby,
+          ),
           BookingView(user: user, isCurrentTab: _currentIndex == 2),
           ProfileView(user: user),
         ];
