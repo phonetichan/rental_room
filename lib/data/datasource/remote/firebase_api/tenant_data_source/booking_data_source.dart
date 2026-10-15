@@ -104,7 +104,11 @@ class BookingRemoteDataSource {
         final data = doc.data() as Map<String, dynamic>?;
         final status = (data?['status'] as String? ?? '').toLowerCase();
         if (status == 'pending' || status == 'draft') {
-          await deleteBooking(doc.id);
+          await doc.reference.update({
+            'status': 'cancelled',
+            'isReadByTenant': false,
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
         }
       }
     } catch (e) {

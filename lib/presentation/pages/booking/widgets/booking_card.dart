@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../extensions/contract/contract_extensions.dart';
 import '../../contract/widgets/contract_countdown_banner.dart';
-import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
 import '../../../blocs/blocs.dart';
 import '../../../extensions/extensions.dart';
@@ -381,60 +379,11 @@ class BookingCard extends StatelessWidget {
     );
 
     if (confirm == true && context.mounted) {
-      final updated = booking.copyWith(status: newStatus);
-      context.read<BookingCubit>().updateBooking(updated);
-
       if (newStatus.toLowerCase() == 'confirmed') {
-        try {
-          // 1. Update room status to 'rented'
-          final roomRepo = inject<RoomRepository>();
-          final room = await roomRepo.getRoomById(booking.roomId);
-          if (room != null) {
-            final rentedRoom = room.copyWith(
-              status: 'rented',
-              updatedAt: DateTime.now(),
-            );
-            await roomRepo.updateRoom(rentedRoom);
-          }
-
-          // 2. Create automatic contract (minimum duration 3 months)
-          final contractUseCase = inject<CreateContractUseCase>();
-          final now = DateTime.now();
-
-          int targetYear = now.year;
-          int targetMonth = now.month + 3;
-          while (targetMonth > 12) {
-            targetMonth -= 12;
-            targetYear += 1;
-          }
-          int targetDay = now.day;
-          final lastDayOfMonth = DateTime(targetYear, targetMonth + 1, 0).day;
-          if (targetDay > lastDayOfMonth) targetDay = lastDayOfMonth;
-          final endDate = DateTime(targetYear, targetMonth, targetDay);
-
-          final newContract = ContractEntity(
-            id: '',
-            bookingId: booking.id,
-            roomId: booking.roomId,
-            ownerId: booking.ownerId ?? '',
-            tenantId: booking.userId,
-            startDate: now,
-            endDate: endDate,
-            durationMonth: 3,
-            monthlyRent: booking.roomPrice ?? 0.0,
-            description:
-                'Standard Rental Agreement for ${booking.roomName}. Minimum duration 3 months.',
-            createdAt: now,
-          );
-          await contractUseCase(newContract);
-
-          // 3. Cancel other pending/draft requests for this room so user2 and user3 know it's rented
-          final bookingRepo = inject<BookingRepository>();
-          await bookingRepo.cancelOtherPendingBookingsForRoom(
-            booking.roomId,
-            booking.id,
-          );
-        } catch (_) {}
+        context.read<BookingCubit>().confirmBooking(booking);
+      } else {
+        final updated = booking.copyWith(status: newStatus);
+        context.read<BookingCubit>().updateBooking(updated);
       }
 
       onBookingUpdated();
@@ -447,93 +396,177 @@ class BookingCard extends StatelessWidget {
     ThemeData theme,
     bool isDark,
   ) {
+    final status = booking.status.toLowerCase();
+
     if (isOwner) {
-      if (booking.status.toLowerCase() == 'confirmed') {
+      if (status == 'confirmed') {
         return const SizedBox.shrink();
       }
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: () => _updateStatus(
-            context,
-            styles,
-            'confirmed',
-            'Accept Booking',
-            'Are you sure you want to accept this booking request?',
-          ),
-          icon: const Icon(Icons.check_circle_rounded, size: 18),
-          label: const Text(
-            'Accept & Confirm',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isDark
-                ? AppColors.clrPrimary
-                : AppColors.clrPrimary,
-            foregroundColor: AppColors.clrWhite,
-            elevation: isDark ? 4 : 1,
-            shadowColor: isDark ? AppColors.clrPrimary.withAlpha(100) : null,
-            padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(styles.corner.md),
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => _updateStatus(
+                context,
+                styles,
+                'cancelled',
+                'Decline Request',
+                'Are you sure you want to decline this booking request?',
+              ),
+              icon: const Icon(Icons.cancel_outlined, size: 18),
+              label: const Text(
+                'Decline',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.redAccent,
+                side: const BorderSide(color: Colors.redAccent),
+                padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(styles.corner.md),
+                ),
+              ),
             ),
           ),
-        ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              onPressed: () => _updateStatus(
+                context,
+                styles,
+                'confirmed',
+                'Accept Booking',
+                'Are you sure you want to accept this booking request?',
+              ),
+              icon: const Icon(Icons.check_circle_rounded, size: 18),
+              label: const Text(
+                'Accept & Confirm',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.clrPrimary,
+                foregroundColor: AppColors.clrWhite,
+                elevation: isDark ? 4 : 1,
+                padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(styles.corner.md),
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
-    if (!isOwner && booking.status.toLowerCase() == 'cancelled') {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: () async {
-            final confirm = await showDialog<bool>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(styles.corner.lg),
-                ),
-                title: const Text('Remove Request'),
-                content: const Text(
-                  'Are you sure you want to remove this rental request from your list?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(ctx).pop(false),
-                    child: const Text('No'),
+    if (!isOwner) {
+      if (status == 'pending' || status == 'draft') {
+        return SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(styles.corner.lg),
                   ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
+                  title: const Text('Cancel Request'),
+                  content: const Text(
+                    'Are you sure you want to cancel your booking request?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('No'),
                     ),
-                    child: const Text('Yes, Remove'),
-                  ),
-                ],
-              ),
-            );
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Yes, Cancel'),
+                    ),
+                  ],
+                ),
+              );
 
-            if (confirm == true && context.mounted) {
-              await context.read<BookingCubit>().deleteBooking(booking.id);
-              onBookingUpdated();
-            }
-          },
-          icon: const Icon(Icons.delete_outline_rounded, size: 18),
-          label: const Text(
-            'Remove from List',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.redAccent,
-            side: const BorderSide(color: Colors.redAccent),
-            padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(styles.corner.md),
+              if (confirm == true && context.mounted) {
+                await context.read<BookingCubit>().deleteBooking(booking.id);
+                onBookingUpdated();
+              }
+            },
+            icon: const Icon(Icons.cancel_outlined, size: 18),
+            label: const Text(
+              'Cancel Booking Request',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.redAccent,
+              side: const BorderSide(color: Colors.redAccent),
+              padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(styles.corner.md),
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
+
+      if (status == 'cancelled') {
+        return SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(styles.corner.lg),
+                  ),
+                  title: const Text('Remove Request'),
+                  content: const Text(
+                    'Are you sure you want to remove this rental request from your list?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('No'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Yes, Remove'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true && context.mounted) {
+                await context.read<BookingCubit>().deleteBooking(booking.id);
+                onBookingUpdated();
+              }
+            },
+            icon: const Icon(Icons.delete_outline_rounded, size: 18),
+            label: const Text(
+              'Remove from List',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.redAccent,
+              side: const BorderSide(color: Colors.redAccent),
+              padding: EdgeInsets.symmetric(vertical: styles.insets.sm),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(styles.corner.md),
+              ),
+            ),
+          ),
+        );
+      }
     }
 
     return const SizedBox.shrink();

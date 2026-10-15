@@ -178,13 +178,16 @@ class _NewBookingViewState extends State<NewBookingView> {
 
   Future<void> _cancelAndDeleteBooking() async {
     final l10n = context.l10n;
+    final isOwner = widget.currentUser.role == UserRole.owner;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) =>
           AlertDialog(
-            title: Text(l10n.deleteBooking),
+            title: Text(isOwner ? 'Decline Request' : l10n.deleteBooking),
             content: Text(
-              l10n.deleteBookingConfirmation,
+              isOwner
+                  ? 'Are you sure you want to decline/delete this booking request?'
+                  : l10n.deleteBookingConfirmation,
               maxLines: 3,
             ),
             actions: [
@@ -198,7 +201,7 @@ class _NewBookingViewState extends State<NewBookingView> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: Text(l10n.yesDelete),
+                child: Text(isOwner ? 'Decline' : l10n.yesDelete),
               ),
             ],
           ),
@@ -209,6 +212,43 @@ class _NewBookingViewState extends State<NewBookingView> {
         context.read<BookingCubit>().deleteBooking(_currentBooking!.id);
       } else {
         Navigator.of(context).pop(false);
+      }
+    }
+  }
+
+  Future<void> _confirmBooking() async {
+    final l10n = context.l10n;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('Accept & Confirm Booking'),
+        content: const Text(
+          'Are you sure you want to accept this booking request? This will mark the room status as rented.',
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      if (_currentBooking != null && _currentBooking!.id.isNotEmpty) {
+        context.read<BookingCubit>().confirmBooking(_currentBooking!);
       }
     }
   }
@@ -510,6 +550,7 @@ class _NewBookingViewState extends State<NewBookingView> {
                                   );
                                 },
                                 onDeleteBooking: _cancelAndDeleteBooking,
+                                onConfirmBooking: _confirmBooking,
                               ),
                             ],
                     ],

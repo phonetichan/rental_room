@@ -15,6 +15,8 @@ class BookingCubit extends Cubit<BookingState> {
   final UpdateBookingUseCase _updateBookingUseCase;
   final DeleteBookingUseCase _deleteBookingUseCase;
   final BookingRepository _bookingRepository;
+  final RoomRepository _roomRepository;
+  final CreateContractUseCase _createContractUseCase;
 
   List<BookingEntity>? _cachedBookings;
   List<BookingEntity>? get cachedBookings => _cachedBookings;
@@ -26,6 +28,8 @@ class BookingCubit extends Cubit<BookingState> {
     this._updateBookingUseCase,
     this._deleteBookingUseCase,
     this._bookingRepository,
+    this._roomRepository,
+    this._createContractUseCase,
   ) : super(const BookingState.initial());
 
   bool _same(List<BookingEntity> a, List<BookingEntity> b) {
@@ -127,6 +131,84 @@ class BookingCubit extends Cubit<BookingState> {
           emit(BookingState.failure(failure.reason));
         }
       });
+  }
+
+  Future<void> confirmBooking(BookingEntity booking) async {
+    final confirmedBooking = booking.copyWith(
+      status: 'confirmed',
+      isReadByOwner: true,
+      isReadByTenant: false,
+      updatedAt: DateTime.now(),
+    );
+
+    final res = await _updateBookingUseCase(confirmedBooking);
+
+    await res.onSuccess((updated) async {
+      try {
+        // 1. Update room status to 'rented'
+        final room = await _roomRepository.getRoomById(updated.roomId);
+        if (room != null) {
+          final rentedRoom = room.copyWith(
+            status: 'rented',
+            updatedAt: DateTime.now(),
+          );
+          await _roomRepository.updateRoom(rentedRoom);
+        }
+
+        // 2. Create automatic contract (minimum duration 3 months)
+        final now = DateTime.now();
+        int targetYear = now.year;
+        int targetMonth = now.month + 3;
+        while (targetMonth > 12) {
+          targetMonth -= 12;
+          targetYear += 1;
+        }
+        int targetDay = now.day;
+        final lastDayOfMonth = DateTime(targetYear, targetMonth + 1, 0).day;
+        if (targetDay > lastDayOfMonth) targetDay = lastDayOfMonth;
+        final endDate = DateTime(targetYear, targetMonth, targetDay);
+
+        final newContract = ContractEntity(
+          id: '',
+          bookingId: updated.id,
+          roomId: updated.roomId,
+          ownerId: updated.ownerId ?? '',
+          tenantId: updated.userId,
+          startDate: now,
+          endDate: endDate,
+          durationMonth: 3,
+          monthlyRent: updated.roomPrice ?? 0.0,
+          description:
+              'Standard Rental Agreement for ${updated.roomName}. Minimum duration 3 months.',
+          createdAt: now,
+        );
+        await _createContractUseCase(newContract);
+
+        // 3. Cancel other pending/draft requests for this room
+        await _bookingRepository.cancelOtherPendingBookingsForRoom(
+          updated.roomId,
+          updated.id,
+        );
+      } catch (e) {
+        debugPrint('❌ Error during booking confirmation post-processing: $e');
+      }
+
+      if (_cachedBookings != null) {
+        final updatedList = _cachedBookings!
+            .map((b) => b.id == updated.id ? updated : b)
+            .toList();
+        _emitLoaded(updatedList);
+      }
+
+      emit(BookingState.success(
+        message: 'Booking request confirmed! Room status updated to rented.',
+        booking: updated,
+      ));
+    });
+
+    res.onError((failure) {
+      emit(BookingState.failure(failure.reason));
+    });
   }
 
   Future<void> deleteBooking(String bookingId) async {

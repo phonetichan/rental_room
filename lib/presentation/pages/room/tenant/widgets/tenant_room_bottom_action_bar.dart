@@ -84,62 +84,93 @@ class TenantRoomBottomActionBar extends StatelessWidget {
                 );
 
                 final isAlreadyBooked = existingBooking != null;
+                final isRented = room.status.toLowerCase() == 'rented';
+
+                if (isAlreadyBooked) {
+                  return SizedBox(
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: primaryColor,
+                        side: BorderSide(color: primaryColor, width: 1.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (currentUser != null) {
+                          onOpenExistingBooking(existingBooking, currentUser!);
+                        }
+                      },
+                      icon: const Icon(Icons.assignment_outlined, size: 20),
+                      label: const Text(
+                        'Request Detail',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                if (isRented) {
+                  return SizedBox(
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.disabledColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: null,
+                      icon: const Icon(Icons.block, size: 20),
+                      label: const Text(
+                        'Already Rented',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }
 
                 return SizedBox(
                   height: 48,
-                  child: isAlreadyBooked
-                      ? OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: primaryColor,
-                            side: BorderSide(color: primaryColor, width: 1.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: (isBookingLoading || currentUser == null)
+                        ? null
+                        : () => onHandleBooking(currentUser!),
+                    icon: isBookingLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
                             ),
-                          ),
-                          onPressed: () {
-                            if (currentUser != null) {
-                              onOpenExistingBooking(existingBooking, currentUser!);
-                            }
-                          },
-                          icon: const Icon(Icons.assignment_outlined, size: 20),
-                          label: const Text(
-                            'Request Detail',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          onPressed: (isBookingLoading || currentUser == null)
-                              ? null
-                              : () => onHandleBooking(currentUser!),
-                          icon: isBookingLoading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.bookmark_add_outlined, size: 20),
-                          label: Text(
-                            context.l10n.rentNow,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                          )
+                        : const Icon(Icons.bookmark_add_outlined, size: 20),
+                    label: Text(
+                      context.l10n.rentNow,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 );
               },
             ),

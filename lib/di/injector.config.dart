@@ -316,6 +316,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i156.UpdateBookingUseCase>(),
           gh<_i954.DeleteBookingUseCase>(),
           gh<_i156.BookingRepository>(),
+          gh<_i956.RoomRepository>(),
+          gh<_i355.CreateContractUseCase>(),
         ));
     gh.factory<_i725.EditProfileCubit>(() => _i725.EditProfileCubit(
           gh<_i275.UpdateUserProfileUseCase>(),

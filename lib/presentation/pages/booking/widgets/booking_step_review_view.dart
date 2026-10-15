@@ -12,6 +12,7 @@ class BookingStepReviewView extends StatelessWidget {
   final bool isReadOnly;
   final VoidCallback onViewVoucher;
   final VoidCallback onDeleteBooking;
+  final VoidCallback? onConfirmBooking;
 
   const BookingStepReviewView({
     super.key,
@@ -23,6 +24,7 @@ class BookingStepReviewView extends StatelessWidget {
     required this.isReadOnly,
     required this.onViewVoucher,
     required this.onDeleteBooking,
+    this.onConfirmBooking,
   });
 
   @override
@@ -86,6 +88,31 @@ class BookingStepReviewView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
+        if (isOwner && !isConfirmed && onConfirmBooking != null) ...[
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryAccent,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(Icons.check_circle_rounded),
+              label: const Text(
+                'Accept & Confirm Booking',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: onConfirmBooking,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
         if (!isOwner && isConfirmed) ...[
           SizedBox(
             width: double.infinity,
@@ -111,15 +138,15 @@ class BookingStepReviewView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-        // Delete Booking Button
+        // Delete / Cancel Booking Button (enabled before request confirm)
         SizedBox(
           width: double.infinity,
           height: 48,
           child: OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
-              foregroundColor: isReadOnly ? theme.disabledColor : Colors.redAccent,
+              foregroundColor: isConfirmed ? theme.disabledColor : Colors.redAccent,
               side: BorderSide(
-                color: isReadOnly ? theme.disabledColor : Colors.redAccent,
+                color: isConfirmed ? theme.disabledColor : Colors.redAccent,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -128,17 +155,19 @@ class BookingStepReviewView extends StatelessWidget {
             icon: Icon(
               Icons.delete_outline,
               size: 20,
-              color: isReadOnly ? theme.disabledColor : Colors.redAccent,
+              color: isConfirmed ? theme.disabledColor : Colors.redAccent,
             ),
             label: Text(
-              isReadOnly ? l10n.deleteDisabledSubmitted : l10n.deleteBooking,
+              isConfirmed
+                  ? 'Booking Confirmed'
+                  : (isOwner ? 'Decline / Delete Request' : l10n.deleteBooking),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: isReadOnly ? theme.disabledColor : Colors.redAccent,
+                color: isConfirmed ? theme.disabledColor : Colors.redAccent,
               ),
             ),
-            onPressed: isReadOnly ? null : onDeleteBooking,
+            onPressed: isConfirmed ? null : onDeleteBooking,
           ),
         ),
       ],

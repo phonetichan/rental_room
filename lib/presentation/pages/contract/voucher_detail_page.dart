@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:rental_room/l10n/app_localizations.dart';
+
 import '../../../core/core.dart';
 import '../../../data/data.dart';
 import '../../../di/di.dart';
@@ -115,14 +116,16 @@ class _VoucherDetailPageState extends State<VoucherDetailPage> {
     final localeCode = Localizations.localeOf(context).languageCode;
 
     final favCount = context.select<FavoriteCubit, int>(
-          (cubit) => cubit.state.getFavoriteCount(_currentBooking.roomId),
+      (cubit) => cubit.state.getFavoriteCount(_currentBooking.roomId),
     );
 
     String dateRangeText = l10n.bookingNotAvailable;
     if (_contract != null) {
       // Use 'en' for the formatter so month names stay stable, then convert digits.
-      final fmt =
-      DateFormat('dd MMM yyyy', localeCode == 'my' ? 'en' : localeCode);
+      final fmt = DateFormat(
+        'dd MMM yyyy',
+        localeCode == 'my' ? 'en' : localeCode,
+      );
       final startDateStr = fmt.format(_contract!.startDate);
       final endDateStr = fmt.format(_contract!.endDate);
       dateRangeText = context.localizedNumber('$startDateStr - $endDateStr');
@@ -154,73 +157,85 @@ class _VoucherDetailPageState extends State<VoucherDetailPage> {
         child: _isLoading
             ? const Center(child: CircularProgressIndicator.adaptive())
             : ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 12,
-          ),
-          children: [
-            // 1. ROOM HEADER CARD
-            BookingPropertyHeaderCard(
-              roomName:
-              _currentBooking.roomName ?? l10n.bookingPropertyName,
-              roomImageUrl: _currentBooking.roomImageUrl,
-              price: price,
-              favCount: favCount,
-            ),
-            if (_contract != null &&
-                (_contract!.isExpired || _contract!.isOneMonthLeft)) ...[
-              const SizedBox(height: 12),
-              ContractCountdownBanner(contract: _contract!),
-            ],
-            const SizedBox(height: 24),
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                children: [
+                  BookingPropertyHeaderCard(
+                    roomName: _room?.name.isNotEmpty == true
+                        ? _room!.name
+                        : (_currentBooking.roomName?.isNotEmpty == true
+                              ? _currentBooking.roomName!
+                              : l10n.bookingPropertyName),
 
-            // 2. PERIOD DURATION SECTION
-            BookingPeriodSection(dateRangeText: dateRangeText),
-            const SizedBox(height: 24),
+                    roomImageUrl:
+                        _room?.images
+                            .where((image) => image.imageUrl.trim().isNotEmpty)
+                            .firstOrNull
+                            ?.imageUrl ??
+                        _currentBooking.roomImageUrl,
 
-            // 3. TENANT INFO CARD
-            if (_tenantUser != null) ...[
-              BookingUserCard(
-                title: l10n.bookingTenantDetails,
-                userName: _tenantUser!.name,
-                userImage: _tenantUser!.image,
-                phoneNumber: _tenantUser!.phoneNumber,
-                icon: Icons.person_outline,
-                onCallPressed: _tenantUser!.phoneNumber.isNotEmpty
-                    ? () => _tenantUser!.phoneNumber
-                    .makeCall(context: context)
-                    : null,
+                    price: price,
+                    favCount: favCount,
+                  ),
+
+                  if (_contract != null &&
+                      (_contract!.isExpired || _contract!.isOneMonthLeft)) ...[
+                    const SizedBox(height: 12),
+                    ContractCountdownBanner(contract: _contract!),
+                  ],
+                  const SizedBox(height: 24),
+
+                  // 2. PERIOD DURATION SECTION
+                  BookingPeriodSection(dateRangeText: dateRangeText),
+                  const SizedBox(height: 24),
+
+                  // 3. TENANT INFO CARD
+                  if (_tenantUser != null) ...[
+                    BookingUserCard(
+                      title: l10n.bookingTenantDetails,
+                      userName: _tenantUser!.name,
+                      userImage: _tenantUser!.image,
+                      phoneNumber: _tenantUser!.phoneNumber,
+                      icon: Icons.person_outline,
+                      onCallPressed: _tenantUser!.phoneNumber.isNotEmpty
+                          ? () => _tenantUser!.phoneNumber.makeCall(
+                              context: context,
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // 4. OWNER INFO CARD
+                  if (_ownerUser != null) ...[
+                    BookingUserCard(
+                      title: l10n.bookingOwnerDetails,
+                      userName: _ownerUser!.name,
+                      userImage: _ownerUser!.image,
+                      phoneNumber: _ownerUser!.phoneNumber,
+                      icon: Icons.real_estate_agent_outlined,
+                      onCallPressed: _ownerUser!.phoneNumber.isNotEmpty
+                          ? () => _ownerUser!.phoneNumber.makeCall(
+                              context: context,
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // 5. PRICE DETAILS SECTION
+                  BookingPriceDetailsSection(
+                    durationMonths: durationMonths,
+                    monthlyRent: price,
+                    depositAmount: _room?.depositeAmount,
+                    agentFees: _room?.agentFees,
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 24),
-            ],
-
-            // 4. OWNER INFO CARD
-            if (_ownerUser != null) ...[
-              BookingUserCard(
-                title: l10n.bookingOwnerDetails,
-                userName: _ownerUser!.name,
-                userImage: _ownerUser!.image,
-                phoneNumber: _ownerUser!.phoneNumber,
-                icon: Icons.real_estate_agent_outlined,
-                onCallPressed: _ownerUser!.phoneNumber.isNotEmpty
-                    ? () => _ownerUser!.phoneNumber
-                    .makeCall(context: context)
-                    : null,
-              ),
-              const SizedBox(height: 24),
-            ],
-
-            // 5. PRICE DETAILS SECTION
-            BookingPriceDetailsSection(
-              durationMonths: durationMonths,
-              monthlyRent: price,
-              depositAmount: _room?.depositeAmount,
-              agentFees: _room?.agentFees,
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
       ),
     );
   }
