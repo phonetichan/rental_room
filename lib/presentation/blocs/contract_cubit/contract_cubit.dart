@@ -1,15 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
+import 'package:rental_room/di/di.dart';
 import 'package:rental_room/domain/domain.dart';
+import 'package:rental_room/presentation/extensions/contract/contract_extensions.dart';
 
 part 'contract_state.dart';
-part 'contract_cubit.freezed.dart';
 
+@lazySingleton
 class ContractCubit extends Cubit<ContractState> {
   final GetContractByBookingUseCase _getContractByBookingUseCase;
   final CreateContractUseCase _createContractUseCase;
   final UpdateContractUseCase _updateContractUseCase;
   final ContractRepository _contractRepository;
+
+  List<ContractEntity>? _cachedContracts;
+  Map<String, RoomEntity>? _cachedRoomsMap;
+  List<ContractEntity>? get cachedContracts => _cachedContracts;
 
   ContractCubit(
     this._getContractByBookingUseCase,
@@ -28,6 +34,67 @@ class ContractCubit extends Cubit<ContractState> {
       ..onError((failure) {
         emit(ContractState.failure(failure.reason));
       });
+  }
+
+  Future<void> loadContractHistory(String userId, bool isOwner) async {
+    // Only show loading state on the first load if we don't have cached contracts yet
+    if (_cachedContracts == null) {
+      emit(const ContractState.loading());
+    } else {
+      // If we already have cache, emit ready state immediately while refreshing in background
+      emit(ContractState.historyLoaded(
+        contracts: _cachedContracts!,
+        roomsByRoomId: _cachedRoomsMap ?? {},
+      ));
+    }
+
+    try {
+      final expireContractUseCase = inject<ExpireContractUseCase>();
+      final roomRepo = inject<RoomRepository>();
+
+      final contractsList = isOwner
+          ? await _contractRepository.getContractsByOwnerId(userId)
+          : await _contractRepository.getContractsByTenantId(userId);
+
+      final List<ContractEntity> activeContracts = [];
+      for (final c in contractsList) {
+        final isExpired = ContractStatusX(c).isExpired || c.status == ContractStatus.expired;
+        if (isExpired) {
+          try {
+            await expireContractUseCase(c);
+          } catch (_) {}
+        } else if (c.status == ContractStatus.active) {
+          activeContracts.add(c);
+        }
+      }
+
+      final roomIds = activeContracts
+          .map((c) => c.roomId)
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
+      final roomsList = await Future.wait(
+        roomIds.map((id) => roomRepo.getRoomById(id)),
+      );
+      final roomsMap = {
+        for (final r in roomsList.whereType<RoomEntity>()) r.id: r,
+      };
+
+      _cachedContracts = activeContracts;
+      _cachedRoomsMap = roomsMap;
+
+      emit(ContractState.historyLoaded(contracts: activeContracts, roomsByRoomId: roomsMap));
+    } catch (e) {
+      if (_cachedContracts != null) {
+        emit(ContractState.historyLoaded(
+          contracts: _cachedContracts!,
+          roomsByRoomId: _cachedRoomsMap ?? {},
+        ));
+      } else {
+        emit(ContractState.failure(e.toString().replaceAll('Exception: ', '')));
+      }
+    }
   }
 
   Future<void> createContract(ContractEntity contract) async {

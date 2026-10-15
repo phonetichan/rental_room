@@ -1122,4 +1122,15 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get history => 'မှတ်တမ်း';
+
+  @override
+  String get submitBookingRequestConfirm =>
+      'ဤငှားရမ်းရန် တောင်းဆိုချက်ကို ပိုင်ရှင်ထံသို့ တင်သွင်းရန် သေချာပါသလား?';
+
+  @override
+  String get voucherSavedSuccessfully =>
+      'ဘောက်ချာကို ဂယ်လရီတွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!';
+
+  @override
+  String get failedToSaveVoucher => 'ဘောက်ချာ သိမ်းဆည်းခြင်း မအောင်မြင်ပါ။';
 }

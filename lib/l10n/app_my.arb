@@ -438,5 +438,8 @@
   "monthlyRent": "လစဉ်ငှားရမ်းခ",
   "history": "မှတ်တမ်း",
   "durationMonths": "{count} လ",
-  "@durationMonths": { "placeholders": { "count": { "type": "int" } } }
+  "@durationMonths": { "placeholders": { "count": { "type": "int" } } },
+  "submitBookingRequestConfirm": "ဤငှားရမ်းရန် တောင်းဆိုချက်ကို ပိုင်ရှင်ထံသို့ တင်သွင်းရန် သေချာပါသလား?",
+  "voucherSavedSuccessfully": "ဘောက်ချာကို ဂယ်လရီတွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!",
+  "failedToSaveVoucher": "ဘောက်ချာ သိမ်းဆည်းခြင်း မအောင်မြင်ပါ။"
 }

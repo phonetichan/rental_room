@@ -94,6 +94,12 @@ class SnackShowerImpl implements ISnackShower {
     if (trimmed == 'Booking request is already submitted and cannot be changed.') {
       return l10n.bookingAlreadySubmitted;
     }
+    if (trimmed == 'Voucher saved to Gallery successfully!') {
+      return l10n.voucherSavedSuccessfully;
+    }
+    if (trimmed == 'Failed to save voucher.') {
+      return l10n.failedToSaveVoucher;
+    }
     if (trimmed == 'Phone call done') {
       return l10n.phoneCallDone;
     }

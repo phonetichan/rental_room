@@ -1149,4 +1149,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get history => 'History';
+
+  @override
+  String get submitBookingRequestConfirm =>
+      'Are you sure you want to submit this booking request to the owner?';
+
+  @override
+  String get voucherSavedSuccessfully =>
+      'Voucher saved to Gallery successfully!';
+
+  @override
+  String get failedToSaveVoucher => 'Failed to save voucher.';
 }

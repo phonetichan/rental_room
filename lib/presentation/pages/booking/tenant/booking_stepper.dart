@@ -138,8 +138,39 @@ class _NewBookingViewState extends State<NewBookingView> {
     }
   }
 
-  void _submitBooking() {
+  Future<void> _submitBooking() async {
     if (_isReadOnly) return;
+    final l10n = context.l10n;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Submit Booking Request'),
+        content: Text(
+          l10n.submitBookingRequestConfirm,
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !mounted) return;
+
     final room = _resolvedRoom;
     const newStatus = 'pending';
 

@@ -15,6 +15,11 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+   #pdf and save
+  screenshot: ^3.0.0               # To capture the UI widget as an image
+  image_gallery_saver_plus: ^5.1.1 # To save directly to the device Gallery/Photos
+  path_provider: ^2.1.4
+
   #map
   flutter_map: ^7.0.2      # OpenStreetMap wrapper for Flutter
   latlong2: ^0.9.1         # Coordinate handling

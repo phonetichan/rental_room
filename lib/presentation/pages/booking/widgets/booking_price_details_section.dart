@@ -26,10 +26,10 @@ class BookingPriceDetailsSection extends StatelessWidget {
     final double fees = agentFees ?? 0.0;
     final double grandTotal = rentSubtotal + dep + fees;
 
-    final formattedMonthly = context.localizedNumber(monthlyRent.toKsLabelFormat);
-    final formattedDeposit = dep > 0 ? context.localizedNumber(dep.toKsLabelFormat) : null;
-    final formattedAgentFees = fees > 0 ? context.localizedNumber(fees.toKsLabelFormat) : null;
-    final formattedTotal = context.localizedNumber(grandTotal.toKsLabelFormat);
+    final formattedMonthly = monthlyRent.toLocalizedKsLabelFormat(context);
+    final formattedDeposit = dep > 0 ? dep.toLocalizedKsLabelFormat(context) : null;
+    final formattedAgentFees = fees > 0 ? fees.toLocalizedKsLabelFormat(context) : null;
+    final formattedTotal = grandTotal.toLocalizedKsLabelFormat(context);
 
     final countText = context.localizedNumber(durationMonths);
     final durationText = durationMonths == 1

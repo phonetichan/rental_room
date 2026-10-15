@@ -30,8 +30,8 @@ class ContractVoucherFinancialSection extends StatelessWidget {
     final double fees = agentFees ?? 0.0;
     final double grandTotal = durationRentTotal + dep + fees;
 
-    final String depositStr = dep > 0 ? dep.toKsShortFormat : '-';      // "Ks 10K"
-    final String agentFeesStr = fees > 0 ? fees.toKsShortFormat : '-';  // "Ks 40K"
+    final String depositStr = dep > 0 ? dep.toLocalizedKsShortFormat(context) : '-';
+    final String agentFeesStr = fees > 0 ? fees.toLocalizedKsShortFormat(context) : '-';
     final String agentNameStr =
     (agentName != null && agentName!.trim().isNotEmpty) ? agentName! : '-';
 
@@ -46,9 +46,9 @@ class ContractVoucherFinancialSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        _buildSummaryRow(context, l10n.monthlyRent, monthlyRent.toKsFormat), // "/ month"
+        _buildSummaryRow(context, l10n.monthlyRent, monthlyRent.toLocalizedKsFormat(context)), // "/ month"
         const SizedBox(height: 6),
-        _buildSummaryRow(context, l10n.rentSubtotal(durationMonth), durationRentTotal.toKsShortFormat),
+        _buildSummaryRow(context, l10n.rentSubtotal(durationMonth), durationRentTotal.toLocalizedKsShortFormat(context)),
         const SizedBox(height: 6),
         _buildSummaryRow(context, l10n.securityDeposit, depositStr),
         const SizedBox(height: 6),
@@ -66,7 +66,7 @@ class ContractVoucherFinancialSection extends StatelessWidget {
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
-              grandTotal.toKsShortFormat,
+              grandTotal.toLocalizedKsShortFormat(context),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: primaryColor,

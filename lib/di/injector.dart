@@ -29,7 +29,7 @@ T register<T extends Object>(
 Future<GetIt> configureDependencies() async {
   await _getIt.init();
   if (!_getIt.isRegistered<ContractCubit>()) {
-    _getIt.registerFactory(() => ContractCubit(
+    _getIt.registerLazySingleton(() => ContractCubit(
           _getIt(),
           _getIt(),
           _getIt(),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rental_room/di/di.dart';
 import 'package:rental_room/l10n/app_localizations.dart';
+import 'package:rental_room/presentation/pages/room/owner/add_edit_room_page.dart';
 import 'package:rental_room/presentation/pages/room/tenant/widgets/room_paginated_tab.dart';
 import 'package:rental_room/presentation/pages/room/tenant/widgets/segmented_tab_bar.dart';
 
@@ -70,44 +72,54 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      children: [
-        SegmentedTabBar(
-          controller: _tabController,
-          tabs: [
-            SegmentedTabItem(
-              icon: Icons.meeting_room_outlined,
-              label: l10n.available,
-            ),
-            SegmentedTabItem(
-              icon: Icons.check_circle_outline,
-              label: l10n.rented,
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: TabBarView(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Column(
+        children: [
+          SegmentedTabBar(
             controller: _tabController,
-            children: [
-              RoomPaginatedTab(
-                cubit: _availableRoomsCubit,
-                user: widget.user,
-                onRefresh: _refreshData,
-                emptyIcon: Icons.no_meeting_room_outlined,
-                emptyMessage: l10n.noAvailableRooms,
+            tabs: [
+              SegmentedTabItem(
+                icon: Icons.meeting_room_outlined,
+                label: l10n.available,
               ),
-              RoomPaginatedTab(
-                cubit: _rentedRoomsCubit,
-                user: widget.user,
-                onRefresh: _refreshData,
-                emptyIcon: Icons.check_circle_outline,
-                emptyMessage: l10n.noRentedRooms,
+              SegmentedTabItem(
+                icon: Icons.check_circle_outline,
+                label: l10n.rented,
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                RoomPaginatedTab(
+                  cubit: _availableRoomsCubit,
+                  user: widget.user,
+                  onRefresh: _refreshData,
+                  emptyIcon: Icons.no_meeting_room_outlined,
+                  emptyMessage: l10n.noAvailableRooms,
+                ),
+                RoomPaginatedTab(
+                  cubit: _rentedRoomsCubit,
+                  user: widget.user,
+                  onRefresh: _refreshData,
+                  emptyIcon: Icons.check_circle_outline,
+                  emptyMessage: l10n.noRentedRooms,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await context.push(AddEditRoomScreen.routePath);
+          _refreshData();
+        },
+        child: const Icon(Icons.add_rounded),
+      ),
     );
   }
 }

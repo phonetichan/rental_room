@@ -444,5 +444,8 @@
   "monthlyRent": "Monthly Rent",
   "history": "History",
   "durationMonths": "{count} Months",
-  "@durationMonths": { "placeholders": { "count": { "type": "int" } } }
+  "@durationMonths": { "placeholders": { "count": { "type": "int" } } },
+  "submitBookingRequestConfirm": "Are you sure you want to submit this booking request to the owner?",
+  "voucherSavedSuccessfully": "Voucher saved to Gallery successfully!",
+  "failedToSaveVoucher": "Failed to save voucher."
 }
