@@ -6,7 +6,7 @@ import '../../../../domain/entity/room/room_image_entity.dart';
 part 'room_model.freezed.dart';
 
 @freezed
-class RoomImageModel with _$RoomImageModel {
+abstract class RoomImageModel with _$RoomImageModel {
   const RoomImageModel._();
 
   const factory RoomImageModel({
@@ -54,7 +54,7 @@ class RoomImageModel with _$RoomImageModel {
 }
 
 @freezed
-class RoomModel with _$RoomModel {
+abstract class RoomModel with _$RoomModel {
   const RoomModel._();
 
   const factory RoomModel({

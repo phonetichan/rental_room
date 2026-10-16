@@ -25,6 +25,9 @@
   "editProfile": "Edit Profile",
   "editPassword": "Edit Password",
   "updateLocation": "Update Location",
+  "confirmUpdateLocationTitle": "Update location?",
+  "confirmUpdateLocationMessage": "Your location will be changed to:",
+  "confirm": "Confirm",
   "termsAndConditions": "Terms and Conditions",
   "userGuidance": "User Guidance & Help",
 
@@ -447,5 +450,7 @@
   "@durationMonths": { "placeholders": { "count": { "type": "int" } } },
   "submitBookingRequestConfirm": "Are you sure you want to submit this booking request to the owner?",
   "voucherSavedSuccessfully": "Voucher saved to Gallery successfully!",
-  "failedToSaveVoucher": "Failed to save voucher."
+  "failedToSaveVoucher": "Failed to save voucher.",
+  "confirmUpdateLocationTitle": "Update Location",
+  "confirmUpdateLocationMessage": "Are you sure you want to update your location?"
 }

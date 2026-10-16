@@ -180,8 +180,10 @@ class ContractCard extends StatelessWidget {
                     children: [
                       ContractCountdownBanner(contract: contract),
                       const Spacer(),
+                      const SizedBox(width: 4),
                       Icon(
                         Icons.chevron_right_rounded,
+                        size: 16,
                         color: isDark ? Colors.white60 : AppColors.clrDarkGrey,
                       ),
                     ],

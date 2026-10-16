@@ -405,6 +405,9 @@
 
   "updateLocation": "တည်နေရာ ပြင်ဆင်ရန်",
   "myLocation": "ကျွန်ုပ်၏ တည်နေရာ",
+  "confirmUpdateLocationTitle": "တည်နေရာ ပြင်ဆင်မလား။",
+  "confirmUpdateLocationMessage": "သင့်တည်နေရာကို အောက်ပါနေရာသို့ ပြောင်းလဲပါမည်။",
+  "confirm": "အတည်ပြုမည်",
   "latitude": "လတ္တီတွဒ်",
   "longitude": "လောင်ဂျီတွဒ်",
   "tapChooseLocationHint": "သင့်တည်နေရာ သတ်မှတ်ရန် \"မြေပုံပေါ်တွင် တည်နေရာရွေးရန်\" ကို နှိပ်ပါ။",
@@ -441,5 +444,7 @@
   "@durationMonths": { "placeholders": { "count": { "type": "int" } } },
   "submitBookingRequestConfirm": "ဤငှားရမ်းရန် တောင်းဆိုချက်ကို ပိုင်ရှင်ထံသို့ တင်သွင်းရန် သေချာပါသလား?",
   "voucherSavedSuccessfully": "ဘောက်ချာကို ဂယ်လရီတွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!",
-  "failedToSaveVoucher": "ဘောက်ချာ သိမ်းဆည်းခြင်း မအောင်မြင်ပါ။"
+  "failedToSaveVoucher": "ဘောက်ချာ သိမ်းဆည်းခြင်း မအောင်မြင်ပါ။",
+  "confirmUpdateLocationTitle": "တည်နေရာ ပြင်ဆင်ရန်",
+  "confirmUpdateLocationMessage": "သင့်တည်နေရာကို ပြင်ဆင်ရန် သေချာပါသလား?"
 }

@@ -1,7 +1,7 @@
 export 'model/auth/user_model.dart';
 export 'model/owner/room/room_model.dart';
 export 'model/owner/contract/contract_model.dart';
-export 'model/owner/room/room_view_model.dart';
+export 'model/room_view/room_view_model.dart';
 export 'model/tenant/booking/booking_model.dart';
 export 'model/tenant/favorite/favorite_model.dart';
 export 'datasource/data_source.dart';

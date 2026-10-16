@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -77,6 +76,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateLocation => 'Update Location';
+
+  @override
+  String get confirmUpdateLocationTitle => 'Update Location';
+
+  @override
+  String get confirmUpdateLocationMessage =>
+      'Are you sure you want to update your location?';
+
+  @override
+  String get confirm => 'Confirm';
 
   @override
   String get termsAndConditions => 'Terms and Conditions';

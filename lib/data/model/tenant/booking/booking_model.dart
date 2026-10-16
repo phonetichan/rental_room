@@ -5,7 +5,7 @@ import '../../../../domain/entity/booking/booking_entity.dart';
 part 'booking_model.freezed.dart';
 
 @freezed
-class BookingModel with _$BookingModel {
+abstract class BookingModel with _$BookingModel {
   const BookingModel._();
 
   const factory BookingModel({

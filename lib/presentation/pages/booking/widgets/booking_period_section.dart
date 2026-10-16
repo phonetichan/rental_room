@@ -62,11 +62,6 @@ class BookingPeriodSection extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
-              color: AppColors.clrGrey,
-            ),
           ],
         ),
         const SizedBox(height: 12),

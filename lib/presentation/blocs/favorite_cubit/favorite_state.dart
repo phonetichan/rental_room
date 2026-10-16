@@ -1,7 +1,7 @@
 part of 'favorite_cubit.dart';
 
 @freezed
-class FavoriteState with _$FavoriteState {
+abstract class FavoriteState with _$FavoriteState {
   const FavoriteState._();
 
   const factory FavoriteState({

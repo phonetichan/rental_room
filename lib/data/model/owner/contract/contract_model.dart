@@ -6,7 +6,7 @@
   part 'contract_model.freezed.dart';
 
   @freezed
-  class ContractModel with _$ContractModel {
+  abstract class ContractModel with _$ContractModel {
     const ContractModel._();
 
     const factory ContractModel({

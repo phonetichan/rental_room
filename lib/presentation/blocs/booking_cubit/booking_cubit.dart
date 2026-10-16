@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,17 +22,18 @@ class BookingCubit extends Cubit<BookingState> {
   List<BookingEntity>? _cachedBookings;
   List<BookingEntity>? get cachedBookings => _cachedBookings;
   bool get isReady => _cachedBookings != null;
+
   final Set<String> _recentlyDeletedBookingIds = {};
 
   BookingCubit(
-    this._getBookingsUseCase,
-    this._createBookingUseCase,
-    this._updateBookingUseCase,
-    this._deleteBookingUseCase,
-    this._bookingRepository,
-    this._roomRepository,
-    this._createContractUseCase,
-  ) : super(const BookingState.initial());
+      this._getBookingsUseCase,
+      this._createBookingUseCase,
+      this._updateBookingUseCase,
+      this._deleteBookingUseCase,
+      this._bookingRepository,
+      this._roomRepository,
+      this._createContractUseCase,
+      ) : super(const BookingState.initial());
 
   bool _same(List<BookingEntity> a, List<BookingEntity> b) {
     if (a.length != b.length) return false;
@@ -43,24 +45,28 @@ class BookingCubit extends Cubit<BookingState> {
 
   void _emitLoaded(List<BookingEntity> bookings) {
     _cachedBookings = bookings;
-    emit(BookingState.loaded(bookings));
+    emit(BookingState.loaded(bookings: bookings));
   }
 
   Future<void> fetchBookings(
-    String id, {
-    String? userId,
-    String? roomId,
-    String? ownerId,
-  }) async {
-    // Loading ONLY when there is nothing to show yet
-    if (!isReady) emit(const BookingState.loading());
+      String id, {
+        String? userId,
+        String? roomId,
+        String? ownerId,
+      }) async {
+    if (!isReady) {
+      emit(const BookingState.loading());
+    }
 
     final effectiveUserId =
         userId ?? (ownerId == null && roomId == null ? id : null);
 
     final res = await _getBookingsUseCase(
       GetBookingsParams(
-          userId: effectiveUserId, roomId: roomId, ownerId: ownerId),
+        userId: effectiveUserId,
+        roomId: roomId,
+        ownerId: ownerId,
+      ),
     );
 
     res
@@ -68,15 +74,16 @@ class BookingCubit extends Cubit<BookingState> {
         final filteredFresh = fresh
             .where((b) => !_recentlyDeletedBookingIds.contains(b.id))
             .toList();
+
         final old = _cachedBookings;
-        if (old != null && _same(old, filteredFresh)) return; // no change -> do nothing
-        _emitLoaded(filteredFresh); // changed (or first load) -> update instantly
+        if (old != null && _same(old, filteredFresh)) return;
+
+        _emitLoaded(filteredFresh);
       })
       ..onError((failure) {
         if (isReady) {
-          // Keep the current list, only notify
           emit(BookingState.failure(failure.reason));
-          emit(BookingState.loaded(_cachedBookings!));
+          emit(BookingState.loaded(bookings: _cachedBookings!));
         } else {
           emit(BookingState.failure(failure.reason));
         }
@@ -89,10 +96,14 @@ class BookingCubit extends Cubit<BookingState> {
     emit(const BookingState.initial());
   }
 
-  Future<void> createBooking(BookingEntity booking, {bool silent = false}) async {
+  Future<void> createBooking(
+      BookingEntity booking, {
+        bool silent = false,
+      }) async {
     if (!silent && !isReady) {
       emit(const BookingState.loading());
     }
+
     final res = await _createBookingUseCase(booking);
 
     res
@@ -101,6 +112,7 @@ class BookingCubit extends Cubit<BookingState> {
           final updatedList = [..._cachedBookings!, created];
           _emitLoaded(updatedList);
         }
+
         if (!silent) {
           emit(BookingState.success(
             message: 'Booking request created successfully!',
@@ -115,7 +127,10 @@ class BookingCubit extends Cubit<BookingState> {
       });
   }
 
-  Future<void> updateBooking(BookingEntity booking, {bool silent = false}) async {
+  Future<void> updateBooking(
+      BookingEntity booking, {
+        bool silent = false,
+      }) async {
     final res = await _updateBookingUseCase(booking);
 
     res
@@ -124,10 +139,15 @@ class BookingCubit extends Cubit<BookingState> {
           final updatedList = _cachedBookings!
               .map((b) => b.id == updated.id ? updated : b)
               .toList();
+
           _emitLoaded(updatedList);
         }
+
         if (!silent) {
-          emit(BookingState.success(message: 'Booking updated successfully!', booking: updated));
+          emit(BookingState.success(
+            message: 'Booking updated successfully!',
+            booking: updated,
+          ));
         }
       })
       ..onError((failure) {
@@ -151,41 +171,63 @@ class BookingCubit extends Cubit<BookingState> {
       try {
         // 1. Update room status to 'rented'
         final room = await _roomRepository.getRoomById(updated.roomId);
+
+        final effectiveOwnerId =
+        (updated.ownerId != null && updated.ownerId!.isNotEmpty)
+            ? updated.ownerId!
+            : (room?.ownerId ?? '');
+
         if (room != null) {
           final rentedRoom = room.copyWith(
             status: 'rented',
             updatedAt: DateTime.now(),
           );
+
           await _roomRepository.updateRoom(rentedRoom);
         }
 
         // 2. Create automatic contract (minimum duration 3 months)
         final now = DateTime.now();
+
         int targetYear = now.year;
         int targetMonth = now.month + 3;
+
         while (targetMonth > 12) {
           targetMonth -= 12;
           targetYear += 1;
         }
+
         int targetDay = now.day;
-        final lastDayOfMonth = DateTime(targetYear, targetMonth + 1, 0).day;
-        if (targetDay > lastDayOfMonth) targetDay = lastDayOfMonth;
-        final endDate = DateTime(targetYear, targetMonth, targetDay);
+        final lastDayOfMonth =
+            DateTime(targetYear, targetMonth + 1, 0).day;
+
+        if (targetDay > lastDayOfMonth) {
+          targetDay = lastDayOfMonth;
+        }
+
+        final endDate = DateTime(
+          targetYear,
+          targetMonth,
+          targetDay,
+        );
 
         final newContract = ContractEntity(
           id: '',
           bookingId: updated.id,
           roomId: updated.roomId,
-          ownerId: updated.ownerId ?? '',
+          ownerId: effectiveOwnerId,
           tenantId: updated.userId,
           startDate: now,
           endDate: endDate,
           durationMonth: 3,
           monthlyRent: updated.roomPrice ?? 0.0,
           description:
-              'Standard Rental Agreement for ${updated.roomName}. Minimum duration 3 months.',
+          'Standard Rental Agreement for ${updated.roomName}. '
+              'Minimum duration 3 months.',
+          status: ContractStatus.pending,
           createdAt: now,
         );
+
         await _createContractUseCase(newContract);
 
         // 3. Cancel other pending/draft requests for this room
@@ -194,18 +236,22 @@ class BookingCubit extends Cubit<BookingState> {
           updated.id,
         );
       } catch (e) {
-        debugPrint('❌ Error during booking confirmation post-processing: $e');
+        debugPrint(
+          '❌ Error during booking confirmation post-processing: $e',
+        );
       }
 
       if (_cachedBookings != null) {
         final updatedList = _cachedBookings!
             .map((b) => b.id == updated.id ? updated : b)
             .toList();
+
         _emitLoaded(updatedList);
       }
 
       emit(BookingState.success(
-        message: 'Booking request confirmed! Room status updated to rented.',
+        message:
+        'Booking request confirmed! Room status updated to rented.',
         booking: updated,
       ));
     });
@@ -217,21 +263,30 @@ class BookingCubit extends Cubit<BookingState> {
 
   Future<void> deleteBooking(String bookingId) async {
     _recentlyDeletedBookingIds.add(bookingId);
+
     final res = await _deleteBookingUseCase(bookingId);
 
     res
       ..onSuccess((_) {
         if (_cachedBookings != null) {
-          final updatedList = _cachedBookings!.where((b) => b.id != bookingId).toList();
+          final updatedList = _cachedBookings!
+              .where((b) => b.id != bookingId)
+              .toList();
+
           _emitLoaded(updatedList);
         }
-        emit(const BookingState.success(message: 'Booking request is successfully deleted!'));
+
+        emit(const BookingState.success(
+          message: 'Booking request is successfully deleted!',
+        ));
+
         Future.delayed(const Duration(seconds: 3), () {
           _recentlyDeletedBookingIds.remove(bookingId);
         });
       })
       ..onError((failure) {
         _recentlyDeletedBookingIds.remove(bookingId);
+
         if (!isReady) {
           emit(BookingState.failure(failure.reason));
         }
@@ -243,6 +298,10 @@ class BookingCubit extends Cubit<BookingState> {
     String? roomId,
     String? ownerId,
   }) {
-    return _bookingRepository.watchBookings(userId: userId, roomId: roomId, ownerId: ownerId);
+    return _bookingRepository.watchBookings(
+      userId: userId,
+      roomId: roomId,
+      ownerId: ownerId,
+    );
   }
 }

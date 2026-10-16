@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../blocs/contract_cubit/contract_cubit.dart';
 import '../../../extensions/extensions.dart';
 import '../../../presentation.dart';
 

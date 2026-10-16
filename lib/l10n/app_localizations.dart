@@ -236,6 +236,24 @@ abstract class AppLocalizations {
   /// **'Update Location'**
   String get updateLocation;
 
+  /// No description provided for @confirmUpdateLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Location'**
+  String get confirmUpdateLocationTitle;
+
+  /// No description provided for @confirmUpdateLocationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to update your location?'**
+  String get confirmUpdateLocationMessage;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
   /// No description provided for @termsAndConditions.
   ///
   /// In en, this message translates to:

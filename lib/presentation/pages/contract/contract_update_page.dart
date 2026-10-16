@@ -434,7 +434,17 @@ class _ContractUpdatePageState extends State<ContractUpdatePage> {
 
       final result = await updateContractUseCase(updatedContract);
 
-      result.onSuccess((_) {
+      await result.onSuccess((_) async {
+        try {
+          final bookingRepo = inject<BookingRepository>();
+          final booking = await bookingRepo.getBookingById(widget.bookingId);
+          if (booking != null) {
+            await bookingRepo.updateBooking(
+              booking.copyWith(status: 'contracted'),
+            );
+          }
+        } catch (_) {}
+
         if (!mounted) return;
         showDialog(
           context: context,

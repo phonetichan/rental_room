@@ -5,7 +5,6 @@ import 'package:rental_room/domain/domain.dart';
 import 'package:rental_room/di/di.dart';
 import 'package:rental_room/l10n/app_localizations.dart';
 import 'package:rental_room/presentation/blocs/blocs.dart';
-import 'package:rental_room/presentation/extensions/contract/contract_extensions.dart';
 import 'package:rental_room/presentation/pages/contract/voucher_detail_page.dart';
 import 'widgets/widgets.dart';
 
@@ -25,7 +24,11 @@ class ContractHistoryPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocProvider(
-      create: (context) => inject<ContractCubit>()..loadContractHistory(user.id, _isOwner),
+      create: (context) {
+        final cubit = inject<ContractCubit>();
+        cubit.loadContractHistory(user.id, _isOwner);
+        return cubit;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.contractHistory),

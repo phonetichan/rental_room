@@ -148,13 +148,6 @@ class NavigationRouter {
           child: const EditLocationScreen(),
         ),
       ),
-      GoRoute(
-        path: EditLocationScreen.routePath,
-        builder: (context, state) => BlocProvider(
-          create: (context) => inject<LocationCubit>(),
-          child: const EditLocationScreen(),
-        ),
-      ),
       // Auth routes
       GoRoute(
         path: LoginPage.routePath,

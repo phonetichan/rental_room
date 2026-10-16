@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1063 +9,698 @@ part of 'contract_cubit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$ContractState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ContractState()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ContractStateCopyWith<$Res> {
-  factory $ContractStateCopyWith(
-          ContractState value, $Res Function(ContractState) then) =
-      _$ContractStateCopyWithImpl<$Res, ContractState>;
+class $ContractStateCopyWith<$Res>  {
+$ContractStateCopyWith(ContractState _, $Res Function(ContractState) __);
 }
 
-/// @nodoc
-class _$ContractStateCopyWithImpl<$Res, $Val extends ContractState>
-    implements $ContractStateCopyWith<$Res> {
-  _$ContractStateCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [ContractState].
+extension ContractStatePatterns on ContractState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ContractInitial value)?  initial,TResult Function( ContractLoading value)?  loading,TResult Function( ContractLoaded value)?  contractLoaded,TResult Function( ContractHistoryLoaded value)?  historyLoaded,TResult Function( VoucherDetailsLoaded value)?  voucherDetailsLoaded,TResult Function( ContractRevenueCalculated value)?  revenueCalculated,TResult Function( ContractSuccess value)?  success,TResult Function( ContractFailure value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case ContractInitial() when initial != null:
+return initial(_that);case ContractLoading() when loading != null:
+return loading(_that);case ContractLoaded() when contractLoaded != null:
+return contractLoaded(_that);case ContractHistoryLoaded() when historyLoaded != null:
+return historyLoaded(_that);case VoucherDetailsLoaded() when voucherDetailsLoaded != null:
+return voucherDetailsLoaded(_that);case ContractRevenueCalculated() when revenueCalculated != null:
+return revenueCalculated(_that);case ContractSuccess() when success != null:
+return success(_that);case ContractFailure() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ContractInitial value)  initial,required TResult Function( ContractLoading value)  loading,required TResult Function( ContractLoaded value)  contractLoaded,required TResult Function( ContractHistoryLoaded value)  historyLoaded,required TResult Function( VoucherDetailsLoaded value)  voucherDetailsLoaded,required TResult Function( ContractRevenueCalculated value)  revenueCalculated,required TResult Function( ContractSuccess value)  success,required TResult Function( ContractFailure value)  failure,}){
+final _that = this;
+switch (_that) {
+case ContractInitial():
+return initial(_that);case ContractLoading():
+return loading(_that);case ContractLoaded():
+return contractLoaded(_that);case ContractHistoryLoaded():
+return historyLoaded(_that);case VoucherDetailsLoaded():
+return voucherDetailsLoaded(_that);case ContractRevenueCalculated():
+return revenueCalculated(_that);case ContractSuccess():
+return success(_that);case ContractFailure():
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ContractInitial value)?  initial,TResult? Function( ContractLoading value)?  loading,TResult? Function( ContractLoaded value)?  contractLoaded,TResult? Function( ContractHistoryLoaded value)?  historyLoaded,TResult? Function( VoucherDetailsLoaded value)?  voucherDetailsLoaded,TResult? Function( ContractRevenueCalculated value)?  revenueCalculated,TResult? Function( ContractSuccess value)?  success,TResult? Function( ContractFailure value)?  failure,}){
+final _that = this;
+switch (_that) {
+case ContractInitial() when initial != null:
+return initial(_that);case ContractLoading() when loading != null:
+return loading(_that);case ContractLoaded() when contractLoaded != null:
+return contractLoaded(_that);case ContractHistoryLoaded() when historyLoaded != null:
+return historyLoaded(_that);case VoucherDetailsLoaded() when voucherDetailsLoaded != null:
+return voucherDetailsLoaded(_that);case ContractRevenueCalculated() when revenueCalculated != null:
+return revenueCalculated(_that);case ContractSuccess() when success != null:
+return success(_that);case ContractFailure() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ContractEntity? contract)?  contractLoaded,TResult Function( List<ContractEntity> contracts,  Map<String, RoomEntity> roomsByRoomId)?  historyLoaded,TResult Function( ContractEntity? contract,  RoomEntity? room,  UserEntity? tenantUser,  UserEntity? ownerUser)?  voucherDetailsLoaded,TResult Function( double totalMonthlyRevenue,  List<ContractEntity> contracts)?  revenueCalculated,TResult Function( String message,  ContractEntity? contract)?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case ContractInitial() when initial != null:
+return initial();case ContractLoading() when loading != null:
+return loading();case ContractLoaded() when contractLoaded != null:
+return contractLoaded(_that.contract);case ContractHistoryLoaded() when historyLoaded != null:
+return historyLoaded(_that.contracts,_that.roomsByRoomId);case VoucherDetailsLoaded() when voucherDetailsLoaded != null:
+return voucherDetailsLoaded(_that.contract,_that.room,_that.tenantUser,_that.ownerUser);case ContractRevenueCalculated() when revenueCalculated != null:
+return revenueCalculated(_that.totalMonthlyRevenue,_that.contracts);case ContractSuccess() when success != null:
+return success(_that.message,_that.contract);case ContractFailure() when failure != null:
+return failure(_that.message);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ContractEntity? contract)  contractLoaded,required TResult Function( List<ContractEntity> contracts,  Map<String, RoomEntity> roomsByRoomId)  historyLoaded,required TResult Function( ContractEntity? contract,  RoomEntity? room,  UserEntity? tenantUser,  UserEntity? ownerUser)  voucherDetailsLoaded,required TResult Function( double totalMonthlyRevenue,  List<ContractEntity> contracts)  revenueCalculated,required TResult Function( String message,  ContractEntity? contract)  success,required TResult Function( String message)  failure,}) {final _that = this;
+switch (_that) {
+case ContractInitial():
+return initial();case ContractLoading():
+return loading();case ContractLoaded():
+return contractLoaded(_that.contract);case ContractHistoryLoaded():
+return historyLoaded(_that.contracts,_that.roomsByRoomId);case VoucherDetailsLoaded():
+return voucherDetailsLoaded(_that.contract,_that.room,_that.tenantUser,_that.ownerUser);case ContractRevenueCalculated():
+return revenueCalculated(_that.totalMonthlyRevenue,_that.contracts);case ContractSuccess():
+return success(_that.message,_that.contract);case ContractFailure():
+return failure(_that.message);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ContractEntity? contract)?  contractLoaded,TResult? Function( List<ContractEntity> contracts,  Map<String, RoomEntity> roomsByRoomId)?  historyLoaded,TResult? Function( ContractEntity? contract,  RoomEntity? room,  UserEntity? tenantUser,  UserEntity? ownerUser)?  voucherDetailsLoaded,TResult? Function( double totalMonthlyRevenue,  List<ContractEntity> contracts)?  revenueCalculated,TResult? Function( String message,  ContractEntity? contract)?  success,TResult? Function( String message)?  failure,}) {final _that = this;
+switch (_that) {
+case ContractInitial() when initial != null:
+return initial();case ContractLoading() when loading != null:
+return loading();case ContractLoaded() when contractLoaded != null:
+return contractLoaded(_that.contract);case ContractHistoryLoaded() when historyLoaded != null:
+return historyLoaded(_that.contracts,_that.roomsByRoomId);case VoucherDetailsLoaded() when voucherDetailsLoaded != null:
+return voucherDetailsLoaded(_that.contract,_that.room,_that.tenantUser,_that.ownerUser);case ContractRevenueCalculated() when revenueCalculated != null:
+return revenueCalculated(_that.totalMonthlyRevenue,_that.contracts);case ContractSuccess() when success != null:
+return success(_that.message,_that.contract);case ContractFailure() when failure != null:
+return failure(_that.message);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$ContractInitialImplCopyWith<$Res> {
-  factory _$$ContractInitialImplCopyWith(_$ContractInitialImpl value,
-          $Res Function(_$ContractInitialImpl) then) =
-      __$$ContractInitialImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$ContractInitialImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractInitialImpl>
-    implements _$$ContractInitialImplCopyWith<$Res> {
-  __$$ContractInitialImplCopyWithImpl(
-      _$ContractInitialImpl _value, $Res Function(_$ContractInitialImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$ContractInitialImpl implements ContractInitial {
-  const _$ContractInitialImpl();
-
-  @override
-  String toString() {
-    return 'ContractState.initial()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ContractInitialImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return initial?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ContractInitial implements ContractState {
-  const factory ContractInitial() = _$ContractInitialImpl;
-}
-
-/// @nodoc
-abstract class _$$ContractLoadingImplCopyWith<$Res> {
-  factory _$$ContractLoadingImplCopyWith(_$ContractLoadingImpl value,
-          $Res Function(_$ContractLoadingImpl) then) =
-      __$$ContractLoadingImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$ContractLoadingImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractLoadingImpl>
-    implements _$$ContractLoadingImplCopyWith<$Res> {
-  __$$ContractLoadingImplCopyWithImpl(
-      _$ContractLoadingImpl _value, $Res Function(_$ContractLoadingImpl) _then)
-      : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$ContractLoadingImpl implements ContractLoading {
-  const _$ContractLoadingImpl();
 
-  @override
-  String toString() {
-    return 'ContractState.loading()';
-  }
+class ContractInitial implements ContractState {
+  const ContractInitial();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ContractLoadingImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return loading();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return loading?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return loading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractInitial);
 }
 
-abstract class ContractLoading implements ContractState {
-  const factory ContractLoading() = _$ContractLoadingImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ContractState.initial()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ContractLoading implements ContractState {
+  const ContractLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ContractState.loading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ContractLoaded implements ContractState {
+  const ContractLoaded(this.contract);
+  
+
+ final  ContractEntity? contract;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContractLoadedCopyWith<ContractLoaded> get copyWith => _$ContractLoadedCopyWithImpl<ContractLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractLoaded&&(identical(other.contract, contract) || other.contract == contract));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,contract);
+
+@override
+String toString() {
+  return 'ContractState.contractLoaded(contract: $contract)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$ContractLoadedImplCopyWith<$Res> {
-  factory _$$ContractLoadedImplCopyWith(_$ContractLoadedImpl value,
-          $Res Function(_$ContractLoadedImpl) then) =
-      __$$ContractLoadedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({ContractEntity? contract});
+abstract mixin class $ContractLoadedCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $ContractLoadedCopyWith(ContractLoaded value, $Res Function(ContractLoaded) _then) = _$ContractLoadedCopyWithImpl;
+@useResult
+$Res call({
+ ContractEntity? contract
+});
+
+
+
+
+}
+/// @nodoc
+class _$ContractLoadedCopyWithImpl<$Res>
+    implements $ContractLoadedCopyWith<$Res> {
+  _$ContractLoadedCopyWithImpl(this._self, this._then);
+
+  final ContractLoaded _self;
+  final $Res Function(ContractLoaded) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? contract = freezed,}) {
+  return _then(ContractLoaded(
+freezed == contract ? _self.contract : contract // ignore: cast_nullable_to_non_nullable
+as ContractEntity?,
+  ));
 }
 
-/// @nodoc
-class __$$ContractLoadedImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractLoadedImpl>
-    implements _$$ContractLoadedImplCopyWith<$Res> {
-  __$$ContractLoadedImplCopyWithImpl(
-      _$ContractLoadedImpl _value, $Res Function(_$ContractLoadedImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? contract = freezed,
-  }) {
-    return _then(_$ContractLoadedImpl(
-      freezed == contract
-          ? _value.contract
-          : contract // ignore: cast_nullable_to_non_nullable
-              as ContractEntity?,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$ContractLoadedImpl implements ContractLoaded {
-  const _$ContractLoadedImpl(this.contract);
 
-  @override
-  final ContractEntity? contract;
+class ContractHistoryLoaded implements ContractState {
+  const ContractHistoryLoaded({required final  List<ContractEntity> contracts, required final  Map<String, RoomEntity> roomsByRoomId}): _contracts = contracts,_roomsByRoomId = roomsByRoomId;
+  
 
-  @override
-  String toString() {
-    return 'ContractState.contractLoaded(contract: $contract)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ContractLoadedImpl &&
-            (identical(other.contract, contract) ||
-                other.contract == contract));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, contract);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ContractLoadedImplCopyWith<_$ContractLoadedImpl> get copyWith =>
-      __$$ContractLoadedImplCopyWithImpl<_$ContractLoadedImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return contractLoaded(contract);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return contractLoaded?.call(contract);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (contractLoaded != null) {
-      return contractLoaded(contract);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return contractLoaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return contractLoaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (contractLoaded != null) {
-      return contractLoaded(this);
-    }
-    return orElse();
-  }
+ final  List<ContractEntity> _contracts;
+ List<ContractEntity> get contracts {
+  if (_contracts is EqualUnmodifiableListView) return _contracts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_contracts);
 }
 
-abstract class ContractLoaded implements ContractState {
-  const factory ContractLoaded(ContractEntity? contract) =
-      _$ContractLoadedImpl;
+ final  Map<String, RoomEntity> _roomsByRoomId;
+ Map<String, RoomEntity> get roomsByRoomId {
+  if (_roomsByRoomId is EqualUnmodifiableMapView) return _roomsByRoomId;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_roomsByRoomId);
+}
 
-  ContractEntity? get contract;
-  @JsonKey(ignore: true)
-  _$$ContractLoadedImplCopyWith<_$ContractLoadedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContractHistoryLoadedCopyWith<ContractHistoryLoaded> get copyWith => _$ContractHistoryLoadedCopyWithImpl<ContractHistoryLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractHistoryLoaded&&const DeepCollectionEquality().equals(other._contracts, _contracts)&&const DeepCollectionEquality().equals(other._roomsByRoomId, _roomsByRoomId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_contracts),const DeepCollectionEquality().hash(_roomsByRoomId));
+
+@override
+String toString() {
+  return 'ContractState.historyLoaded(contracts: $contracts, roomsByRoomId: $roomsByRoomId)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$ContractRevenueCalculatedImplCopyWith<$Res> {
-  factory _$$ContractRevenueCalculatedImplCopyWith(
-          _$ContractRevenueCalculatedImpl value,
-          $Res Function(_$ContractRevenueCalculatedImpl) then) =
-      __$$ContractRevenueCalculatedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({double totalMonthlyRevenue, List<ContractEntity> contracts});
+abstract mixin class $ContractHistoryLoadedCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $ContractHistoryLoadedCopyWith(ContractHistoryLoaded value, $Res Function(ContractHistoryLoaded) _then) = _$ContractHistoryLoadedCopyWithImpl;
+@useResult
+$Res call({
+ List<ContractEntity> contracts, Map<String, RoomEntity> roomsByRoomId
+});
+
+
+
+
+}
+/// @nodoc
+class _$ContractHistoryLoadedCopyWithImpl<$Res>
+    implements $ContractHistoryLoadedCopyWith<$Res> {
+  _$ContractHistoryLoadedCopyWithImpl(this._self, this._then);
+
+  final ContractHistoryLoaded _self;
+  final $Res Function(ContractHistoryLoaded) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? contracts = null,Object? roomsByRoomId = null,}) {
+  return _then(ContractHistoryLoaded(
+contracts: null == contracts ? _self._contracts : contracts // ignore: cast_nullable_to_non_nullable
+as List<ContractEntity>,roomsByRoomId: null == roomsByRoomId ? _self._roomsByRoomId : roomsByRoomId // ignore: cast_nullable_to_non_nullable
+as Map<String, RoomEntity>,
+  ));
 }
 
-/// @nodoc
-class __$$ContractRevenueCalculatedImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractRevenueCalculatedImpl>
-    implements _$$ContractRevenueCalculatedImplCopyWith<$Res> {
-  __$$ContractRevenueCalculatedImplCopyWithImpl(
-      _$ContractRevenueCalculatedImpl _value,
-      $Res Function(_$ContractRevenueCalculatedImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? totalMonthlyRevenue = null,
-    Object? contracts = null,
-  }) {
-    return _then(_$ContractRevenueCalculatedImpl(
-      totalMonthlyRevenue: null == totalMonthlyRevenue
-          ? _value.totalMonthlyRevenue
-          : totalMonthlyRevenue // ignore: cast_nullable_to_non_nullable
-              as double,
-      contracts: null == contracts
-          ? _value._contracts
-          : contracts // ignore: cast_nullable_to_non_nullable
-              as List<ContractEntity>,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$ContractRevenueCalculatedImpl implements ContractRevenueCalculated {
-  const _$ContractRevenueCalculatedImpl(
-      {required this.totalMonthlyRevenue,
-      required List<ContractEntity> contracts})
-      : _contracts = contracts;
 
-  @override
-  final double totalMonthlyRevenue;
-  final List<ContractEntity> _contracts;
-  @override
-  List<ContractEntity> get contracts {
-    if (_contracts is EqualUnmodifiableListView) return _contracts;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_contracts);
-  }
+class VoucherDetailsLoaded implements ContractState {
+  const VoucherDetailsLoaded({required this.contract, required this.room, required this.tenantUser, required this.ownerUser});
+  
 
-  @override
-  String toString() {
-    return 'ContractState.revenueCalculated(totalMonthlyRevenue: $totalMonthlyRevenue, contracts: $contracts)';
-  }
+ final  ContractEntity? contract;
+ final  RoomEntity? room;
+ final  UserEntity? tenantUser;
+ final  UserEntity? ownerUser;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ContractRevenueCalculatedImpl &&
-            (identical(other.totalMonthlyRevenue, totalMonthlyRevenue) ||
-                other.totalMonthlyRevenue == totalMonthlyRevenue) &&
-            const DeepCollectionEquality()
-                .equals(other._contracts, _contracts));
-  }
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VoucherDetailsLoadedCopyWith<VoucherDetailsLoaded> get copyWith => _$VoucherDetailsLoadedCopyWithImpl<VoucherDetailsLoaded>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, totalMonthlyRevenue,
-      const DeepCollectionEquality().hash(_contracts));
 
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ContractRevenueCalculatedImplCopyWith<_$ContractRevenueCalculatedImpl>
-      get copyWith => __$$ContractRevenueCalculatedImplCopyWithImpl<
-          _$ContractRevenueCalculatedImpl>(this, _$identity);
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return revenueCalculated(totalMonthlyRevenue, contracts);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return revenueCalculated?.call(totalMonthlyRevenue, contracts);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (revenueCalculated != null) {
-      return revenueCalculated(totalMonthlyRevenue, contracts);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return revenueCalculated(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return revenueCalculated?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (revenueCalculated != null) {
-      return revenueCalculated(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoucherDetailsLoaded&&(identical(other.contract, contract) || other.contract == contract)&&(identical(other.room, room) || other.room == room)&&(identical(other.tenantUser, tenantUser) || other.tenantUser == tenantUser)&&(identical(other.ownerUser, ownerUser) || other.ownerUser == ownerUser));
 }
 
-abstract class ContractRevenueCalculated implements ContractState {
-  const factory ContractRevenueCalculated(
-          {required double totalMonthlyRevenue,
-          required List<ContractEntity> contracts}) =
-      _$ContractRevenueCalculatedImpl;
 
-  double get totalMonthlyRevenue;
-  List<ContractEntity> get contracts;
-  @JsonKey(ignore: true)
-  _$$ContractRevenueCalculatedImplCopyWith<_$ContractRevenueCalculatedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+int get hashCode => Object.hash(runtimeType,contract,room,tenantUser,ownerUser);
+
+@override
+String toString() {
+  return 'ContractState.voucherDetailsLoaded(contract: $contract, room: $room, tenantUser: $tenantUser, ownerUser: $ownerUser)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$ContractSuccessImplCopyWith<$Res> {
-  factory _$$ContractSuccessImplCopyWith(_$ContractSuccessImpl value,
-          $Res Function(_$ContractSuccessImpl) then) =
-      __$$ContractSuccessImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String message, ContractEntity? contract});
+abstract mixin class $VoucherDetailsLoadedCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $VoucherDetailsLoadedCopyWith(VoucherDetailsLoaded value, $Res Function(VoucherDetailsLoaded) _then) = _$VoucherDetailsLoadedCopyWithImpl;
+@useResult
+$Res call({
+ ContractEntity? contract, RoomEntity? room, UserEntity? tenantUser, UserEntity? ownerUser
+});
+
+
+
+
+}
+/// @nodoc
+class _$VoucherDetailsLoadedCopyWithImpl<$Res>
+    implements $VoucherDetailsLoadedCopyWith<$Res> {
+  _$VoucherDetailsLoadedCopyWithImpl(this._self, this._then);
+
+  final VoucherDetailsLoaded _self;
+  final $Res Function(VoucherDetailsLoaded) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? contract = freezed,Object? room = freezed,Object? tenantUser = freezed,Object? ownerUser = freezed,}) {
+  return _then(VoucherDetailsLoaded(
+contract: freezed == contract ? _self.contract : contract // ignore: cast_nullable_to_non_nullable
+as ContractEntity?,room: freezed == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as RoomEntity?,tenantUser: freezed == tenantUser ? _self.tenantUser : tenantUser // ignore: cast_nullable_to_non_nullable
+as UserEntity?,ownerUser: freezed == ownerUser ? _self.ownerUser : ownerUser // ignore: cast_nullable_to_non_nullable
+as UserEntity?,
+  ));
 }
 
-/// @nodoc
-class __$$ContractSuccessImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractSuccessImpl>
-    implements _$$ContractSuccessImplCopyWith<$Res> {
-  __$$ContractSuccessImplCopyWithImpl(
-      _$ContractSuccessImpl _value, $Res Function(_$ContractSuccessImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-    Object? contract = freezed,
-  }) {
-    return _then(_$ContractSuccessImpl(
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      contract: freezed == contract
-          ? _value.contract
-          : contract // ignore: cast_nullable_to_non_nullable
-              as ContractEntity?,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$ContractSuccessImpl implements ContractSuccess {
-  const _$ContractSuccessImpl({required this.message, this.contract});
 
-  @override
-  final String message;
-  @override
-  final ContractEntity? contract;
+class ContractRevenueCalculated implements ContractState {
+  const ContractRevenueCalculated({required this.totalMonthlyRevenue, required final  List<ContractEntity> contracts}): _contracts = contracts;
+  
 
-  @override
-  String toString() {
-    return 'ContractState.success(message: $message, contract: $contract)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ContractSuccessImpl &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.contract, contract) ||
-                other.contract == contract));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, message, contract);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ContractSuccessImplCopyWith<_$ContractSuccessImpl> get copyWith =>
-      __$$ContractSuccessImplCopyWithImpl<_$ContractSuccessImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return success(message, contract);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return success?.call(message, contract);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(message, contract);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
+ final  double totalMonthlyRevenue;
+ final  List<ContractEntity> _contracts;
+ List<ContractEntity> get contracts {
+  if (_contracts is EqualUnmodifiableListView) return _contracts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_contracts);
 }
 
-abstract class ContractSuccess implements ContractState {
-  const factory ContractSuccess(
-      {required String message,
-      ContractEntity? contract}) = _$ContractSuccessImpl;
 
-  String get message;
-  ContractEntity? get contract;
-  @JsonKey(ignore: true)
-  _$$ContractSuccessImplCopyWith<_$ContractSuccessImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContractRevenueCalculatedCopyWith<ContractRevenueCalculated> get copyWith => _$ContractRevenueCalculatedCopyWithImpl<ContractRevenueCalculated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractRevenueCalculated&&(identical(other.totalMonthlyRevenue, totalMonthlyRevenue) || other.totalMonthlyRevenue == totalMonthlyRevenue)&&const DeepCollectionEquality().equals(other._contracts, _contracts));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,totalMonthlyRevenue,const DeepCollectionEquality().hash(_contracts));
+
+@override
+String toString() {
+  return 'ContractState.revenueCalculated(totalMonthlyRevenue: $totalMonthlyRevenue, contracts: $contracts)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$ContractFailureImplCopyWith<$Res> {
-  factory _$$ContractFailureImplCopyWith(_$ContractFailureImpl value,
-          $Res Function(_$ContractFailureImpl) then) =
-      __$$ContractFailureImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String message});
+abstract mixin class $ContractRevenueCalculatedCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $ContractRevenueCalculatedCopyWith(ContractRevenueCalculated value, $Res Function(ContractRevenueCalculated) _then) = _$ContractRevenueCalculatedCopyWithImpl;
+@useResult
+$Res call({
+ double totalMonthlyRevenue, List<ContractEntity> contracts
+});
+
+
+
+
+}
+/// @nodoc
+class _$ContractRevenueCalculatedCopyWithImpl<$Res>
+    implements $ContractRevenueCalculatedCopyWith<$Res> {
+  _$ContractRevenueCalculatedCopyWithImpl(this._self, this._then);
+
+  final ContractRevenueCalculated _self;
+  final $Res Function(ContractRevenueCalculated) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? totalMonthlyRevenue = null,Object? contracts = null,}) {
+  return _then(ContractRevenueCalculated(
+totalMonthlyRevenue: null == totalMonthlyRevenue ? _self.totalMonthlyRevenue : totalMonthlyRevenue // ignore: cast_nullable_to_non_nullable
+as double,contracts: null == contracts ? _self._contracts : contracts // ignore: cast_nullable_to_non_nullable
+as List<ContractEntity>,
+  ));
 }
 
-/// @nodoc
-class __$$ContractFailureImplCopyWithImpl<$Res>
-    extends _$ContractStateCopyWithImpl<$Res, _$ContractFailureImpl>
-    implements _$$ContractFailureImplCopyWith<$Res> {
-  __$$ContractFailureImplCopyWithImpl(
-      _$ContractFailureImpl _value, $Res Function(_$ContractFailureImpl) _then)
-      : super(_value, _then);
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-  }) {
-    return _then(_$ContractFailureImpl(
-      null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$ContractFailureImpl implements ContractFailure {
-  const _$ContractFailureImpl(this.message);
 
-  @override
-  final String message;
+class ContractSuccess implements ContractState {
+  const ContractSuccess({required this.message, this.contract});
+  
 
-  @override
-  String toString() {
-    return 'ContractState.failure(message: $message)';
-  }
+ final  String message;
+ final  ContractEntity? contract;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ContractFailureImpl &&
-            (identical(other.message, message) || other.message == message));
-  }
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContractSuccessCopyWith<ContractSuccess> get copyWith => _$ContractSuccessCopyWithImpl<ContractSuccess>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, message);
 
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ContractFailureImplCopyWith<_$ContractFailureImpl> get copyWith =>
-      __$$ContractFailureImplCopyWithImpl<_$ContractFailureImpl>(
-          this, _$identity);
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(ContractEntity? contract) contractLoaded,
-    required TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)
-        revenueCalculated,
-    required TResult Function(String message, ContractEntity? contract) success,
-    required TResult Function(String message) failure,
-  }) {
-    return failure(message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(ContractEntity? contract)? contractLoaded,
-    TResult? Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult? Function(String message, ContractEntity? contract)? success,
-    TResult? Function(String message)? failure,
-  }) {
-    return failure?.call(message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(ContractEntity? contract)? contractLoaded,
-    TResult Function(
-            double totalMonthlyRevenue, List<ContractEntity> contracts)?
-        revenueCalculated,
-    TResult Function(String message, ContractEntity? contract)? success,
-    TResult Function(String message)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(message);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(ContractInitial value) initial,
-    required TResult Function(ContractLoading value) loading,
-    required TResult Function(ContractLoaded value) contractLoaded,
-    required TResult Function(ContractRevenueCalculated value)
-        revenueCalculated,
-    required TResult Function(ContractSuccess value) success,
-    required TResult Function(ContractFailure value) failure,
-  }) {
-    return failure(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContractInitial value)? initial,
-    TResult? Function(ContractLoading value)? loading,
-    TResult? Function(ContractLoaded value)? contractLoaded,
-    TResult? Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult? Function(ContractSuccess value)? success,
-    TResult? Function(ContractFailure value)? failure,
-  }) {
-    return failure?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContractInitial value)? initial,
-    TResult Function(ContractLoading value)? loading,
-    TResult Function(ContractLoaded value)? contractLoaded,
-    TResult Function(ContractRevenueCalculated value)? revenueCalculated,
-    TResult Function(ContractSuccess value)? success,
-    TResult Function(ContractFailure value)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractSuccess&&(identical(other.message, message) || other.message == message)&&(identical(other.contract, contract) || other.contract == contract));
 }
 
-abstract class ContractFailure implements ContractState {
-  const factory ContractFailure(String message) = _$ContractFailureImpl;
 
-  String get message;
-  @JsonKey(ignore: true)
-  _$$ContractFailureImplCopyWith<_$ContractFailureImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+int get hashCode => Object.hash(runtimeType,message,contract);
+
+@override
+String toString() {
+  return 'ContractState.success(message: $message, contract: $contract)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class $ContractSuccessCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $ContractSuccessCopyWith(ContractSuccess value, $Res Function(ContractSuccess) _then) = _$ContractSuccessCopyWithImpl;
+@useResult
+$Res call({
+ String message, ContractEntity? contract
+});
+
+
+
+
+}
+/// @nodoc
+class _$ContractSuccessCopyWithImpl<$Res>
+    implements $ContractSuccessCopyWith<$Res> {
+  _$ContractSuccessCopyWithImpl(this._self, this._then);
+
+  final ContractSuccess _self;
+  final $Res Function(ContractSuccess) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? contract = freezed,}) {
+  return _then(ContractSuccess(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,contract: freezed == contract ? _self.contract : contract // ignore: cast_nullable_to_non_nullable
+as ContractEntity?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ContractFailure implements ContractState {
+  const ContractFailure(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContractFailureCopyWith<ContractFailure> get copyWith => _$ContractFailureCopyWithImpl<ContractFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'ContractState.failure(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ContractFailureCopyWith<$Res> implements $ContractStateCopyWith<$Res> {
+  factory $ContractFailureCopyWith(ContractFailure value, $Res Function(ContractFailure) _then) = _$ContractFailureCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$ContractFailureCopyWithImpl<$Res>
+    implements $ContractFailureCopyWith<$Res> {
+  _$ContractFailureCopyWithImpl(this._self, this._then);
+
+  final ContractFailure _self;
+  final $Res Function(ContractFailure) _then;
+
+/// Create a copy of ContractState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(ContractFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

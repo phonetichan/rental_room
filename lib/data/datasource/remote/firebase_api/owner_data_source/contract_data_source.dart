@@ -3,6 +3,8 @@ import 'package:injectable/injectable.dart';
 
 import 'package:rental_room/data/data.dart';
 
+import '../../../../../domain/domain.dart';
+
 @lazySingleton
 class ContractRemoteDataSource {
   final FirebaseFirestore _firestore;
@@ -53,14 +55,16 @@ class ContractRemoteDataSource {
     if (ownerId.isEmpty) return [];
     final snap = await _contractsCollection
         .where('ownerId', isEqualTo: ownerId)
+        .where('status', isEqualTo: ContractStatus.active.value)
         .get();
 
     return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
   }
 
   Future<List<ContractModel>> getContractsByTenantId(String tenantId) async {
-    final snap = await _contractsCollection   // use the same variable as getContractsByOwnerId
+    final snap = await _contractsCollection
         .where('tenantId', isEqualTo: tenantId)
+        .where('status', isEqualTo: ContractStatus.active.value)
         .get();
     return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
   }

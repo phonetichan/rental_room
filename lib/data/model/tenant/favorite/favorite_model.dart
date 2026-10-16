@@ -5,7 +5,7 @@ import '../../../../domain/entity/favorite/favorite_entity.dart';
 part 'favorite_model.freezed.dart';
 
 @freezed
-class FavoriteModel with _$FavoriteModel {
+abstract class FavoriteModel with _$FavoriteModel {
   const FavoriteModel._();
 
   const factory FavoriteModel({

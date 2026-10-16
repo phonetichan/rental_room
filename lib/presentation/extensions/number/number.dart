@@ -61,7 +61,7 @@ extension NumberFormatting on num {
   /// Localized formatting where 'K' means 'သောင်း' in Myanmar locale
   String toLocalizedKsFormat(BuildContext context) {
     final isMyanmar = context.isMyanmar;
-    final unit = isMyanmar ? 'သောင်း' : 'K';
+    final unit = isMyanmar ? '၀၀၀' : 'K';
     
     if (this >= 1000) {
       final double kValue = this / 1000;
@@ -84,7 +84,7 @@ extension NumberFormatting on num {
 
   String toLocalizedKsShortFormat(BuildContext context) {
     final isMyanmar = context.isMyanmar;
-    final unit = isMyanmar ? 'သောင်း' : 'K';
+    final unit = isMyanmar ? '၀၀၀' : 'K';
     
     if (this >= 1000) {
       final double kValue = this / 1000;
@@ -107,7 +107,7 @@ extension NumberFormatting on num {
 
   String toLocalizedKsLabelFormat(BuildContext context) {
     final isMyanmar = context.isMyanmar;
-    final unit = isMyanmar ? 'သောင်း' : 'K';
+    final unit = isMyanmar ? '၀၀၀' : 'K';
     
     if (this >= 1000) {
       final double kValue = this / 1000;

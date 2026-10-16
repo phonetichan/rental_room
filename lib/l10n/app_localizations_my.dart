@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -77,6 +76,16 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get updateLocation => 'တည်နေရာ ပြင်ဆင်ရန်';
+
+  @override
+  String get confirmUpdateLocationTitle => 'တည်နေရာ ပြင်ဆင်ရန်';
+
+  @override
+  String get confirmUpdateLocationMessage =>
+      'သင့်တည်နေရာကို ပြင်ဆင်ရန် သေချာပါသလား?';
+
+  @override
+  String get confirm => 'အတည်ပြုမည်';
 
   @override
   String get termsAndConditions => 'စည်းမျဉ်းစည်းကမ်းများ';

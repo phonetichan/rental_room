@@ -575,10 +575,12 @@ class _NewBookingViewState extends State<NewBookingView> {
                                 isOwner: widget.currentUser.role == UserRole.owner,
                                 isReadOnly: _isReadOnly,
                                 onViewVoucher: () {
-                                  context.pushNamed(
-                                    ContractUpdatePage.routeName,
-                                    extra: _currentBooking!.id,
-                                  );
+                                  if (_currentBooking != null) {
+                                    context.pushNamed(
+                                      ContractUpdatePage.routeName,
+                                      extra: _currentBooking!.id,
+                                    );
+                                  }
                                 },
                                 onDeleteBooking: _cancelAndDeleteBooking,
                                 onConfirmBooking: _confirmBooking,

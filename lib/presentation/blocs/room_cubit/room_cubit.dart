@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rental_room/domain/domain.dart';
 
-part 'room_state.dart';
 part 'room_cubit.freezed.dart';
+part 'room_state.dart';
 
 @injectable
 class RoomCubit extends Cubit<RoomState> {

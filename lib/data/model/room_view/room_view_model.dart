@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../../domain/entity/room/room_view_entity.dart';
+import '../../../domain/entity/room/room_view_entity.dart';
 
 part 'room_view_model.freezed.dart';
 
 @freezed
-class RoomViewModel with _$RoomViewModel {
+abstract class RoomViewModel with _$RoomViewModel {
   const RoomViewModel._();
 
   const factory RoomViewModel({

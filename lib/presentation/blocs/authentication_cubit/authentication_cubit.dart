@@ -4,7 +4,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../data/data.dart';
+import '../../../di/di.dart';
 import '../../../domain/domain.dart';
+import '../contract_cubit/contract_cubit.dart';
 
 part 'authentication_state.dart';
 part 'authentication_cubit.freezed.dart';
@@ -90,6 +92,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   Future<void> logOut() async {
+    // try {
+    //   inject<ContractCubit>().reset();
+    // } catch (_) {}
     await _storage.torchAllLocalUserData();
     await _signOutUseCase();
     emit(const AuthenticationState.unauthenticated());

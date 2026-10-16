@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.13.1
+  sdk: ^3.10.0
 
 dependencies:
   flutter:
@@ -44,7 +44,7 @@ dependencies:
 
   # Data & Serialization
   json_annotation: ^4.9.0
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.0.0
   shared_preferences: ^2.2.3
 
   # Utilities & UI
@@ -55,16 +55,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^6.0.0
-
-  # Generators
-
-  build_runner: ^2.4.13
-  freezed: ^2.5.2
-  analyzer: ^6.0.0 # Or allow the latest resolved version
-  json_serializable: ^6.8.0
-  injectable_generator: ^2.6.2
+  build_runner: ^2.6.0
+  freezed: ^3.0.0
+  json_serializable: ^6.10.0
+  injectable_generator: ^2.7.0
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.4
   intl: ^0.20.3

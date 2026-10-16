@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -129,6 +130,8 @@ import 'package:rental_room/presentation/blocs/authentication_cubit/authenticati
     as _i912;
 import 'package:rental_room/presentation/blocs/booking_cubit/booking_cubit.dart'
     as _i128;
+import 'package:rental_room/presentation/blocs/contract_cubit/contract_cubit.dart'
+    as _i761;
 import 'package:rental_room/presentation/blocs/favorite_cubit/favorite_cubit.dart'
     as _i1044;
 import 'package:rental_room/presentation/blocs/room_cubit/room_cubit.dart'
@@ -150,16 +153,12 @@ import 'package:rental_room/presentation/presentation.dart' as _i276;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
-    final gh = _i526.GetItHelper(
-      this,
-      environment,
-      environmentFilter,
-    );
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final storageModule = _$StorageModule();
     final firebaseModule = _$FirebaseModule();
     final loggerModule = _$LoggerModule();
@@ -169,168 +168,245 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i59.FirebaseAuth>(() => firebaseModule.firebaseAuth);
     gh.lazySingleton<_i974.FirebaseFirestore>(
-        () => firebaseModule.firebaseFireStore);
+      () => firebaseModule.firebaseFireStore,
+    );
     gh.lazySingleton<_i974.Logger>(() => loggerModule.logger);
     gh.lazySingleton<_i45.AppStorage>(
-        () => _i45.AppStorage(gh<_i460.SharedPreferences>()));
+      () => _i45.AppStorage(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i383.INavigationKeyProvider>(
-        () => _i383.NavigationKeyProviderImpl());
+      () => _i383.NavigationKeyProviderImpl(),
+    );
     gh.lazySingleton<_i0.NominatimRemoteDataSource>(
-        () => _i0.NominatimRemoteDataSourceImpl());
+      () => _i0.NominatimRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i290.LocationDeviceDataSource>(
-        () => _i290.LocationDeviceDataSourceImpl());
-    gh.lazySingleton<_i541.RoomViewRemoteDataSource>(() =>
-        _i541.RoomViewRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
+      () => _i290.LocationDeviceDataSourceImpl(),
+    );
+    gh.lazySingleton<_i541.RoomViewRemoteDataSource>(
+      () => _i541.RoomViewRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+    );
     gh.lazySingleton<_i54.ContractRemoteDataSource>(
-        () => _i54.ContractRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+      () => _i54.ContractRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
     gh.lazySingleton<_i760.RoomRemoteDataSource>(
-        () => _i760.RoomRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+      () => _i760.RoomRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
     gh.lazySingleton<_i905.BookingRemoteDataSource>(
-        () => _i905.BookingRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+      () => _i905.BookingRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
     gh.lazySingleton<_i686.FavoriteRemoteDataSource>(
-        () => _i686.FavoriteRemoteDataSource(gh<_i974.FirebaseFirestore>()));
+      () => _i686.FavoriteRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
     gh.lazySingleton<_i378.SeedDataSource>(
-        () => _i378.SeedDataSource(gh<_i974.FirebaseFirestore>()));
-    gh.lazySingleton<_i296.RoomViewRepository>(() =>
-        _i195.RoomViewRepositoryImpl(gh<_i582.RoomViewRemoteDataSource>()));
+      () => _i378.SeedDataSource(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.lazySingleton<_i296.RoomViewRepository>(
+      () => _i195.RoomViewRepositoryImpl(gh<_i582.RoomViewRemoteDataSource>()),
+    );
     gh.lazySingleton<_i211.UserRemoteDataSource>(
-        () => _i211.UserRemoteDataSource(
-              gh<_i59.FirebaseAuth>(),
-              gh<_i974.FirebaseFirestore>(),
-            ));
+      () => _i211.UserRemoteDataSource(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i974.FirebaseFirestore>(),
+      ),
+    );
     gh.lazySingleton<_i615.ISnackShower>(
-        () => _i615.SnackShowerImpl(gh<_i383.INavigationKeyProvider>()));
-    gh.lazySingleton<_i753.AuthDataSource>(() => _i753.AuthDataSource(
-          gh<_i59.FirebaseAuth>(),
-          gh<_i974.FirebaseFirestore>(),
-          gh<_i211.UserRemoteDataSource>(),
-          gh<_i378.SeedDataSource>(),
-        ));
-    gh.lazySingleton<_i1066.RemoveRoomViewUseCase>(
-        () => _i1066.RemoveRoomViewUseCase(gh<_i296.RoomViewRepository>()));
+      () => _i615.SnackShowerImpl(gh<_i383.INavigationKeyProvider>()),
+    );
+    gh.lazySingleton<_i753.AuthDataSource>(
+      () => _i753.AuthDataSource(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i211.UserRemoteDataSource>(),
+        gh<_i378.SeedDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i522.GetRoomVisitorCountUseCase>(
-        () => _i522.GetRoomVisitorCountUseCase(gh<_i296.RoomViewRepository>()));
+      () => _i522.GetRoomVisitorCountUseCase(gh<_i296.RoomViewRepository>()),
+    );
     gh.lazySingleton<_i74.RecordRoomViewUseCase>(
-        () => _i74.RecordRoomViewUseCase(gh<_i296.RoomViewRepository>()));
+      () => _i74.RecordRoomViewUseCase(gh<_i296.RoomViewRepository>()),
+    );
+    gh.lazySingleton<_i1066.RemoveRoomViewUseCase>(
+      () => _i1066.RemoveRoomViewUseCase(gh<_i296.RoomViewRepository>()),
+    );
     gh.lazySingleton<_i594.LocationRepository>(
-        () => _i240.LocationRepositoryImpl(
-              gh<_i0.NominatimRemoteDataSource>(),
-              gh<_i290.LocationDeviceDataSource>(),
-            ));
-    gh.lazySingleton<_i454.SearchLocationUseCase>(
-        () => _i454.SearchLocationUseCase(gh<_i594.LocationRepository>()));
+      () => _i240.LocationRepositoryImpl(
+        gh<_i0.NominatimRemoteDataSource>(),
+        gh<_i290.LocationDeviceDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i235.GetCurrentLocationUseCase>(
-        () => _i235.GetCurrentLocationUseCase(gh<_i594.LocationRepository>()));
+      () => _i235.GetCurrentLocationUseCase(gh<_i594.LocationRepository>()),
+    );
     gh.lazySingleton<_i604.ReverseGeocodeUseCase>(
-        () => _i604.ReverseGeocodeUseCase(gh<_i594.LocationRepository>()));
+      () => _i604.ReverseGeocodeUseCase(gh<_i594.LocationRepository>()),
+    );
+    gh.lazySingleton<_i454.SearchLocationUseCase>(
+      () => _i454.SearchLocationUseCase(gh<_i594.LocationRepository>()),
+    );
     gh.lazySingleton<_i956.RoomRepository>(
-        () => _i1032.RoomRepositoryImpl(gh<_i582.RoomRemoteDataSource>()));
-    gh.lazySingleton<_i1024.ContractRepository>(() =>
-        _i682.ContractRepositoryImpl(gh<_i54.ContractRemoteDataSource>()));
-    gh.lazySingleton<_i304.GetRoomsUseCase>(() => _i304.GetRoomsUseCase(
-          gh<_i956.RoomRepository>(),
-          gh<_i1024.ContractRepository>(),
-          gh<_i220.ExpireContractUseCase>(),
-        ));
-    gh.lazySingleton<_i809.FavoriteRepository>(() =>
-        _i828.FavoriteRepositoryImpl(gh<_i686.FavoriteRemoteDataSource>()));
+      () => _i1032.RoomRepositoryImpl(gh<_i582.RoomRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i1024.ContractRepository>(
+      () => _i682.ContractRepositoryImpl(gh<_i54.ContractRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i809.FavoriteRepository>(
+      () => _i828.FavoriteRepositoryImpl(gh<_i686.FavoriteRemoteDataSource>()),
+    );
     gh.lazySingleton<_i794.AuthRepository>(
-        () => _i1001.AuthRepositoryImpl(gh<_i582.AuthDataSource>()));
+      () => _i1001.AuthRepositoryImpl(gh<_i582.AuthDataSource>()),
+    );
     gh.lazySingleton<_i795.UserRepository>(
-        () => _i252.UserRepositoryImpl(gh<_i582.UserRemoteDataSource>()));
+      () => _i252.UserRepositoryImpl(gh<_i582.UserRemoteDataSource>()),
+    );
     gh.lazySingleton<_i312.BookingRepository>(
-        () => _i586.BookingRepositoryImpl(gh<_i905.BookingRemoteDataSource>()));
-    gh.lazySingleton<_i954.DeleteBookingUseCase>(
-        () => _i954.DeleteBookingUseCase(gh<_i312.BookingRepository>()));
-    gh.lazySingleton<_i552.UpdateBookingUseCase>(
-        () => _i552.UpdateBookingUseCase(gh<_i312.BookingRepository>()));
-    gh.lazySingleton<_i486.GetBookingsUseCase>(
-        () => _i486.GetBookingsUseCase(gh<_i312.BookingRepository>()));
+      () => _i586.BookingRepositoryImpl(gh<_i905.BookingRemoteDataSource>()),
+    );
     gh.lazySingleton<_i179.CreateBookingUseCase>(
-        () => _i179.CreateBookingUseCase(gh<_i312.BookingRepository>()));
-    gh.lazySingleton<_i247.UpdatePasswordUseCase>(
-        () => _i247.UpdatePasswordUseCase(gh<_i794.AuthRepository>()));
+      () => _i179.CreateBookingUseCase(gh<_i312.BookingRepository>()),
+    );
+    gh.lazySingleton<_i954.DeleteBookingUseCase>(
+      () => _i954.DeleteBookingUseCase(gh<_i312.BookingRepository>()),
+    );
+    gh.lazySingleton<_i486.GetBookingsUseCase>(
+      () => _i486.GetBookingsUseCase(gh<_i312.BookingRepository>()),
+    );
+    gh.lazySingleton<_i552.UpdateBookingUseCase>(
+      () => _i552.UpdateBookingUseCase(gh<_i312.BookingRepository>()),
+    );
     gh.lazySingleton<_i560.GetUserUseCase>(
-        () => _i560.GetUserUseCase(gh<_i794.AuthRepository>()));
+      () => _i560.GetUserUseCase(gh<_i794.AuthRepository>()),
+    );
     gh.lazySingleton<_i986.SignInUseCase>(
-        () => _i986.SignInUseCase(gh<_i794.AuthRepository>()));
+      () => _i986.SignInUseCase(gh<_i794.AuthRepository>()),
+    );
     gh.lazySingleton<_i448.SignUpUseCase>(
-        () => _i448.SignUpUseCase(gh<_i794.AuthRepository>()));
-    gh.lazySingleton<_i195.GetUserFavoritesUseCase>(
-        () => _i195.GetUserFavoritesUseCase(gh<_i809.FavoriteRepository>()));
-    gh.lazySingleton<_i1052.ToggleFavoriteUseCase>(
-        () => _i1052.ToggleFavoriteUseCase(gh<_i809.FavoriteRepository>()));
+      () => _i448.SignUpUseCase(gh<_i794.AuthRepository>()),
+    );
+    gh.lazySingleton<_i247.UpdatePasswordUseCase>(
+      () => _i247.UpdatePasswordUseCase(gh<_i794.AuthRepository>()),
+    );
     gh.lazySingleton<_i516.GetFavoriteCountsUseCase>(
-        () => _i516.GetFavoriteCountsUseCase(gh<_i809.FavoriteRepository>()));
+      () => _i516.GetFavoriteCountsUseCase(gh<_i809.FavoriteRepository>()),
+    );
+    gh.lazySingleton<_i195.GetUserFavoritesUseCase>(
+      () => _i195.GetUserFavoritesUseCase(gh<_i809.FavoriteRepository>()),
+    );
+    gh.lazySingleton<_i1052.ToggleFavoriteUseCase>(
+      () => _i1052.ToggleFavoriteUseCase(gh<_i809.FavoriteRepository>()),
+    );
     gh.factory<_i141.LoginCubit>(
-        () => _i141.LoginCubit(gh<_i986.SignInUseCase>()));
-    gh.lazySingleton<_i379.DeleteRoomUseCase>(
-        () => _i379.DeleteRoomUseCase(gh<_i956.RoomRepository>()));
+      () => _i141.LoginCubit(gh<_i986.SignInUseCase>()),
+    );
     gh.lazySingleton<_i401.CreateRoomUseCase>(
-        () => _i401.CreateRoomUseCase(gh<_i956.RoomRepository>()));
+      () => _i401.CreateRoomUseCase(gh<_i956.RoomRepository>()),
+    );
+    gh.lazySingleton<_i379.DeleteRoomUseCase>(
+      () => _i379.DeleteRoomUseCase(gh<_i956.RoomRepository>()),
+    );
     gh.lazySingleton<_i146.UpdateRoomUseCase>(
-        () => _i146.UpdateRoomUseCase(gh<_i956.RoomRepository>()));
+      () => _i146.UpdateRoomUseCase(gh<_i956.RoomRepository>()),
+    );
     gh.lazySingleton<_i220.ExpireContractUseCase>(
-        () => _i220.ExpireContractUseCase(
-              gh<_i1024.ContractRepository>(),
-              gh<_i956.RoomRepository>(),
-              gh<_i312.BookingRepository>(),
-            ));
+      () => _i220.ExpireContractUseCase(
+        gh<_i156.ContractRepository>(),
+        gh<_i156.RoomRepository>(),
+        gh<_i156.BookingRepository>(),
+      ),
+    );
     gh.factory<_i435.SignUpCubit>(
-        () => _i435.SignUpCubit(gh<_i156.SignUpUseCase>()));
+      () => _i435.SignUpCubit(gh<_i156.SignUpUseCase>()),
+    );
     gh.lazySingleton<_i622.SignOutUseCase>(
-        () => _i622.SignOutUseCase(gh<_i156.AuthRepository>()));
+      () => _i622.SignOutUseCase(gh<_i156.AuthRepository>()),
+    );
     gh.lazySingleton<_i355.CreateContractUseCase>(
-        () => _i355.CreateContractUseCase(gh<_i1024.ContractRepository>()));
-    gh.lazySingleton<_i375.GetContractByBookingUseCase>(() =>
-        _i375.GetContractByBookingUseCase(gh<_i1024.ContractRepository>()));
+      () => _i355.CreateContractUseCase(gh<_i1024.ContractRepository>()),
+    );
+    gh.lazySingleton<_i375.GetContractByBookingUseCase>(
+      () => _i375.GetContractByBookingUseCase(gh<_i1024.ContractRepository>()),
+    );
     gh.lazySingleton<_i374.UpdateContractUseCase>(
-        () => _i374.UpdateContractUseCase(gh<_i1024.ContractRepository>()));
-    gh.factory<_i1044.FavoriteCubit>(() => _i1044.FavoriteCubit(
-          gh<_i1052.ToggleFavoriteUseCase>(),
-          gh<_i195.GetUserFavoritesUseCase>(),
-          gh<_i516.GetFavoriteCountsUseCase>(),
-        ));
-    gh.factory<_i83.RoomCubit>(() => _i83.RoomCubit(
-          gh<_i156.GetRoomsUseCase>(),
-          gh<_i156.CreateRoomUseCase>(),
-          gh<_i156.UpdateRoomUseCase>(),
-          gh<_i156.DeleteRoomUseCase>(),
-        ));
-    gh.lazySingleton<_i912.AuthenticationCubit>(() => _i912.AuthenticationCubit(
-          gh<_i582.AppStorage>(),
-          gh<_i156.SignOutUseCase>(),
-          gh<_i156.GetUserUseCase>(),
-        ));
-    gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
-        () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()));
+      () => _i374.UpdateContractUseCase(gh<_i1024.ContractRepository>()),
+    );
+    gh.factory<_i1044.FavoriteCubit>(
+      () => _i1044.FavoriteCubit(
+        gh<_i1052.ToggleFavoriteUseCase>(),
+        gh<_i195.GetUserFavoritesUseCase>(),
+        gh<_i516.GetFavoriteCountsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i912.AuthenticationCubit>(
+      () => _i912.AuthenticationCubit(
+        gh<_i582.AppStorage>(),
+        gh<_i156.SignOutUseCase>(),
+        gh<_i156.GetUserUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i633.UpdateUserLocationUseCase>(
-        () => _i633.UpdateUserLocationUseCase(gh<_i795.UserRepository>()));
-    gh.factory<_i722.EditPasswordCubit>(() => _i722.EditPasswordCubit(
-          gh<_i247.UpdatePasswordUseCase>(),
-          gh<_i912.AuthenticationCubit>(),
-        ));
-    gh.factory<_i128.BookingCubit>(() => _i128.BookingCubit(
-          gh<_i156.GetBookingsUseCase>(),
-          gh<_i156.CreateBookingUseCase>(),
-          gh<_i156.UpdateBookingUseCase>(),
-          gh<_i954.DeleteBookingUseCase>(),
-          gh<_i156.BookingRepository>(),
-          gh<_i956.RoomRepository>(),
-          gh<_i355.CreateContractUseCase>(),
-        ));
-    gh.factory<_i725.EditProfileCubit>(() => _i725.EditProfileCubit(
-          gh<_i275.UpdateUserProfileUseCase>(),
-          gh<_i45.AppStorage>(),
-          gh<_i912.AuthenticationCubit>(),
-        ));
+      () => _i633.UpdateUserLocationUseCase(gh<_i795.UserRepository>()),
+    );
+    gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
+      () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()),
+    );
+    gh.lazySingleton<_i304.GetRoomsUseCase>(
+      () => _i304.GetRoomsUseCase(
+        gh<_i956.RoomRepository>(),
+        gh<_i1024.ContractRepository>(),
+        gh<_i220.ExpireContractUseCase>(),
+      ),
+    );
+    gh.factory<_i722.EditPasswordCubit>(
+      () => _i722.EditPasswordCubit(
+        gh<_i247.UpdatePasswordUseCase>(),
+        gh<_i912.AuthenticationCubit>(),
+      ),
+    );
+    gh.factory<_i725.EditProfileCubit>(
+      () => _i725.EditProfileCubit(
+        gh<_i275.UpdateUserProfileUseCase>(),
+        gh<_i45.AppStorage>(),
+        gh<_i912.AuthenticationCubit>(),
+      ),
+    );
+    gh.factory<_i761.ContractCubit>(
+      () => _i761.ContractCubit(
+        gh<_i156.GetContractByBookingUseCase>(),
+        gh<_i156.CreateContractUseCase>(),
+        gh<_i156.UpdateContractUseCase>(),
+        gh<_i156.ContractRepository>(),
+      ),
+    );
     gh.factory<_i338.LocationCubit>(
-        () => _i338.LocationCubit(gh<_i156.UpdateUserLocationUseCase>()));
-    gh.lazySingleton<_i828.NavigationRouter>(() => _i828.NavigationRouter(
-          gh<_i276.INavigationKeyProvider>(),
-          gh<_i582.AppStorage>(),
-          gh<_i276.AuthenticationCubit>(),
-        ));
+      () => _i338.LocationCubit(gh<_i156.UpdateUserLocationUseCase>()),
+    );
+    gh.lazySingleton<_i828.NavigationRouter>(
+      () => _i828.NavigationRouter(
+        gh<_i276.INavigationKeyProvider>(),
+        gh<_i582.AppStorage>(),
+        gh<_i276.AuthenticationCubit>(),
+      ),
+    );
+    gh.factory<_i128.BookingCubit>(
+      () => _i128.BookingCubit(
+        gh<_i156.GetBookingsUseCase>(),
+        gh<_i156.CreateBookingUseCase>(),
+        gh<_i156.UpdateBookingUseCase>(),
+        gh<_i954.DeleteBookingUseCase>(),
+        gh<_i156.BookingRepository>(),
+        gh<_i156.RoomRepository>(),
+        gh<_i156.CreateContractUseCase>(),
+      ),
+    );
+    gh.factory<_i83.RoomCubit>(
+      () => _i83.RoomCubit(
+        gh<_i156.GetRoomsUseCase>(),
+        gh<_i156.CreateRoomUseCase>(),
+        gh<_i156.UpdateRoomUseCase>(),
+        gh<_i156.DeleteRoomUseCase>(),
+      ),
+    );
     return this;
   }
 }
