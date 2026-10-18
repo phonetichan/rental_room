@@ -50,7 +50,7 @@ class BookingStepReviewView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.stepReviewSubmitDesc,
+          l10n.stepReviewSubmitDesc,maxLines: 3,
           style: TextStyle(color: textSecondary, fontSize: 13),
         ),
         const SizedBox(height: 16),

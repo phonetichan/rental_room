@@ -146,7 +146,7 @@ class _NewBookingViewState extends State<NewBookingView> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Submit Booking Request'),
+        title: Text(l10n.submitRequest, maxLines: 2),
         content: Text(
           l10n.submitBookingRequestConfirm,
           maxLines: 3,
@@ -163,7 +163,7 @@ class _NewBookingViewState extends State<NewBookingView> {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: const Text('Submit'),
+            child: Text(l10n.submit),
           ),
         ],
       ),
