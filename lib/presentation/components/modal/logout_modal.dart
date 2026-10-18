@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../extensions/l10n/l10n.dart';
 import '../button/confirm_cancel_button.dart';
 
 class LogoutModal extends StatelessWidget {
@@ -22,24 +23,26 @@ class LogoutModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      title: const Text(
-        'Confirm Logout',
-        style: TextStyle(fontWeight: FontWeight.bold),
+      title: Text(
+        l10n.logoutConfirmTitle,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      content: const Text(
-        'Are you sure you want to log out of your account?',
+      content: Text(
+        l10n.logoutConfirmMessage,
         maxLines: 4,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: 14),
+        style: const TextStyle(fontSize: 14),
       ),
       actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       actions: [
         ConfirmCancelButtons(
-          confirmText: 'Log Out',
+          confirmText: l10n.signOut,
           confirmColor: Colors.red,
           onConfirm: () {
             Navigator.pop(context);

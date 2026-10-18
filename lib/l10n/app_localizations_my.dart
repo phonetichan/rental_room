@@ -100,6 +100,12 @@ class AppLocalizationsMy extends AppLocalizations {
   String get exitAppConfirm => 'အက်ပ်မှ ထွက်လိုသည်မှာ သေချာပါသလား။';
 
   @override
+  String get logoutConfirmTitle => 'ထွက်ရန် အတည်ပြုပါ';
+
+  @override
+  String get logoutConfirmMessage => 'သင့်အကောင့်မှ ထွက်ရန် သေချာပါသလား။';
+
+  @override
   String get exit => 'ထွက်မည်';
 
   @override
@@ -554,8 +560,7 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
-  String get noContractFound =>
-      'ဤကြိုတင်မှာယူမှုအတွက် စာချုပ်မတွေ့ပါ။ ပိုင်ရှင်မှ စာချုပ်ထုတ်ပေးရပါမည်။';
+  String get noContractFound => 'ဤကြိုတင်မှာယူမှုအတွက် စာချုပ်မတွေ့ပါ။';
 
   @override
   String failedToUpdateContract(String reason) {

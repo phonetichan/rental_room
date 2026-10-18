@@ -100,6 +100,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exitAppConfirm => 'Are you sure you want to exit the application?';
 
   @override
+  String get logoutConfirmTitle => 'Confirm Logout';
+
+  @override
+  String get logoutConfirmMessage =>
+      'Are you sure you want to log out of your account?';
+
+  @override
   String get exit => 'Exit';
 
   @override

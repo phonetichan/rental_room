@@ -278,6 +278,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to exit the application?'**
   String get exitAppConfirm;
 
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Logout'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out of your account?'**
+  String get logoutConfirmMessage;
+
   /// No description provided for @exit.
   ///
   /// In en, this message translates to:

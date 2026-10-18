@@ -30,6 +30,8 @@
 
   "exitApp": "အက်ပ်မှ ထွက်ရန်",
   "exitAppConfirm": "အက်ပ်မှ ထွက်လိုသည်မှာ သေချာပါသလား။",
+  "logoutConfirmTitle": "ထွက်ရန် အတည်ပြုပါ",
+  "logoutConfirmMessage": "သင့်အကောင့်မှ ထွက်ရန် သေချာပါသလား။",
   "exit": "ထွက်မည်",
   "cancel": "မလုပ်တော့ပါ",
 
@@ -238,7 +240,7 @@
   "@monthsCount": {
     "placeholders": { "count": { "type": "int" } }
   },
-  "noContractFound": "ဤကြိုတင်မှာယူမှုအတွက် စာချုပ်မတွေ့ပါ။ ပိုင်ရှင်မှ စာချုပ်ထုတ်ပေးရပါမည်။",
+  "noContractFound": "ဤကြိုတင်မှာယူမှုအတွက် စာချုပ်မတွေ့ပါ။",
   "failedToUpdateContract": "စာချုပ် အပ်ဒိတ်လုပ်ရန် မအောင်မြင်ပါ: {reason}",
   "@failedToUpdateContract": {
     "placeholders": { "reason": { "type": "String" } }
