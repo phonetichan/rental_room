@@ -16,6 +16,8 @@ class BookingEntity {
   final bool isVisited;
   final bool isReadByTenant;
   final bool isReadByOwner;
+  final bool isRemovedByTenant;
+  final bool isRemovedByOwner;
   final String status; // "draft", "pending", "confirmed", "cancelled", "contracted", "expired"
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -47,6 +49,8 @@ class BookingEntity {
     this.isVisited = false,
     this.isReadByTenant = false,
     this.isReadByOwner = false,
+    this.isRemovedByTenant = false,
+    this.isRemovedByOwner = false,
     this.status = BookingStatus.draft,
     this.createdAt,
     this.updatedAt,
@@ -66,6 +70,8 @@ class BookingEntity {
     bool? isVisited,
     bool? isReadByTenant,
     bool? isReadByOwner,
+    bool? isRemovedByTenant,
+    bool? isRemovedByOwner,
     String? status,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -84,6 +90,8 @@ class BookingEntity {
       isVisited: isVisited ?? this.isVisited,
       isReadByTenant: isReadByTenant ?? this.isReadByTenant,
       isReadByOwner: isReadByOwner ?? this.isReadByOwner,
+      isRemovedByTenant: isRemovedByTenant ?? this.isRemovedByTenant,
+      isRemovedByOwner: isRemovedByOwner ?? this.isRemovedByOwner,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

@@ -69,8 +69,18 @@ class BookingRemoteDataSource {
       query = query.where('ownerId', isEqualTo: ownerId);
     }
 
-    return query.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => BookingModel.fromFirestore(doc)).toList());
+    return query.snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => BookingModel.fromFirestore(doc))
+        .where((model) {
+          if (userId != null && userId.isNotEmpty && model.isRemovedByTenant) {
+            return false;
+          }
+          if (ownerId != null && ownerId.isNotEmpty && model.isRemovedByOwner) {
+            return false;
+          }
+          return true;
+        })
+        .toList());
   }
 
   Future<BookingModel?> getBookingById(String bookingId) async {
@@ -223,9 +233,12 @@ class BookingRemoteDataSource {
     return BookingModel.fromFirestore(updatedDoc);
   }
 
-  Future<void> deleteBooking(String bookingId) async {
+  Future<void> deleteBooking(String bookingId, {bool isOwner = false}) async {
     if (bookingId.isNotEmpty) {
-      await _bookingsCollection.doc(bookingId).delete();
+      final updateData = isOwner
+          ? {'isRemovedByOwner': true, 'updatedAt': FieldValue.serverTimestamp()}
+          : {'isRemovedByTenant': true, 'updatedAt': FieldValue.serverTimestamp()};
+      await _bookingsCollection.doc(bookingId).update(updateData);
     }
   }
 }

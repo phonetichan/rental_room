@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../data/data.dart';
 import '../../../../di/di.dart';
 import '../../../../domain/domain.dart';
-import '../../../extensions/l10n/l10n.dart';
-import '../../../extensions/number/phone.dart';
+import '../../../extensions/extensions.dart';
 import '../../../presentation.dart';
 
 class NewBookingView extends StatefulWidget {
@@ -66,7 +65,7 @@ class _NewBookingViewState extends State<NewBookingView> {
       ownerId: b?.ownerId ?? '',
       roomTypeId: '',
       roomNumber: '',
-      name: b?.roomName ?? 'Room Details',
+      name: b?.roomName ?? context.l10n.roomDetails,
       floor: '',
       maxGuests: 1,
       pricePerMonth: b?.roomPrice ?? 0.0,
@@ -88,9 +87,7 @@ class _NewBookingViewState extends State<NewBookingView> {
   void _initOwnerFuture() {
     final ownerId = widget.room?.ownerId ?? widget.booking?.ownerId;
     if (ownerId != null &&
-        ownerId
-            .trim()
-            .isNotEmpty &&
+        ownerId.trim().isNotEmpty &&
         ownerId != 'null' &&
         ownerId != 'UNDEFINED') {
       _ownerFuture = inject<AuthDataSource>().getUserById(ownerId.trim());
@@ -98,7 +95,6 @@ class _NewBookingViewState extends State<NewBookingView> {
       _ownerFuture = null;
     }
   }
-
 
   void _saveOrUpdateBooking({bool silent = false}) {
     if (_isReadOnly) return;
@@ -128,9 +124,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         createdAt: DateTime.now(),
         roomName: room.name,
         roomPrice: room.pricePerMonth,
-        roomImageUrl: room.images.isNotEmpty
-            ? room.images.first.imageUrl
-            : null,
+        roomImageUrl:
+        room.images.isNotEmpty ? room.images.first.imageUrl : null,
         tenantName: widget.currentUser.name,
         tenantPhone: widget.currentUser.phoneNumber,
       );
@@ -146,11 +141,18 @@ class _NewBookingViewState extends State<NewBookingView> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(l10n.submitRequest, maxLines: 2),
+        title: Text(
+          l10n.submitRequest,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         content: Text(
           l10n.submitBookingRequestConfirm,
           maxLines: 3,
+          overflow: TextOverflow.ellipsis,
         ),
+        actionsOverflowDirection: VerticalDirection.down,
+        actionsOverflowButtonSpacing: 8,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -161,7 +163,8 @@ class _NewBookingViewState extends State<NewBookingView> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
             child: Text(l10n.submit),
           ),
@@ -197,9 +200,8 @@ class _NewBookingViewState extends State<NewBookingView> {
         createdAt: DateTime.now(),
         roomName: room.name,
         roomPrice: room.pricePerMonth,
-        roomImageUrl: room.images.isNotEmpty
-            ? room.images.first.imageUrl
-            : null,
+        roomImageUrl:
+        room.images.isNotEmpty ? room.images.first.imageUrl : null,
         tenantName: widget.currentUser.name,
         tenantPhone: widget.currentUser.phoneNumber,
       );
@@ -210,37 +212,69 @@ class _NewBookingViewState extends State<NewBookingView> {
   Future<void> _cancelAndDeleteBooking() async {
     final l10n = context.l10n;
     final isOwner = widget.currentUser.role == UserRole.owner;
+    final isAlreadyCancelled =
+        _currentBooking?.status.toLowerCase() == 'cancelled';
+
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) =>
-          AlertDialog(
-            title: Text(isOwner ? 'Decline Request' : l10n.deleteBooking),
-            content: Text(
-              isOwner
-                  ? 'Are you sure you want to decline/delete this booking request?'
-                  : l10n.deleteBookingConfirmation,
-              maxLines: 3,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: Text(l10n.cancel),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text(isOwner ? 'Decline' : l10n.yesDelete),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          isAlreadyCancelled
+              ? l10n.removeRequest
+              : (isOwner ? l10n.cancelRequest : l10n.deleteRequest),
+        ),
+        content: Text(
+          isAlreadyCancelled
+              ? l10n.removeRequestConfirmation
+              : (isOwner
+                  ? l10n.cancelRequestConfirmation
+                  : l10n.deleteRequestConfirmation),
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actionsOverflowDirection: VerticalDirection.down,
+        actionsOverflowButtonSpacing: 8,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
           ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(
+              isAlreadyCancelled
+                  ? l10n.remove
+                  : (isOwner ? l10n.cancelRequest : l10n.delete),
+            ),
+          ),
+        ],
+      ),
     );
 
     if (confirm == true && mounted) {
       if (_currentBooking != null && _currentBooking!.id.isNotEmpty) {
-        context.read<BookingCubit>().deleteBooking(_currentBooking!.id);
+        if (isAlreadyCancelled) {
+          await context.read<BookingCubit>().deleteBooking(
+            _currentBooking!.id,
+            isOwner: isOwner,
+            silent: true,
+          );
+          if (mounted) {
+            Navigator.of(context).pop(true);
+          }
+        } else {
+          final updated = _currentBooking!.copyWith(status: 'cancelled');
+          await context
+              .read<BookingCubit>()
+              .updateBooking(updated, silent: true);
+          if (mounted) {
+            Navigator.of(context).pop(true);
+          }
+        }
       } else {
         Navigator.of(context).pop(false);
       }
@@ -255,11 +289,18 @@ class _NewBookingViewState extends State<NewBookingView> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title: const Text('Accept & Confirm Booking'),
-        content: const Text(
-          'Are you sure you want to accept this booking request? This will mark the room status as rented.',
-          maxLines: 3,
+        title: Text(
+          l10n.confirmBooking,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
+        content: Text(
+          l10n.acceptBookingConfirmation,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actionsOverflowDirection: VerticalDirection.down,
+        actionsOverflowButtonSpacing: 8,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -271,7 +312,7 @@ class _NewBookingViewState extends State<NewBookingView> {
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Confirm'),
+            child: Text(l10n.confirm),
           ),
         ],
       ),
@@ -279,7 +320,10 @@ class _NewBookingViewState extends State<NewBookingView> {
 
     if (confirm == true && mounted) {
       if (_currentBooking != null && _currentBooking!.id.isNotEmpty) {
-        context.read<BookingCubit>().confirmBooking(_currentBooking!);
+        await context.read<BookingCubit>().confirmBooking(_currentBooking!);
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       }
     }
   }
@@ -294,11 +338,10 @@ class _NewBookingViewState extends State<NewBookingView> {
     final primaryAccent = theme.colorScheme.primary;
     final textPrimary =
         theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface;
-    // final textSecondary =
-    //     theme.textTheme.bodySmall?.color ?? theme.colorScheme.onSurfaceVariant;
     final borderColor = theme.dividerColor;
 
     final room = _resolvedRoom;
+    final statusLower = _currentBooking?.status.toLowerCase();
 
     return BlocListener<BookingCubit, BookingState>(
       listener: (context, state) {
@@ -311,13 +354,6 @@ class _NewBookingViewState extends State<NewBookingView> {
             }
             if (message.isNotEmpty) {
               _snackShower.success(context: context, message: message);
-            }
-            if (message.contains('deleted') ||
-                message.contains('cancelled') ||
-                message.contains('created') ||
-                message.contains('updated') ||
-                message.contains('successfully')) {
-              Navigator.of(context).pop(true);
             }
           },
           failure: (message) {
@@ -376,38 +412,30 @@ class _NewBookingViewState extends State<NewBookingView> {
                           padding: const EdgeInsets.all(12),
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
-                            color:
-                            (_currentBooking?.status.toLowerCase() ==
-                                'cancelled')
+                            color: (statusLower == 'cancelled')
                                 ? Colors.red.shade700
-                                : (_currentBooking?.status.toLowerCase() ==
-                                'confirmed' ||
-                                _currentBooking?.status.toLowerCase() ==
-                                    'success')
+                                : (statusLower == 'confirmed' ||
+                                statusLower == 'success')
                                 ? AppColors.clrPrimary
                                 : Colors.amber.shade100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            (_currentBooking?.status.toLowerCase() ==
-                                'cancelled')
+                            (statusLower == 'cancelled')
                                 ? l10n.roomAlreadyRentedNotice
-                                : (_currentBooking?.status.toLowerCase() ==
-                                'confirmed' ||
-                                _currentBooking?.status.toLowerCase() ==
-                                    'success')
+                                : (statusLower == 'confirmed' ||
+                                statusLower == 'success')
                                 ? l10n.bookingRequestConfirmed
                                 : l10n.bookingNeedsApproval(
-                                _currentBooking?.status.toUpperCase() ?? ''),
-                            maxLines: 4,
+                              _currentBooking?.status
+                                  .toUpperCase() ??
+                                  '',
+                            ),
+                            maxLines: 3,
                             style: TextStyle(
-                              color:
-                              (_currentBooking?.status.toLowerCase() ==
-                                  'cancelled' ||
-                                  _currentBooking?.status.toLowerCase() ==
-                                      'confirmed' ||
-                                  _currentBooking?.status.toLowerCase() ==
-                                      'success')
+                              color: (statusLower == 'cancelled' ||
+                                  statusLower == 'confirmed' ||
+                                  statusLower == 'success')
                                   ? Colors.white
                                   : Colors.amber.shade900,
                               fontWeight: FontWeight.bold,
@@ -429,8 +457,7 @@ class _NewBookingViewState extends State<NewBookingView> {
                       const SizedBox(height: 16),
 
                       // Step Content based on _activeStep
-                      if (_currentBooking?.status.toLowerCase() ==
-                          'cancelled') ...[
+                      if (statusLower == 'cancelled') ...[
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -443,9 +470,9 @@ class _NewBookingViewState extends State<NewBookingView> {
                               ),
                             ),
                             icon: const Icon(Icons.delete_outline_rounded),
-                            label: const Text(
-                              'Remove from List',
-                              style: TextStyle(
+                            label: Text(
+                              l10n.removeFromList,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -453,35 +480,46 @@ class _NewBookingViewState extends State<NewBookingView> {
                             onPressed: () async {
                               final confirm = await showDialog<bool>(
                                 context: context,
-                                builder: (ctx) =>
-                                    AlertDialog(
-                                      title: const Text('Remove Request'),
-                                      content: const Text(
-                                        'Are you sure you want to remove this rental request from your list?',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(ctx).pop(false),
-                                          child: const Text('No'),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () =>
-                                              Navigator.of(ctx).pop(true),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                            foregroundColor: Colors.white,
-                                          ),
-                                          child: const Text('Yes, Remove'),
-                                        ),
-                                      ],
+                                builder: (ctx) => AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  title: Text(
+                                    l10n.removeRequest,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  content: Text(
+                                    l10n.removeRequestConfirmation,
+                                    maxLines: 8,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  actionsOverflowDirection: VerticalDirection.down,
+                                  actionsOverflowButtonSpacing: 8,
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(false),
+                                      child: Text(l10n.no),
                                     ),
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.of(ctx).pop(true),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: Text(l10n.yesRemove),
+                                    ),
+                                  ],
+                                ),
                               );
 
                               if (confirm == true && context.mounted) {
-                                await context
-                                    .read<BookingCubit>()
-                                    .deleteBooking(_currentBooking!.id);
+                                final isOwner = widget.currentUser.role == UserRole.owner;
+                                await context.read<BookingCubit>().deleteBooking(
+                                  _currentBooking!.id,
+                                  isOwner: isOwner,
+                                  silent: true,
+                                );
                                 if (context.mounted) {
                                   Navigator.of(context).pop(true);
                                 }
@@ -489,103 +527,99 @@ class _NewBookingViewState extends State<NewBookingView> {
                             },
                           ),
                         ),
-                      ] else
-                        if (_activeStep == 0) ...[
-                          BookingStepContactView(
-                            isPhoneContacted: _isPhoneContacted,
-                            isReadOnly: _isReadOnly,
-                            onPhoneContactedChanged: (val) {
-                              setState(() {
-                                _isPhoneContacted = val;
-                              });
-                              if (val) {
-                                _snackShower.success(
-                                  context: context,
-                                  message: l10n.phoneCallDone,
+                      ] else if (_activeStep == 0) ...[
+                        BookingStepContactView(
+                          isPhoneContacted: _isPhoneContacted,
+                          isReadOnly: _isReadOnly,
+                          onPhoneContactedChanged: (val) {
+                            setState(() {
+                              _isPhoneContacted = val;
+                            });
+                            if (val) {
+                              _snackShower.success(
+                                context: context,
+                                message: l10n.phoneCallDone,
+                              );
+                            }
+                          },
+                          onSaveOrUpdate: () =>
+                              _saveOrUpdateBooking(silent: true),
+                          onReadOnlyWarning: () {
+                            _snackShower.info(
+                              context: context,
+                              message: l10n.bookingAlreadySubmitted,
+                            );
+                          },
+                        ),
+                      ] else if (_activeStep == 1) ...[
+                        BookingStepInspectView(
+                          isVisited: _isVisited,
+                          isReadOnly: _isReadOnly,
+                          roomId: _resolvedRoom.id,
+                          onVisitedChanged: (val) async {
+                            final nextVisitedState = val;
+                            setState(() {
+                              _isVisited = nextVisitedState;
+                            });
+
+                            // Record or remove room view in DB to update visitor count
+                            final roomId = _resolvedRoom.id;
+                            final userId = widget.currentUser.id;
+                            if (roomId.isNotEmpty && userId.isNotEmpty) {
+                              if (nextVisitedState) {
+                                await inject<RecordRoomViewUseCase>().call(
+                                  RecordRoomViewParams(
+                                    roomId: roomId,
+                                    userId: userId,
+                                  ),
+                                );
+                              } else {
+                                await inject<RemoveRoomViewUseCase>().call(
+                                  RemoveRoomViewParams(
+                                    roomId: roomId,
+                                    userId: userId,
+                                  ),
                                 );
                               }
-                            },
-                            onSaveOrUpdate: () =>
-                                _saveOrUpdateBooking(silent: true),
-                            onReadOnlyWarning: () {
-                              _snackShower.info(
+                            }
+
+                            if (!context.mounted) return;
+                            if (_isVisited) {
+                              _snackShower.success(
                                 context: context,
-                                message: l10n.bookingAlreadySubmitted,
+                                message: l10n.visitDone,
                               );
-                            },
-                          ),
-                        ] else
-                          if (_activeStep == 1) ...[
-                            BookingStepInspectView(
-                              isVisited: _isVisited,
-                              isReadOnly: _isReadOnly,
-                              roomId: _resolvedRoom.id,
-                              onVisitedChanged: (val) async {
-                                final nextVisitedState = val;
-                                setState(() {
-                                  _isVisited = nextVisitedState;
-                                });
-
-                                // Record or remove room view in DB to update visitor count
-                                final roomId = _resolvedRoom.id;
-                                final userId = widget.currentUser.id;
-                                if (roomId.isNotEmpty && userId.isNotEmpty) {
-                                  if (nextVisitedState) {
-                                    await inject<RecordRoomViewUseCase>().call(
-                                      RecordRoomViewParams(
-                                        roomId: roomId,
-                                        userId: userId,
-                                      ),
-                                    );
-                                  } else {
-                                    await inject<RemoveRoomViewUseCase>().call(
-                                      RemoveRoomViewParams(
-                                        roomId: roomId,
-                                        userId: userId,
-                                      ),
-                                    );
-                                  }
-                                }
-
-                                if (!context.mounted) return;
-                                if (_isVisited) {
-                                  _snackShower.success(
-                                    context: context,
-                                    message: l10n.visitDone,
-                                  );
-                                }
-                              },
-                              onSaveOrUpdate: () =>
-                                  _saveOrUpdateBooking(silent: true),
-                              onReadOnlyWarning: () {
-                                _snackShower.info(
-                                  context: context,
-                                  message: l10n.bookingAlreadySubmitted,
-                                );
-                              },
-                            ),
-                          ] else
-                            ...[
-                              BookingStepReviewView(
-                                isPhoneContacted: _isPhoneContacted,
-                                isVisited: _isVisited,
-                                monthlyRent: room.pricePerMonth,
-                                isConfirmed: _currentBooking?.status
-                                    .toLowerCase() == 'confirmed',
-                                isOwner: widget.currentUser.role == UserRole.owner,
-                                isReadOnly: _isReadOnly,
-                                onViewVoucher: () {
-                                  if (_currentBooking != null) {
-                                    context.pushNamed(
-                                      ContractUpdatePage.routeName,
-                                      extra: _currentBooking!.id,
-                                    );
-                                  }
-                                },
-                                onDeleteBooking: _cancelAndDeleteBooking,
-                                onConfirmBooking: _confirmBooking,
-                              ),
-                            ],
+                            }
+                          },
+                          onSaveOrUpdate: () =>
+                              _saveOrUpdateBooking(silent: true),
+                          onReadOnlyWarning: () {
+                            _snackShower.info(
+                              context: context,
+                              message: l10n.bookingAlreadySubmitted,
+                            );
+                          },
+                        ),
+                      ] else ...[
+                        BookingStepReviewView(
+                          isPhoneContacted: _isPhoneContacted,
+                          isVisited: _isVisited,
+                          monthlyRent: room.pricePerMonth,
+                          isConfirmed: statusLower == 'confirmed',
+                          isOwner: widget.currentUser.role == UserRole.owner,
+                          isReadOnly: _isReadOnly,
+                          onViewVoucher: () {
+                            if (_currentBooking != null) {
+                              context.pushNamed(
+                                ContractUpdatePage.routeName,
+                                extra: _currentBooking!.id,
+                              );
+                            }
+                          },
+                          onDeleteBooking: _cancelAndDeleteBooking,
+                          onConfirmBooking: _confirmBooking,
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -605,14 +639,12 @@ class _NewBookingViewState extends State<NewBookingView> {
                       TextButton(
                         style: TextButton.styleFrom(
                           foregroundColor: textPrimary,
-                          // Explicitly remove all borders and outlines
                           side: BorderSide.none,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide.none,
                           ),
                         ),
-                        // Disables tap action when _isReadOnly is true
                         onPressed: _isReadOnly
                             ? null
                             : () {
@@ -629,9 +661,8 @@ class _NewBookingViewState extends State<NewBookingView> {
                       const SizedBox.shrink(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isReadOnly
-                            ? theme.disabledColor
-                            : primaryAccent,
+                        backgroundColor:
+                        _isReadOnly ? theme.disabledColor : primaryAccent,
                         foregroundColor: theme.colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 28,
@@ -648,17 +679,16 @@ class _NewBookingViewState extends State<NewBookingView> {
                           if (_activeStep == 0 && !_isPhoneContacted) {
                             _snackShower.error(
                               context: context,
-                              message:
-                              l10n.pleaseCompletePhoneContactFirst,
+                              message: l10n.pleaseCompletePhoneContactFirst,
                             );
                             return;
                           }
                           if (_activeStep == 1 && !_isVisited) {
                             _snackShower.error(
                               context: context,
-                              message:
-                              l10n.pleaseCompleteRoomVisitedFirst,
+                              message: l10n.pleaseCompleteRoomVisitedFirst,
                             );
+                            return;
                           }
                           setState(() {
                             _activeStep++;
@@ -670,9 +700,8 @@ class _NewBookingViewState extends State<NewBookingView> {
                       child: Text(
                         _isReadOnly
                             ? l10n.requestSubmitted
-                            : (_activeStep < 2 ? l10n.next : l10n
-                            .submitRequest),
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                            : (_activeStep < 2 ? l10n.next : l10n.submitRequest),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],

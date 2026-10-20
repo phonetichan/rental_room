@@ -261,10 +261,57 @@ class BookingCubit extends Cubit<BookingState> {
     });
   }
 
-  Future<void> deleteBooking(String bookingId) async {
+  // Future<void> deleteBooking(String bookingId, {required bool isOwner, bool silent = false}) async {
+  //   _recentlyDeletedBookingIds.add(bookingId);
+  //
+  //   final res = await _deleteBookingUseCase(DeleteBookingParams(
+  //     bookingId: bookingId,
+  //     isOwner: isOwner,
+  //   ));
+  //
+  //   res
+  //     ..onSuccess((_) {
+  //       if (_cachedBookings != null) {
+  //         final updatedList = _cachedBookings!
+  //             .where((b) => b.id != bookingId)
+  //             .toList();
+  //
+  //         _emitLoaded(updatedList);
+  //       }
+  //
+  //       if (!silent) {
+  //         emit(const BookingState.success(
+  //           message: 'Booking request is successfully deleted!',
+  //         ));
+  //       }
+  //
+  //       Future.delayed(const Duration(seconds: 3), () {
+  //         _recentlyDeletedBookingIds.remove(bookingId);
+  //       });
+  //     })
+  //     ..onError((failure) {
+  //       _recentlyDeletedBookingIds.remove(bookingId);
+  //
+  //       if (!silent && !isReady) {
+  //         emit(BookingState.failure(failure.reason));
+  //       }
+  //     });
+  // }
+
+
+  Future<void> deleteBooking(
+      String bookingId, {
+        required bool isOwner,
+        bool silent = false,
+      }) async {
     _recentlyDeletedBookingIds.add(bookingId);
 
-    final res = await _deleteBookingUseCase(bookingId);
+    final res = await _deleteBookingUseCase(
+      DeleteBookingParams(
+        bookingId: bookingId,
+        isOwner: isOwner,
+      ),
+    );
 
     res
       ..onSuccess((_) {
@@ -273,12 +320,12 @@ class BookingCubit extends Cubit<BookingState> {
               .where((b) => b.id != bookingId)
               .toList();
 
+          // Keep the screen in the loaded state.
           _emitLoaded(updatedList);
         }
 
-        emit(const BookingState.success(
-          message: 'Booking request is successfully deleted!',
-        ));
+        // Do not emit BookingState.success here.
+        // It would replace BookingState.loaded.
 
         Future.delayed(const Duration(seconds: 3), () {
           _recentlyDeletedBookingIds.remove(bookingId);
@@ -287,11 +334,15 @@ class BookingCubit extends Cubit<BookingState> {
       ..onError((failure) {
         _recentlyDeletedBookingIds.remove(bookingId);
 
-        if (!isReady) {
+        if (!silent && isReady) {
           emit(BookingState.failure(failure.reason));
+
+          // Restore the loaded state after handling the error.
+          emit(BookingState.loaded(bookings: _cachedBookings!));
         }
       });
   }
+
 
   Stream<List<BookingEntity>> watchBookings({
     String? userId,

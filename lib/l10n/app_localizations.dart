@@ -590,6 +590,12 @@ abstract class AppLocalizations {
   /// **'Confirmed'**
   String get confirmed;
 
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
   /// No description provided for @contracted.
   ///
   /// In en, this message translates to:
@@ -613,6 +619,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No confirmed booking requests.'**
   String get noConfirmedBookings;
+
+  /// No description provided for @noCancelledBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'No cancelled booking requests.'**
+  String get noCancelledBookings;
 
   /// No description provided for @noContractedBookings.
   ///
@@ -1484,6 +1496,24 @@ abstract class AppLocalizations {
   /// **'Delete Booking'**
   String get deleteBooking;
 
+  /// No description provided for @confirmBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Booking'**
+  String get confirmBooking;
+
+  /// No description provided for @deleteRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Request'**
+  String get deleteRequest;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
   /// No description provided for @contact.
   ///
   /// In en, this message translates to:
@@ -1549,6 +1579,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to cancel and delete this booking request?'**
   String get deleteBookingConfirmation;
+
+  /// No description provided for @deleteRequestConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this booking request?'**
+  String get deleteRequestConfirmation;
 
   /// No description provided for @roomInspection.
   ///
@@ -2143,6 +2179,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save voucher.'**
   String get failedToSaveVoucher;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to manage or find your rental room'**
+  String get welcomeSubtitle;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'enter@email.com'**
+  String get emailHint;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get pleaseEnterValidEmail;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'••••••••'**
+  String get passwordHint;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? '**
+  String get dontHaveAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @joinRentalRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Rental Room'**
+  String get joinRentalRoom;
+
+  /// No description provided for @selectRolePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your role and fill in your details to get started'**
+  String get selectRolePrompt;
+
+  /// No description provided for @registerAs.
+  ///
+  /// In en, this message translates to:
+  /// **'I am registering as:'**
+  String get registerAs;
+
+  /// No description provided for @tenantSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search & rent rooms'**
+  String get tenantSubtitle;
+
+  /// No description provided for @ownerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'List & manage rooms'**
+  String get ownerSubtitle;
+
+  /// No description provided for @fullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'John Doe'**
+  String get fullNameHint;
+
+  /// No description provided for @pleaseEnterFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your full name'**
+  String get pleaseEnterFullName;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 234 567 8900'**
+  String get phoneHint;
+
+  /// No description provided for @pleaseEnterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number'**
+  String get pleaseEnterPhoneNumber;
+
+  /// No description provided for @pleaseEnterValidPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid phone number'**
+  String get pleaseEnterValidPhoneNumber;
+
+  /// No description provided for @confirmedPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed Password'**
+  String get confirmedPassword;
+
+  /// No description provided for @pleaseRetypePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please re-type your password'**
+  String get pleaseRetypePassword;
+
+  /// No description provided for @iAgreeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the '**
+  String get iAgreeTo;
+
+  /// No description provided for @andPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **' and Privacy Policy'**
+  String get andPrivacyPolicy;
+
+  /// No description provided for @signUpAsRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up as {role}'**
+  String signUpAsRole(String role);
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @removeFromList.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from List'**
+  String get removeFromList;
+
+  /// No description provided for @removeRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Request'**
+  String get removeRequest;
+
+  /// No description provided for @removeRequestConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove this rental request from your list?'**
+  String get removeRequestConfirmation;
+
+  /// No description provided for @cancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Request'**
+  String get cancelRequest;
+
+  /// No description provided for @cancelRequestConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this booking request?'**
+  String get cancelRequestConfirmation;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @yesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Remove'**
+  String get yesRemove;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @acceptBookingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to accept this booking request? This will mark the room status as rented.'**
+  String get acceptBookingConfirmation;
+
+  /// No description provided for @roomDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Details'**
+  String get roomDetails;
 }
 
 class _AppLocalizationsDelegate

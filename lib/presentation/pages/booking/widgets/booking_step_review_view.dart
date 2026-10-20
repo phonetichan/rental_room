@@ -101,9 +101,9 @@ class BookingStepReviewView extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.check_circle_rounded),
-              label: const Text(
-                'Accept & Confirm Booking',
-                style: TextStyle(
+              label: Text(
+                l10n.confirmBooking,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -162,7 +162,7 @@ class BookingStepReviewView extends StatelessWidget {
                   ? 'Request Submitted (Cannot Delete)'
                   : (isConfirmed
                       ? 'Booking Confirmed'
-                      : (isOwner ? 'Decline / Delete Request' : l10n.deleteBooking)),
+                      : (isOwner ? 'Cancel Request' : l10n.deleteRequest)),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
