@@ -71,6 +71,8 @@ extension LookupL10nX on AppLocalizations {
         return pending;
       case 'confirmed':
         return confirmed;
+      case 'cancelled':
+        return cancelled;
       case 'contracted':
         return contracted;
       case 'expired':

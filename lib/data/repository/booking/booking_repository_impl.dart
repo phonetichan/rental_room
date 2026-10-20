@@ -78,8 +78,8 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<void> deleteBooking(String bookingId) async {
-    await _remoteDataSource.deleteBooking(bookingId);
+  Future<void> deleteBooking(String bookingId, {bool isOwner = false}) async {
+    await _remoteDataSource.deleteBooking(bookingId, isOwner: isOwner);
   }
 
   @override

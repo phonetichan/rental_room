@@ -11,8 +11,14 @@ class BookingView extends StatefulWidget {
   static const String routePath = '/booking-list';
   final UserEntity user;
   final bool isCurrentTab;
+  final String? initialFilter;
 
-  const BookingView({super.key, required this.user, this.isCurrentTab = true});
+  const BookingView({
+    super.key,
+    required this.user,
+    this.isCurrentTab = true,
+    this.initialFilter,
+  });
 
   @override
   State<BookingView> createState() => _BookingViewState();
@@ -23,13 +29,14 @@ class _BookingViewState extends State<BookingView>
   late final TabController _tabController;
   List<BookingEntity>? _cachedPendingBookings;
   List<BookingEntity>? _cachedConfirmedBookings;
+  List<BookingEntity>? _cachedCancelledBookings;
   Set<String> _contractedBookingIds = {};
 
   bool get _isOwner => widget.user.role == UserRole.owner;
 
-  List<String> get _filters => const ['pending', 'confirmed'];
+  List<String> get _filters => const ['pending', 'confirmed', 'cancelled'];
 
-  String _selectedFilter = 'pending';
+  late String _selectedFilter;
 
   Future<void> _loadContracts() async {
     try {
@@ -51,7 +58,10 @@ class _BookingViewState extends State<BookingView>
   void initState() {
     super.initState();
     final filters = _filters;
-    _selectedFilter = filters.first;
+    _selectedFilter = widget.initialFilter != null && filters.contains(widget.initialFilter)
+        ? widget.initialFilter!
+        : filters.first;
+    final initialIndex = filters.indexOf(_selectedFilter);
 
     _tabController = TabController(length: filters.length, vsync: this);
 
@@ -172,6 +182,23 @@ class _BookingViewState extends State<BookingView>
                       ],
                     ),
                   ),
+                  Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.cancel_outlined, size: 18),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            l10n.cancelled,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -187,12 +214,16 @@ class _BookingViewState extends State<BookingView>
               ),
               cachedBookings: _selectedFilter == 'pending'
                   ? _cachedPendingBookings
-                  : _cachedConfirmedBookings,
+                  : (_selectedFilter == 'confirmed'
+                      ? _cachedConfirmedBookings
+                      : _cachedCancelledBookings),
               onCacheUpdate: (list) {
                 if (_selectedFilter == 'pending') {
                   _cachedPendingBookings = list;
                 } else if (_selectedFilter == 'confirmed') {
                   _cachedConfirmedBookings = list;
+                } else if (_selectedFilter == 'cancelled') {
+                  _cachedCancelledBookings = list;
                 }
               },
               currentUser: widget.user,

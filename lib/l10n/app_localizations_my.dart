@@ -30,7 +30,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get owner => 'ပိုင်ရှင်';
 
   @override
-  String get tenant => 'အိမ်ငှားသူ';
+  String get tenant => 'ငှားရမ်းသူ';
 
   @override
   String get propertyOwner => 'အိမ်ခြံမြေပိုင်ရှင်';
@@ -277,6 +277,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get confirmed => 'အတည်ပြုပြီး';
 
   @override
+  String get cancelled => 'ပယ်ဖျက်ပြီး';
+
+  @override
   String get contracted => 'စာချုပ်ချုပ်ပြီး';
 
   @override
@@ -287,6 +290,9 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get noConfirmedBookings => 'အတည်ပြုပြီး ကြိုတင်မှာယူမှု မရှိပါ။';
+
+  @override
+  String get noCancelledBookings => 'ပယ်ဖျက်ပြီး ကြိုတင်မှာယူမှု မရှိပါ။';
 
   @override
   String get noContractedBookings => 'စာချုပ်ချုပ်ပြီး ကြိုတင်မှာယူမှု မရှိပါ။';
@@ -777,6 +783,15 @@ class AppLocalizationsMy extends AppLocalizations {
   String get deleteBooking => 'ကြိုတင်မှာယူမှု ဖျက်ရန်';
 
   @override
+  String get confirmBooking => 'ကြိုတင်မှာယူမှု အတည်ပြုရန်';
+
+  @override
+  String get deleteRequest => 'တောင်းဆိုချက် ဖျက်ရန်';
+
+  @override
+  String get delete => 'ဖျက်မည်';
+
+  @override
   String get contact => 'ဆက်သွယ်ရန်';
 
   @override
@@ -814,11 +829,14 @@ class AppLocalizationsMy extends AppLocalizations {
       'ဤကြိုတင်မှာယူမှု တောင်းဆိုချက်ကို ဖျက်သိမ်းရန် သေချာပါသလား။';
 
   @override
+  String get deleteRequestConfirmation =>
+      'ဤကြိုတင်မှာယူမှု တောင်းဆိုချက်ကို ဖျက်ရန် သေချာပါသလား။';
+
+  @override
   String get roomInspection => 'အခန်း စစ်ဆေးခြင်း';
 
   @override
-  String get bookingStepsAndDetails =>
-      'ကြိုတင်မှာယူမှု အဆင့်များနှင့် အသေးစိတ်';
+  String get bookingStepsAndDetails => 'ကြိုတင်မှာယူမှု အဆင့်များ';
 
   @override
   String get back => 'နောက်သို့';
@@ -1147,4 +1165,127 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get failedToSaveVoucher => 'ဘောက်ချာ သိမ်းဆည်းခြင်း မအောင်မြင်ပါ။';
+
+  @override
+  String get welcomeTitle => 'ပြန်လည်ကြိုဆိုပါသည်';
+
+  @override
+  String get welcomeSubtitle => 'အခန်းရှာရန် သို့မဟုတ် စီမံရန် ဝင်ရောက်ပါ';
+
+  @override
+  String get emailAddress => 'အီးမေးလ်';
+
+  @override
+  String get emailHint => 'enter@email.com';
+
+  @override
+  String get pleaseEnterEmail => 'သင့်အီးမေးလ်ကို ထည့်ပါ';
+
+  @override
+  String get pleaseEnterValidEmail => 'မှန်ကန်သော အီးမေးလ်ကို ထည့်ပါ';
+
+  @override
+  String get password => 'စကားဝှက်';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get pleaseEnterPassword => 'စကားဝှက်ကို ထည့်ပါ';
+
+  @override
+  String get signIn => 'အကောင့်ဝင်ရန်';
+
+  @override
+  String get dontHaveAccount => 'အကောင့်မရှိသေးဘူးလား? ';
+
+  @override
+  String get signUp => 'အကောင့်ဖွင့်ရန်';
+
+  @override
+  String get createAccount => 'အကောင့်ဖန်တီးရန်';
+
+  @override
+  String get joinRentalRoom => 'Rental Room သို့ ပါဝင်ပါ';
+
+  @override
+  String get selectRolePrompt =>
+      'သင်၏ အခန်းကဏ္ဍကို ရွေးချယ်ပြီး အသေးစိတ်ဖြည့်သွင်းပါ';
+
+  @override
+  String get registerAs => 'မှတ်ပုံတင်မည့် အခန်းကဏ္ဍ:';
+
+  @override
+  String get tenantSubtitle => 'အခန်းရှာရန်နှင့် ငှားရန်';
+
+  @override
+  String get ownerSubtitle => 'အခန်းစာရင်းတင်ရန်နှင့် စီမံရန်';
+
+  @override
+  String get fullNameHint => 'John Doe';
+
+  @override
+  String get pleaseEnterFullName => 'သင့်အမည်ကို ထည့်ပါ';
+
+  @override
+  String get phoneHint => '+1 234 567 8900';
+
+  @override
+  String get pleaseEnterPhoneNumber => 'ဖုန်းနံပါတ် ထည့်ပါ';
+
+  @override
+  String get pleaseEnterValidPhoneNumber => 'မှန်ကန်သော ဖုန်းနံပါတ် ထည့်ပါ';
+
+  @override
+  String get confirmedPassword => 'စကားဝှက် အတည်ပြုရန်';
+
+  @override
+  String get pleaseRetypePassword => 'စကားဝှက်ကို ထပ်မံထည့်ပါ';
+
+  @override
+  String get iAgreeTo => 'ငါသည် ';
+
+  @override
+  String get andPrivacyPolicy => ' နှင့် ကိုယ်ရေးကိုယ်တာ မူဝါဒကို သဘောတူသည်';
+
+  @override
+  String signUpAsRole(String role) {
+    return '$role အဖြစ် အကောင့်ဖွင့်မည်';
+  }
+
+  @override
+  String get alreadyHaveAccount => 'အကောင့်ရှိပြီးသားလား? ';
+
+  @override
+  String get removeFromList => 'စာရင်းမှ ဖယ်ရှားရန်';
+
+  @override
+  String get removeRequest => 'တောင်းဆိုချက် ဖယ်ရှားရန်';
+
+  @override
+  String get removeRequestConfirmation =>
+      'ဤငှားရမ်းရန် တောင်းဆိုချက်ကို သင့်စာရင်းမှ ဖယ်ရှားရန် သေချာပါသလား?';
+
+  @override
+  String get cancelRequest => 'တောင်းဆိုချက် ပယ်ဖျက်ရန်';
+
+  @override
+  String get cancelRequestConfirmation =>
+      'ဤကြိုတင်မှာယူမှု တောင်းဆိုချက်ကို ပယ်ဖျက်ရန် သေချာပါသလား?';
+
+  @override
+  String get remove => 'ဖယ်ရှားမည်';
+
+  @override
+  String get yesRemove => 'ဟုတ်ကဲ့၊ ဖယ်ရှားမည်';
+
+  @override
+  String get no => 'မလုပ်ပါ';
+
+  @override
+  String get acceptBookingConfirmation =>
+      'ဤကြိုတင်မှာယူမှု တောင်းဆိုချက်ကို လက်ခံရန် သေချာပါသလား? အခန်းကို ငှားရမ်းပြီးအဖြစ် သတ်မှတ်ပါမည်။';
+
+  @override
+  String get roomDetails => 'အခန်းအသေးစိတ်';
 }

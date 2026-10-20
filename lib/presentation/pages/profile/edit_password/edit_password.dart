@@ -360,6 +360,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   children: [
                     Text(
                       l10n.passwordChangeNote,
+                      maxLines: 2,
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     const SizedBox(height: 24),

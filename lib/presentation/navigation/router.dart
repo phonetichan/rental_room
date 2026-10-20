@@ -264,8 +264,14 @@ class NavigationRouter {
         path: BookingView.routePath,
         builder: (context, state) {
           final currentUser = context.read<AuthenticationCubit>().user!;
-
           final isOwner = currentUser.role == UserRole.owner;
+          final extra = state.extra;
+          String? initialFilter;
+          if (extra is Map<String, dynamic>) {
+            initialFilter = extra['initialFilter'] as String?;
+          } else if (extra is String) {
+            initialFilter = extra;
+          }
 
           return BlocProvider(
             create: (context) => inject<BookingCubit>()
@@ -274,7 +280,7 @@ class NavigationRouter {
                 userId: isOwner ? null : currentUser.id,
                 ownerId: isOwner ? currentUser.id : null,
               ),
-            child: BookingView(user: currentUser),
+            child: BookingView(user: currentUser, initialFilter: initialFilter),
           );
         },
       ),

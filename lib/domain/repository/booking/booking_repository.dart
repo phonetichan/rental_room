@@ -5,7 +5,7 @@ abstract class BookingRepository {
   Future<BookingEntity?> getBookingById(String bookingId);
   Future<BookingEntity> createBooking(BookingEntity booking);
   Future<BookingEntity> updateBooking(BookingEntity booking);
-  Future<void> deleteBooking(String bookingId);
+  Future<void> deleteBooking(String bookingId, {bool isOwner = false});
   Future<void> cancelOtherPendingBookingsForRoom(String roomId, String exceptedBookingId);
   Stream<List<BookingEntity>> watchBookings({String? userId, String? roomId, String? ownerId});
 }

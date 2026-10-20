@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../domain/domain.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../presentation.dart';
 
 class BookingListContent extends StatelessWidget {
@@ -29,10 +30,12 @@ class BookingListContent extends StatelessWidget {
     List<BookingEntity> displayedBookings = rawBookings;
     List<BookingEntity> validOwnerBookings = [];
 
+    final l10n = AppLocalizations.of(context)!;
+
     if (isOwner) {
       validOwnerBookings = rawBookings.where((b) {
         final status = b.status.toLowerCase();
-        return status != 'draft' && status != 'cancelled';
+        return status != 'draft';
       }).toList();
 
       if (selectedFilter == 'pending') {
@@ -42,6 +45,10 @@ class BookingListContent extends StatelessWidget {
       } else if (selectedFilter == 'confirmed') {
         displayedBookings = validOwnerBookings
             .where((b) => b.status.toLowerCase() == 'confirmed' && !contractedBookingIds.contains(b.id))
+            .toList();
+      } else if (selectedFilter == 'cancelled') {
+        displayedBookings = validOwnerBookings
+            .where((b) => b.status.toLowerCase() == 'cancelled')
             .toList();
       } else {
         displayedBookings = validOwnerBookings
@@ -56,6 +63,10 @@ class BookingListContent extends StatelessWidget {
       } else if (selectedFilter == 'confirmed') {
         displayedBookings = rawBookings
             .where((b) => b.status.toLowerCase() == 'confirmed' && !contractedBookingIds.contains(b.id))
+            .toList();
+      } else if (selectedFilter == 'cancelled') {
+        displayedBookings = rawBookings
+            .where((b) => b.status.toLowerCase() == 'cancelled')
             .toList();
       } else {
         displayedBookings = rawBookings
@@ -82,13 +93,11 @@ class BookingListContent extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                isOwner
-                    ? (selectedFilter == 'pending'
-                        ? 'No pending booking requests.'
-                        : 'No confirmed booking requests.')
-                    : (selectedFilter == 'pending'
-                        ? 'No pending bookings.'
-                        : 'No confirmed bookings.'),
+                selectedFilter == 'pending'
+                    ? l10n.noPendingBookings
+                    : (selectedFilter == 'confirmed'
+                        ? l10n.noConfirmedBookings
+                        : l10n.noCancelledBookings),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

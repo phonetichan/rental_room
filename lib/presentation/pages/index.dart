@@ -81,6 +81,16 @@ class _IndexPageState extends State<IndexPage> {
       setState(() {
         _currentIndex = index;
       });
+      try {
+        final user = context.read<AuthenticationCubit>().user;
+        if (user != null) {
+          final isOwner = user.role == UserRole.owner;
+          context.read<RoomCubit>().fetchRooms(
+            ownerId: isOwner ? user.id : null,
+            status: isOwner ? null : 'available',
+          );
+        }
+      } catch (_) {}
       final uri = Uri(
         path: IndexPage.routePath,
         queryParameters: {if (index != 0) 'tab': '$index'},
@@ -104,7 +114,10 @@ class _IndexPageState extends State<IndexPage> {
           return const Scaffold(body: SizedBox.shrink());
         }
 
-        _loadContractCount(user);
+        if (_loadedUserId != user.id) {
+          _loadedUserId = user.id;
+          _loadContractCount(user);
+        }
 
         // 1. Single Unified Home Dashboard View
         final Widget homeView = DashboardView(user: user);

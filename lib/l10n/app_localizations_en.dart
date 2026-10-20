@@ -313,6 +313,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmed => 'Confirmed';
 
   @override
+  String get cancelled => 'Cancelled';
+
+  @override
   String get contracted => 'Contracted';
 
   @override
@@ -323,6 +326,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noConfirmedBookings => 'No confirmed booking requests.';
+
+  @override
+  String get noCancelledBookings => 'No cancelled booking requests.';
 
   @override
   String get noContractedBookings => 'No contracted booking requests.';
@@ -812,6 +818,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteBooking => 'Delete Booking';
 
   @override
+  String get confirmBooking => 'Confirm Booking';
+
+  @override
+  String get deleteRequest => 'Delete Request';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
   String get contact => 'Contact';
 
   @override
@@ -847,6 +862,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get deleteBookingConfirmation =>
       'Are you sure you want to cancel and delete this booking request?';
+
+  @override
+  String get deleteRequestConfirmation =>
+      'Are you sure you want to delete this booking request?';
 
   @override
   String get roomInspection => 'Room Inspection';
@@ -1176,4 +1195,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToSaveVoucher => 'Failed to save voucher.';
+
+  @override
+  String get welcomeTitle => 'Welcome Back';
+
+  @override
+  String get welcomeSubtitle => 'Sign in to manage or find your rental room';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get emailHint => 'enter@email.com';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email address';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter your password';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account? ';
+
+  @override
+  String get signUp => 'Sign Up';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get joinRentalRoom => 'Join Rental Room';
+
+  @override
+  String get selectRolePrompt =>
+      'Select your role and fill in your details to get started';
+
+  @override
+  String get registerAs => 'I am registering as:';
+
+  @override
+  String get tenantSubtitle => 'Search & rent rooms';
+
+  @override
+  String get ownerSubtitle => 'List & manage rooms';
+
+  @override
+  String get fullNameHint => 'John Doe';
+
+  @override
+  String get pleaseEnterFullName => 'Please enter your full name';
+
+  @override
+  String get phoneHint => '+1 234 567 8900';
+
+  @override
+  String get pleaseEnterPhoneNumber => 'Please enter your phone number';
+
+  @override
+  String get pleaseEnterValidPhoneNumber => 'Please enter a valid phone number';
+
+  @override
+  String get confirmedPassword => 'Confirmed Password';
+
+  @override
+  String get pleaseRetypePassword => 'Please re-type your password';
+
+  @override
+  String get iAgreeTo => 'I agree to the ';
+
+  @override
+  String get andPrivacyPolicy => ' and Privacy Policy';
+
+  @override
+  String signUpAsRole(String role) {
+    return 'Sign Up as $role';
+  }
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account? ';
+
+  @override
+  String get removeFromList => 'Remove from List';
+
+  @override
+  String get removeRequest => 'Remove Request';
+
+  @override
+  String get removeRequestConfirmation =>
+      'Are you sure you want to remove this rental request from your list?';
+
+  @override
+  String get cancelRequest => 'Cancel Request';
+
+  @override
+  String get cancelRequestConfirmation =>
+      'Are you sure you want to cancel this booking request?';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get yesRemove => 'Yes, Remove';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get acceptBookingConfirmation =>
+      'Are you sure you want to accept this booking request? This will mark the room status as rented.';
+
+  @override
+  String get roomDetails => 'Room Details';
 }
