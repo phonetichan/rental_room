@@ -4,6 +4,7 @@ import '../../entity/contract/contract_status.dart';
 import '../../entity/room/room_entity.dart';
 import '../../repository/contract/contract_repository.dart';
 import '../../repository/room/room_repository.dart';
+import '../contract/check_and_expire_contracts_usecase.dart';
 import '../contract/expire_contract_usecase.dart';
 
 class GetRoomsParams {
@@ -23,16 +24,21 @@ class GetRoomsUseCase implements UseCase<DataState<List<RoomEntity>>, GetRoomsPa
   final RoomRepository _repository;
   final ContractRepository _contractRepository;
   final ExpireContractUseCase _expireContractUseCase;
+  final CheckAndExpireContractsUseCase _checkAndExpireContractsUseCase;
 
   const GetRoomsUseCase(
     this._repository,
     this._contractRepository,
     this._expireContractUseCase,
+    this._checkAndExpireContractsUseCase,
   );
 
   @override
   Future<DataState<List<RoomEntity>>> call(GetRoomsParams param) async {
     try {
+      // Run global expiration check so any expired contracts across the system are expired and rooms freed up
+      await _checkAndExpireContractsUseCase();
+
       final rooms = await _repository.getRooms(
         ownerId: param.ownerId,
         roomTypeId: param.roomTypeId,

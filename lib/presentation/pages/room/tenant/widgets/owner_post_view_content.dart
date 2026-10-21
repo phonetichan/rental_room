@@ -63,6 +63,12 @@ class _OwnerPostViewContentState extends State<OwnerPostViewContent>
 
   // Favorites reload too, so the "N Saves" badges stay current
   Future<void> _refreshData() async {
+    try {
+      if (widget.user.role == UserRole.owner) {
+        await inject<GetRoomsUseCase>()(GetRoomsParams(ownerId: widget.user.id));
+      }
+    } catch (_) {}
+
     _availableRoomsCubit.refresh();
     _rentedRoomsCubit.refresh();
     await context.read<FavoriteCubit>().loadFavorites(widget.user.id);

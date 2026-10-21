@@ -45,3 +45,4 @@ export 'repository/location/location_repository.dart';
 export 'usecase/location/reverse_geocode_usecase.dart';
 export 'usecase/location/search_location_usecase.dart';
 export 'usecase/location/get_current_location_usecase.dart';
+export 'usecase/contract/check_and_expire_contracts_usecase.dart';

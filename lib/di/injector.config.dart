@@ -82,6 +82,8 @@ import 'package:rental_room/domain/usecase/booking/get_bookings_usecase.dart'
     as _i486;
 import 'package:rental_room/domain/usecase/booking/update_booking_usecase.dart'
     as _i552;
+import 'package:rental_room/domain/usecase/contract/check_and_expire_contracts_usecase.dart'
+    as _i557;
 import 'package:rental_room/domain/usecase/contract/create_contract_usecase.dart'
     as _i355;
 import 'package:rental_room/domain/usecase/contract/expire_contract_usecase.dart'
@@ -330,6 +332,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i374.UpdateContractUseCase>(
       () => _i374.UpdateContractUseCase(gh<_i1024.ContractRepository>()),
     );
+    gh.lazySingleton<_i557.CheckAndExpireContractsUseCase>(
+      () => _i557.CheckAndExpireContractsUseCase(
+        gh<_i156.ContractRepository>(),
+        gh<_i156.ExpireContractUseCase>(),
+      ),
+    );
     gh.factory<_i1044.FavoriteCubit>(
       () => _i1044.FavoriteCubit(
         gh<_i1052.ToggleFavoriteUseCase>(),
@@ -349,13 +357,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i275.UpdateUserProfileUseCase>(
       () => _i275.UpdateUserProfileUseCase(gh<_i795.UserRepository>()),
-    );
-    gh.lazySingleton<_i304.GetRoomsUseCase>(
-      () => _i304.GetRoomsUseCase(
-        gh<_i956.RoomRepository>(),
-        gh<_i1024.ContractRepository>(),
-        gh<_i220.ExpireContractUseCase>(),
-      ),
     );
     gh.factory<_i722.EditPasswordCubit>(
       () => _i722.EditPasswordCubit(
@@ -397,6 +398,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i156.BookingRepository>(),
         gh<_i156.RoomRepository>(),
         gh<_i156.CreateContractUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i304.GetRoomsUseCase>(
+      () => _i304.GetRoomsUseCase(
+        gh<_i956.RoomRepository>(),
+        gh<_i1024.ContractRepository>(),
+        gh<_i220.ExpireContractUseCase>(),
+        gh<_i557.CheckAndExpireContractsUseCase>(),
       ),
     );
     gh.factory<_i83.RoomCubit>(

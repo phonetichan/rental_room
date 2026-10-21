@@ -42,4 +42,10 @@ class ContractRepositoryImpl implements ContractRepository {
     final models = await _remoteDataSource.getContractsByTenantId(tenantId);
     return models.map((e) => e.toEntity()).toList();
   }
+
+  @override
+  Future<List<ContractEntity>> getAllActiveContracts() async {
+    final models = await _remoteDataSource.getAllActiveContracts();
+    return models.map((e) => e.toEntity()).toList();
+  }
 }

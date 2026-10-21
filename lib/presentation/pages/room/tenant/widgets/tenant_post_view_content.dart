@@ -136,6 +136,10 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
   }
 
   Future<void> _refreshData() async {
+    try {
+      await inject<CheckAndExpireContractsUseCase>()();
+    } catch (_) {}
+
     await _allCubit.refresh();
     _fill();
     if (mounted) {
@@ -253,7 +257,7 @@ class _TenantPostViewContentState extends State<TenantPostViewContent> {
         Expanded(
           child: ValueListenableBuilder<bool>(
             valueListenable: _isFilling,
-            builder: (_, filling, __) => RoomPaginatedTab(
+            builder: (context, filling, child) => RoomPaginatedTab(
               cubit: _allCubit,
               user: widget.user,
               onRefresh: _refreshData,
