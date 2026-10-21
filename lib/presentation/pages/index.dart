@@ -42,7 +42,7 @@ class IndexPage extends StatefulWidget {
   State<IndexPage> createState() => _IndexPageState();
 }
 
-class _IndexPageState extends State<IndexPage> {
+class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   late int _currentIndex;
   int _contractBadgeCount = 0;
   String? _loadedUserId;
@@ -51,6 +51,37 @@ class _IndexPageState extends State<IndexPage> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialTab;
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _triggerExpirationCheck();
+    }
+  }
+
+  void _triggerExpirationCheck() {
+    try {
+      final user = context.read<AuthenticationCubit>().user;
+      if (user != null) {
+        final isOwner = user.role == UserRole.owner;
+        if (isOwner) {
+          inject<GetRoomsUseCase>()(GetRoomsParams(ownerId: user.id));
+        }
+        context.read<RoomCubit>().fetchRooms(
+          ownerId: isOwner ? user.id : null,
+          status: isOwner ? null : 'available',
+        );
+      }
+    } catch (_) {}
   }
 
   @override
@@ -81,16 +112,7 @@ class _IndexPageState extends State<IndexPage> {
       setState(() {
         _currentIndex = index;
       });
-      try {
-        final user = context.read<AuthenticationCubit>().user;
-        if (user != null) {
-          final isOwner = user.role == UserRole.owner;
-          context.read<RoomCubit>().fetchRooms(
-            ownerId: isOwner ? user.id : null,
-            status: isOwner ? null : 'available',
-          );
-        }
-      } catch (_) {}
+      _triggerExpirationCheck();
       final uri = Uri(
         path: IndexPage.routePath,
         queryParameters: {if (index != 0) 'tab': '$index'},

@@ -69,6 +69,13 @@ class ContractRemoteDataSource {
     return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
   }
 
+  Future<List<ContractModel>> getAllActiveContracts() async {
+    final snap = await _contractsCollection
+        .where('status', isEqualTo: ContractStatus.active.value)
+        .get();
+    return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
+  }
+
   /// Updates an existing contract document in Firestore
   Future<ContractModel> updateContract(ContractModel model) async {
     final docRef = _contractsCollection.doc(model.id);
