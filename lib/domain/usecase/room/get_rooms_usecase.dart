@@ -55,8 +55,11 @@ class GetRoomsUseCase implements UseCase<DataState<List<RoomEntity>>, GetRoomsPa
             final roomContracts = contracts.where((c) => c.roomId == room.id).toList();
 
             final hasActiveContract = roomContracts.any((c) {
+              final statusStr = c.status.value.toLowerCase();
               final isActive = c.status == ContractStatus.active ||
-                  c.status.value.toLowerCase() == 'active';
+                  statusStr == 'active' ||
+                  c.status == ContractStatus.pending ||
+                  statusStr == 'pending';
               final notExpired = c.endDate.isAfter(now);
               return isActive && notExpired;
             });

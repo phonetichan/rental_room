@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../domain/entity/room/room_entity.dart';
 import '../../../../domain/entity/room/room_image_entity.dart';
@@ -175,6 +176,7 @@ abstract class RoomModel with _$RoomModel {
   }
 
   factory RoomModel.fromEntity(RoomEntity entity) {
+    debugPrint('🔍 RoomModel.fromEntity status: ${entity.status}');
     return RoomModel(
       id: entity.id,
       ownerId: entity.ownerId,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../domain/domain.dart';
@@ -78,10 +79,21 @@ class RoomRemoteDataSource {
 
   Future<RoomModel> updateRoom(RoomModel roomModel) async {
     final docRef = _roomsCollection.doc(roomModel.id);
-    await docRef.update(roomModel.toMap());
+    final map = roomModel.toMap();
+
+    debugPrint('Status field exists: ${map.containsKey('status')}');
+    debugPrint('Status value: ${map['status']}');
+    debugPrint('All map keys: ${map.keys.toList()}');
+
+    await docRef.update(map);
     final updatedDoc = await docRef.get();
+
+    debugPrint('Firestore data after update: ${updatedDoc.data()}');
+
     return RoomModel.fromFirestore(updatedDoc);
   }
+
+  
 
   Future<void> deleteRoom(String roomId) async {
     await _roomsCollection.doc(roomId).delete();

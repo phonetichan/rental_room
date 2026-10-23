@@ -55,16 +55,15 @@ class ContractRemoteDataSource {
     if (ownerId.isEmpty) return [];
     final snap = await _contractsCollection
         .where('ownerId', isEqualTo: ownerId)
-        .where('status', isEqualTo: ContractStatus.active.value)
         .get();
 
     return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
   }
 
   Future<List<ContractModel>> getContractsByTenantId(String tenantId) async {
+    if (tenantId.isEmpty) return [];
     final snap = await _contractsCollection
         .where('tenantId', isEqualTo: tenantId)
-        .where('status', isEqualTo: ContractStatus.active.value)
         .get();
     return snap.docs.map((doc) => ContractModel.fromFirestore(doc)).toList();
   }

@@ -170,7 +170,9 @@ class BookingCubit extends Cubit<BookingState> {
     await res.onSuccess((updated) async {
       try {
         // 1. Update room status to 'rented'
+        debugPrint('🔍 confirmBooking: looking up room by roomId: ${updated.roomId}');
         final room = await _roomRepository.getRoomById(updated.roomId);
+        debugPrint('🔍 confirmBooking: found room: ${room?.id}, current status: ${room?.status}');
 
         final effectiveOwnerId =
         (updated.ownerId != null && updated.ownerId!.isNotEmpty)
@@ -183,7 +185,12 @@ class BookingCubit extends Cubit<BookingState> {
             updatedAt: DateTime.now(),
           );
 
+          debugPrint('🔍 confirmBooking: rentedRoom status = ${rentedRoom.status}');
+          debugPrint('🔍 confirmBooking: updating room ${room.id} status to rented');
           await _roomRepository.updateRoom(rentedRoom);
+          debugPrint('🔍 confirmBooking: room status successfully updated to rented');
+        } else {
+          debugPrint('❌ confirmBooking: room not found for roomId: ${updated.roomId}');
         }
 
         // 2. Create automatic contract (minimum duration 3 months)
@@ -239,6 +246,8 @@ class BookingCubit extends Cubit<BookingState> {
         debugPrint(
           '❌ Error during booking confirmation post-processing: $e',
         );
+        emit(BookingState.failure('Failed to update room/contract: $e'));
+        return;
       }
 
       if (_cachedBookings != null) {

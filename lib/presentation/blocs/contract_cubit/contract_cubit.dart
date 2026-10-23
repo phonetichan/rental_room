@@ -261,9 +261,17 @@ class ContractCubit extends Cubit<ContractState> {
     try {
       final roomRepo = inject<RoomRepository>();
 
-      final contracts = isOwner
+      final rawContracts = isOwner
           ? await _contractRepository.getContractsByOwnerId(userId)
           : await _contractRepository.getContractsByTenantId(userId);
+
+      final now = DateTime.now();
+      final contracts = rawContracts.where((c) {
+        final isExpired = c.status == ContractStatus.expired ||
+            c.status.value.toLowerCase() == 'expired' ||
+            !c.endDate.isAfter(now);
+        return !isExpired;
+      }).toList();
 
       final roomIds = contracts
           .map((c) => c.roomId)

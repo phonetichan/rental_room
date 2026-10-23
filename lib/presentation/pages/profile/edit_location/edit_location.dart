@@ -71,7 +71,11 @@ class _EditLocationScreenState extends State<EditLocationScreen> {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(l10n.confirmUpdateLocationTitle),
-        content: Text('${l10n.confirmUpdateLocationMessage}\n\n${_picked?.address ?? ""}'),
+        content: Text(
+          l10n.confirmUpdateLocationMessage,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
